@@ -30,6 +30,9 @@
         <mysql.version>5.1.49</mysql.version>
         <mybatis-plus.version>3.5.2</mybatis-plus.version>
         <springdoc.version>1.6.13</springdoc.version>
+        <sa-token.version>1.33.0</sa-token.version>
+        <hutool-all.version>5.8.10</hutool-all.version>
+        <mybatis.version>3.0.0</mybatis.version>
     </properties>
 
     <modules>
@@ -91,6 +94,12 @@
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.version}</version>
             </dependency>
+            <!-- mybatis-spring-boot-starter -->
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
             <!-- mybatis-plus -->
             <dependency>
                 <groupId>com.baomidou</groupId>
@@ -102,6 +111,17 @@
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-ui</artifactId>
                 <version>${springdoc.version}</version>
+            </dependency>
+            <!-- Sa-Token 权限认证 -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot-starter</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool-all.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

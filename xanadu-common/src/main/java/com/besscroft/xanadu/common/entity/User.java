@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "xanadu-user")
+@TableName(value = "user")
 @Schema(title = "用户实体")
 public class User extends BaseEntity {
 

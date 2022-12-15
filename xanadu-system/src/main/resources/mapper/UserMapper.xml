@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.besscroft.xanadu.mapper.UserMapper">
+
+    <resultMap id="userMap" type="com.besscroft.xanadu.common.entity.User">
+        <result column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="avatar" property="avatar"/>
+        <result column="email" property="email"/>
+        <result column="name" property="name"/>
+        <result column="real_name" property="realName"/>
+        <result column="telephone" property="telephone"/>
+        <result column="birthday" property="birthday"/>
+        <result column="sex" property="sex"/>
+        <result column="remark" property="remark"/>
+        <result column="status" property="status"/>
+        <result column="creator" property="creator"/>
+        <result column="updater" property="updater"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="del" property="del"/>
+    </resultMap>
+
+    <select id="selectByUsername" resultMap="userMap">
+        SELECT
+            id,
+            username,
+            password,
+            avatar,
+            email,
+            name,
+            real_name,
+            telephone,
+            birthday,
+            sex,
+            remark,
+            creator,
+            updater,
+            create_time,
+            update_time,
+            status,
+            del
+        FROM
+            user
+        WHERE
+            status = 1
+        AND
+            del = 1
+        AND
+            username = #{username}
+    </select>
+
+</mapper>
