@@ -1,0 +1,67 @@
+spring:
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://140.238.17.232:30003/xanadu?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
+    username: root
+    password: keqing@520
+    hikari:
+      # 连接池最大连接数
+      maximum-pool-size: 20
+      # 空闲时保持最小连接数
+      minimum-idle: 5
+      # 空闲连接存活时间
+      idle-timeout: 300000
+      # 连接超时时间
+      connection-timeout: 5000
+      # 检测连接是否有效
+      connection-test-query: select 1
+
+# MyBatis配置
+mybatis:
+  # 搜索指定包别名
+  typeAliasesPackage: com.besscroft.xanadu.common.entity
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapperLocations: classpath*:mapper/*Mapper.xml
+  configuration:
+    cache-enabled: false
+
+# mybatis-plus 配置
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: del # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+      logic-delete-value: 0 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 1 # 逻辑未删除值(默认为 0)
+
+# Actuator 配置
+management:
+  endpoints:
+    web:
+      exposure:
+        # 监控项配置
+        include: info, health
+  endpoint:
+    health:
+      # 开启显示全部细节
+      show-details: always
+    shutdown:
+      # 启用接口关闭 SpringBoot
+      enabled: false
+  # Micrometer 配置
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+# SpringDoc 配置
+springdoc:
+  api-docs:
+    # 文档生成
+    enabled: true
+  swagger-ui:
+    # 页面展示
+    enabled: true
+  # 配置扫描的包
+  packages-to-scan: com.besscroft.xanadu
+  cache:
+    disabled: false
+  pre-loading-enabled: true
