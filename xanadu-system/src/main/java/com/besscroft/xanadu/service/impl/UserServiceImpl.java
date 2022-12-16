@@ -28,9 +28,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (!Objects.equals(SaSecureUtil.sha256(password), user.getPassword()))
             throw new XanaduException("账号或密码错误！");
         // 登录
-        StpUtil.login(user.getId());
-        // 获取 Token 相关参数
-        return StpUtil.getTokenInfo();
+//        StpUtil.login(user.getId());
+//        // 获取 Token 相关参数
+//        return StpUtil.getTokenInfo();
+        // TODO satoken 暂未适配 springboot3，先整个假的
+        SaTokenInfo info = new SaTokenInfo();
+        info.setTokenValue("");
+        return info;
     }
 
 }
