@@ -4,6 +4,8 @@ import cn.dev33.satoken.stp.SaTokenInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.besscroft.xanadu.common.entity.User;
 
+import java.util.Map;
+
 /**
  * @Description
  * @Author Bess Croft
@@ -18,5 +20,11 @@ public interface UserService extends IService<User> {
      * @return Token 相关参数
      */
     SaTokenInfo login(String username, String password);
+
+    /**
+     * 获取已登录用户信息
+     * @return
+     */
+    Map<String, Object> info();
 
 }

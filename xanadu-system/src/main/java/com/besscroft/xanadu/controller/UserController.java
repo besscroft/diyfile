@@ -6,10 +6,9 @@ import com.besscroft.xanadu.common.result.AjaxResult;
 import com.besscroft.xanadu.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * @Description
@@ -27,6 +26,12 @@ public class UserController {
     public AjaxResult login(@RequestBody @Valid LoginParam param) {
         SaTokenInfo tokenInfo = userService.login(param.getUsername(), param.getPassword());
         return AjaxResult.success(tokenInfo);
+    }
+
+    @GetMapping("/info")
+    public AjaxResult info() {
+        Map<String, Object> info = userService.info();
+        return AjaxResult.success(info);
     }
 
 }
