@@ -30,7 +30,7 @@ public class UserController {
     @PostMapping("/login")
     @Operation(summary = "登录")
     public AjaxResult login(@RequestBody @Valid LoginParam param) {
-        SaTokenInfo tokenInfo = userService.login(param.getUsername(), param.getPassword());
+        SaTokenInfo tokenInfo = userService.login(param.getUsername(), param.getPassword(), param.getIsRememberMe());
         return AjaxResult.success(tokenInfo);
     }
 
