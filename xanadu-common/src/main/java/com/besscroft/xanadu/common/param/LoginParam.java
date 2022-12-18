@@ -19,4 +19,7 @@ public class LoginParam {
     @NotBlank(message = "密码未填！")
     private String password;
 
+    /** 记住我 */
+    private Boolean isRememberMe;
+
 }

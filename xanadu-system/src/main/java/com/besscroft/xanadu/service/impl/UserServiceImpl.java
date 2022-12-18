@@ -24,7 +24,7 @@ import java.util.*;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Override
-    public SaTokenInfo login(String username, String password) {
+    public SaTokenInfo login(String username, String password, Boolean isRememberMe) {
         User user = this.baseMapper.selectByUsername(username);
         Assert.notNull(user, "账号或密码错误！");
         if (!Objects.equals(SaSecureUtil.sha256(password), user.getPassword()))
