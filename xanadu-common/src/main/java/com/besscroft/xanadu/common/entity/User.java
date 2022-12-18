@@ -47,6 +47,11 @@ public class User extends BaseEntity {
     @Schema(title = "头像(地址)", type = "String")
     private String avatar;
 
+    /** 角色 */
+    @TableField(value = "role")
+    @Schema(title = "角色", type = "String")
+    private String role;
+
     /** 邮箱 */
     @TableField(value = "email")
     @Schema(title = "邮箱", type = "String")
@@ -84,6 +89,14 @@ public class User extends BaseEntity {
     @TableField(value = "remark")
     @Schema(title = "备注", type = "String")
     private String remark;
+
+    /** 最后登录时间 */
+    @TableField(value = "login_time")
+    @Schema(title = "最后登录时间", type = "Integer")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime loginTime;
 
     /** 帐号启用状态：0->禁用；1->启用 */
     @TableField(value = "status")

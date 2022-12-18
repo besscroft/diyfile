@@ -33,6 +33,7 @@
         <sa-token.version>1.33.0</sa-token.version>
         <hutool-all.version>5.8.10</hutool-all.version>
         <mybatis.version>3.0.0</mybatis.version>
+        <pagehelper.version>1.4.6</pagehelper.version>
     </properties>
 
     <modules>
@@ -122,6 +123,12 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool-all.version}</version>
+            </dependency>
+            <!-- 分页插件 -->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

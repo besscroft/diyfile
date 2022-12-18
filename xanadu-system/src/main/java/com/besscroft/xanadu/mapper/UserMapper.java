@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.besscroft.xanadu.common.entity.User;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * @Description
  * @Author Bess Croft
@@ -17,5 +19,11 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     User selectByUsername(@Param("username") String username);
+
+    /**
+     * 列表查询
+     * @return
+     */
+    List<User> selectPage();
 
 }

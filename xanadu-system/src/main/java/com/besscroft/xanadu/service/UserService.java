@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.SaTokenInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.besscroft.xanadu.common.entity.User;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,5 +27,13 @@ public interface UserService extends IService<User> {
      * @return
      */
     Map<String, Object> info();
+
+    /**
+     * 用户分页列表
+     * @param pageNum 页码
+     * @param pageSize 页大小
+     * @return
+     */
+    List<User> userPage(Integer pageNum, Integer pageSize);
 
 }

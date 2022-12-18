@@ -9,6 +9,7 @@
         <result column="username" property="username"/>
         <result column="password" property="password"/>
         <result column="avatar" property="avatar"/>
+        <result column="role" property="role"/>
         <result column="email" property="email"/>
         <result column="name" property="name"/>
         <result column="real_name" property="realName"/>
@@ -16,6 +17,7 @@
         <result column="birthday" property="birthday"/>
         <result column="sex" property="sex"/>
         <result column="remark" property="remark"/>
+        <result column="login_time" property="loginTime"/>
         <result column="status" property="status"/>
         <result column="creator" property="creator"/>
         <result column="updater" property="updater"/>
@@ -31,12 +33,14 @@
             password,
             avatar,
             email,
+            role,
             name,
             real_name,
             telephone,
             birthday,
             sex,
             remark,
+            login_time,
             creator,
             updater,
             create_time,
@@ -51,6 +55,35 @@
             del = 1
         AND
             username = #{username}
+    </select>
+
+    <select id="selectPage" resultSets="java.util.List" resultMap="userMap">
+        SELECT
+            id,
+            username,
+            password,
+            avatar,
+            email,
+            role,
+            name,
+            real_name,
+            telephone,
+            birthday,
+            sex,
+            remark,
+            login_time,
+            creator,
+            updater,
+            create_time,
+            update_time,
+            status,
+            del
+        FROM
+            user
+        WHERE
+            status = 1
+        AND
+            del = 1
     </select>
 
 </mapper>

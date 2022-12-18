@@ -2,19 +2,17 @@ package com.besscroft.xanadu.service.impl;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.SaTokenInfo;
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.besscroft.xanadu.common.entity.User;
 import com.besscroft.xanadu.common.exception.XanaduException;
 import com.besscroft.xanadu.mapper.UserMapper;
 import com.besscroft.xanadu.service.UserService;
+import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @Description
@@ -46,6 +44,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         map.put("userName", "旅行者");
         map.put("avatar", "https://besscroft.com/uploads/avatar.jpeg");
         return map;
+    }
+
+    @Override
+    public List<User> userPage(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        return this.baseMapper.selectPage();
     }
 
 }
