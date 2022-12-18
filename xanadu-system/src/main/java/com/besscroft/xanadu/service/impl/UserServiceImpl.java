@@ -10,6 +10,7 @@ import com.besscroft.xanadu.mapper.UserMapper;
 import com.besscroft.xanadu.service.UserService;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.*;
@@ -50,6 +51,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public List<User> userPage(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         return this.baseMapper.selectPage();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteUser(Long userId) {
+        Assert.isTrue(this.baseMapper.deleteById(userId) > 0, "用户删除失败！");
     }
 
 }

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Description
+ * @Description 用户接口
  * @Author Bess Croft
  * @Date 2022/12/15 14:34
  */
@@ -47,6 +47,13 @@ public class UserController {
                                              @RequestParam("pageSize") Integer pageSize) {
         List<User> userPageVoList = userService.userPage(pageNum, pageSize);
         return CommonResult.success(CommonPage.restPage(userPageVoList));
+    }
+
+    @Operation(summary = "用户删除接口")
+    @DeleteMapping("/delete/{userId:[\\d]+}")
+    public AjaxResult delete(@PathVariable(name = "userId") Long userId) {
+        userService.deleteUser(userId);
+        return AjaxResult.success("删除成功！");
     }
 
 }
