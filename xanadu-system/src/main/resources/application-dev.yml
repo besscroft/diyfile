@@ -39,7 +39,7 @@ management:
     web:
       exposure:
         # 监控项配置
-        include: info, health
+        include: '*'
   endpoint:
     health:
       # 开启显示全部细节
