@@ -59,4 +59,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Assert.isTrue(this.baseMapper.deleteById(userId) > 0, "用户删除失败！");
     }
 
+    @Override
+    public User getUser(String username) {
+        return this.baseMapper.selectByUsername(username);
+    }
+
 }

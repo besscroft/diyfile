@@ -56,5 +56,12 @@ public class UserController {
         return AjaxResult.success("删除成功！");
     }
 
+    @Operation(summary = "用户信息获取接口")
+    @GetMapping("/info/{username}")
+    public CommonResult<User> get(@PathVariable(name = "username") String username) {
+        User user = userService.getUser(username);
+        return CommonResult.success(user);
+    }
+
 }
 

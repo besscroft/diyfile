@@ -42,4 +42,11 @@ public interface UserService extends IService<User> {
      */
     void deleteUser(Long userId);
 
+    /**
+     * 获取用户信息
+     * @param username 用户名
+     * @return
+     */
+    User getUser(String username);
+
 }
