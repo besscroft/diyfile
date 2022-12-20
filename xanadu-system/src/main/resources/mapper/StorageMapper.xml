@@ -17,4 +17,22 @@
         <result column="del" property="del"/>
     </resultMap>
 
+    <select id="selectPage" resultSets="java.util.List" resultMap="storageMap">
+        SELECT
+            id,
+            name,
+            type,
+            enable,
+            remark,
+            creator,
+            updater,
+            create_time,
+            update_time,
+            del
+        FROM
+            storage
+        WHERE
+            del = 1
+    </select>
+
 </mapper>

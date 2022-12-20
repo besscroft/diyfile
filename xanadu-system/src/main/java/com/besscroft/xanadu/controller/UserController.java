@@ -3,6 +3,8 @@ package com.besscroft.xanadu.controller;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import com.besscroft.xanadu.common.entity.User;
 import com.besscroft.xanadu.common.param.LoginParam;
+import com.besscroft.xanadu.common.param.user.UserAddParam;
+import com.besscroft.xanadu.common.param.user.UserUpdateParam;
 import com.besscroft.xanadu.common.result.AjaxResult;
 import com.besscroft.xanadu.common.result.CommonResult;
 import com.besscroft.xanadu.common.util.CommonPage;
@@ -61,6 +63,20 @@ public class UserController {
     public CommonResult<User> get(@PathVariable(name = "username") String username) {
         User user = userService.getUser(username);
         return CommonResult.success(user);
+    }
+
+    @Operation(summary = "用户新增接口")
+    @PostMapping("/add")
+    public AjaxResult add(@RequestBody @Valid UserAddParam param) {
+
+        return AjaxResult.success();
+    }
+
+    @Operation(summary = "用户更新接口")
+    @PutMapping("/update")
+    public AjaxResult update(@RequestBody @Valid UserUpdateParam param) {
+
+        return AjaxResult.success();
     }
 
 }
