@@ -2,6 +2,8 @@ package com.besscroft.xanadu.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.besscroft.xanadu.common.entity.Storage;
+import com.besscroft.xanadu.common.param.storage.StorageAddParam;
+import com.besscroft.xanadu.common.param.storage.StorageUpdateParam;
 
 import java.util.List;
 
@@ -25,5 +27,17 @@ public interface StorageService extends IService<Storage> {
      * @param storageId 驱动 id
      */
     void deleteStorage(Long storageId);
+
+    /**
+     * 新增驱动
+     * @param param 请求参数
+     */
+    void addStorage(StorageAddParam param);
+
+    /**
+     * 更新驱动
+     * @param param 请求参数
+     */
+    void updateStorage(StorageUpdateParam param);
 
 }
