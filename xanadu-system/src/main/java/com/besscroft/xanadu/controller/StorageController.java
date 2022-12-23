@@ -44,14 +44,14 @@ public class StorageController {
     @Operation(summary = "驱动新增接口")
     @PostMapping("/add")
     public AjaxResult add(@RequestBody @Valid StorageAddParam param) {
-
+        storageService.addStorage(param);
         return AjaxResult.success("新增成功！");
     }
 
     @Operation(summary = "驱动更新接口")
     @PutMapping("/update")
     public AjaxResult update(@RequestBody @Valid StorageUpdateParam param) {
-
+        storageService.updateStorage(param);
         return AjaxResult.success("更新成功！");
     }
 
