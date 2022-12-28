@@ -3,6 +3,7 @@ package com.besscroft.xanadu.common.converter;
 import com.besscroft.xanadu.common.entity.Storage;
 import com.besscroft.xanadu.common.param.storage.StorageAddParam;
 import com.besscroft.xanadu.common.param.storage.StorageUpdateParam;
+import com.besscroft.xanadu.common.vo.StorageInfoVo;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -19,5 +20,7 @@ public interface StorageConverterMapper {
     Storage AddParamToStorage(StorageAddParam param);
 
     Storage UpdateParamToStorage(StorageUpdateParam param);
+
+    StorageInfoVo StorageToInfoVo(Storage storage);
 
 }

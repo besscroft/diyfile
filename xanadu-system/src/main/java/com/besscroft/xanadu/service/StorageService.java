@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.besscroft.xanadu.common.entity.Storage;
 import com.besscroft.xanadu.common.param.storage.StorageAddParam;
 import com.besscroft.xanadu.common.param.storage.StorageUpdateParam;
+import com.besscroft.xanadu.common.vo.StorageInfoVo;
 
 import java.util.List;
 
@@ -39,5 +40,12 @@ public interface StorageService extends IService<Storage> {
      * @param param 请求参数
      */
     void updateStorage(StorageUpdateParam param);
+
+    /**
+     * 获取存储配置详情
+     * @param storageId 存储id
+     * @return 存储配置详情
+     */
+    StorageInfoVo getInfo(Long storageId);
 
 }

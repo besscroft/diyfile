@@ -68,7 +68,7 @@ public class UserController {
     @Operation(summary = "用户新增接口")
     @PostMapping("/add")
     public AjaxResult add(@RequestBody @Valid UserAddParam param) {
-
+        userService.addUser(param);
         return AjaxResult.success();
     }
 

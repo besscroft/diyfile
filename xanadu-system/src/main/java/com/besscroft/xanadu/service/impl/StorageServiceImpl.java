@@ -5,6 +5,7 @@ import com.besscroft.xanadu.common.converter.StorageConverterMapper;
 import com.besscroft.xanadu.common.entity.Storage;
 import com.besscroft.xanadu.common.param.storage.StorageAddParam;
 import com.besscroft.xanadu.common.param.storage.StorageUpdateParam;
+import com.besscroft.xanadu.common.vo.StorageInfoVo;
 import com.besscroft.xanadu.mapper.StorageMapper;
 import com.besscroft.xanadu.service.StorageConfigService;
 import com.besscroft.xanadu.service.StorageService;
@@ -52,6 +53,14 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         Storage storage = StorageConverterMapper.INSTANCE.UpdateParamToStorage(param);
         this.baseMapper.updateById(storage);
         storageConfigService.updateBatchById(param.getConfigList());
+    }
+
+    @Override
+    public StorageInfoVo getInfo(Long storageId) {
+        Storage storage = this.baseMapper.selectById(storageId);
+        StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
+        // TODO mp 适配 sb3 之后，补充配置信息查询
+        return vo;
     }
 
 }

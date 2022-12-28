@@ -6,6 +6,7 @@ import com.besscroft.xanadu.common.param.storage.StorageUpdateParam;
 import com.besscroft.xanadu.common.result.AjaxResult;
 import com.besscroft.xanadu.common.result.CommonResult;
 import com.besscroft.xanadu.common.util.CommonPage;
+import com.besscroft.xanadu.common.vo.StorageInfoVo;
 import com.besscroft.xanadu.service.StorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -53,6 +54,12 @@ public class StorageController {
     public AjaxResult update(@RequestBody @Valid StorageUpdateParam param) {
         storageService.updateStorage(param);
         return AjaxResult.success("更新成功！");
+    }
+
+    @Operation(summary = "驱动详情接口")
+    @GetMapping("/info/{storageId:[\\d]+}")
+    public CommonResult<StorageInfoVo> info(@PathVariable(name = "storageId") Long storageId) {
+        return CommonResult.success(storageService.getInfo(storageId));
     }
 
 }
