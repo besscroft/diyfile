@@ -6,3 +6,5 @@ spring:
     name: Xanadu
   profiles:
     active: '@spring.active@'
+  devtools:
+    add-properties: false
