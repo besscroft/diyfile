@@ -11,7 +11,7 @@
  Target Server Version : 101002 (10.10.2-MariaDB-1:10.10.2+maria~ubu2204)
  File Encoding         : 65001
 
- Date: 07/01/2023 17:44:28
+ Date: 07/01/2023 21:20:07
 */
 
 SET NAMES utf8mb4;
@@ -48,8 +48,8 @@ CREATE TABLE `storage_config`  (
   `id` bigint NOT NULL,
   `storage_id` bigint NOT NULL COMMENT '存储id',
   `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储配置名称',
-  `key` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储配置键',
-  `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储配置值',
+  `config_key` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储配置键',
+  `config_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储配置值',
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储配置描述',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '存储配置表' ROW_FORMAT = Dynamic;
@@ -58,6 +58,32 @@ CREATE TABLE `storage_config`  (
 -- Records of storage_config
 -- ----------------------------
 INSERT INTO `storage_config` VALUES (1, 1, '根路径', 'path', 'D:\\app-log', '访问本地存储的根路径');
+
+-- ----------------------------
+-- Table structure for system_config
+-- ----------------------------
+DROP TABLE IF EXISTS `system_config`;
+CREATE TABLE `system_config`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '系统配置名称',
+  `type` tinyint NULL DEFAULT NULL COMMENT '配置类型：0->基础配置；1->网站配置',
+  `config_key` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '系统配置键',
+  `config_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '系统配置值',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '系统配置描述',
+  `creator` bigint NULL DEFAULT NULL COMMENT '创建者',
+  `updater` bigint NULL DEFAULT NULL COMMENT '更新者',
+  `create_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  `del` tinyint NOT NULL DEFAULT 1 COMMENT '逻辑删除：0->删除状态；1->可用状态',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '系统配置表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of system_config
+-- ----------------------------
+INSERT INTO `system_config` VALUES (1, '网站标题', 1, 'title', 'Xanadu', '动态加载的网站标题', 1, 1, '2023-01-07 20:49:30', '2023-01-07 19:13:02', 1);
+INSERT INTO `system_config` VALUES (2, '测试key', 1, 'test', 'value', '测试用的', 1, 1, '2023-01-07 20:45:50', '2023-01-07 20:26:54', 1);
+INSERT INTO `system_config` VALUES (3, '备案号', 1, 'beian', '', '备案号', 1, 1, '2023-01-07 20:53:26', '2023-01-07 20:52:51', 1);
 
 -- ----------------------------
 -- Table structure for user

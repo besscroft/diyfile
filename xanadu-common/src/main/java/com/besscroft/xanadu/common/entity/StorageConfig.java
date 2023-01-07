@@ -37,14 +37,14 @@ public class StorageConfig {
     private String name;
 
     /** 存储配置键 */
-    @TableField(value = "key")
+    @TableField(value = "config_key")
     @Schema(title = "存储配置键", type = "String")
-    private String key;
+    private String configKey;
 
     /** 存储配置值 */
-    @TableField(value = "value")
+    @TableField(value = "config_value")
     @Schema(title = "存储配置值", type = "String")
-    private String value;
+    private String configValue;
 
     /** 存储配置描述 */
     @TableField(value = "description")
