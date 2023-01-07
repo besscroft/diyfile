@@ -29,9 +29,9 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
     private final StorageConfigService storageConfigService;
 
     @Override
-    public List<Storage> storagePage(Integer pageNum, Integer pageSize) {
+    public List<Storage> storagePage(Integer pageNum, Integer pageSize, Integer type) {
         PageHelper.startPage(pageNum, pageSize);
-        return this.baseMapper.selectPage();
+        return this.baseMapper.selectPage(type);
     }
 
     @Override

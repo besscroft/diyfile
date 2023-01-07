@@ -19,9 +19,10 @@ public interface StorageService extends IService<Storage> {
      * 驱动分页列表
      * @param pageNum 页码
      * @param pageSize 页大小
+     * @param type 驱动类型
      * @return 驱动分页列表数据
      */
-    List<Storage> storagePage(Integer pageNum, Integer pageSize);
+    List<Storage> storagePage(Integer pageNum, Integer pageSize, Integer type);
 
     /**
      * 删除驱动

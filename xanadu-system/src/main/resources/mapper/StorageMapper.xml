@@ -33,6 +33,9 @@
             storage
         WHERE
             del = 1
+        <if test="type != null">
+            AND type = #{type}
+        </if>
     </select>
 
 </mapper>

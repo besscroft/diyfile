@@ -22,8 +22,9 @@ public interface UserMapper extends BaseMapper<User> {
 
     /**
      * 列表查询
+     * @param role 角色标识
      * @return
      */
-    List<User> selectPage();
+    List<User> selectPage(@Param("role") String role);
 
 }

@@ -34,9 +34,10 @@ public interface UserService extends IService<User> {
      * 用户分页列表
      * @param pageNum 页码
      * @param pageSize 页大小
+     * @param role 角色标识
      * @return 用户分页列表数据
      */
-    List<User> userPage(Integer pageNum, Integer pageSize);
+    List<User> userPage(Integer pageNum, Integer pageSize, String role);
 
     /**
      * 用户删除

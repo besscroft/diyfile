@@ -84,6 +84,9 @@
             status = 1
         AND
             del = 1
+        <if test="role != null and role != ''">
+            AND role = #{role}
+        </if>
     </select>
 
 </mapper>

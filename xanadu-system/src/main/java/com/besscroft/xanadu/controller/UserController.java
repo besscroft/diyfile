@@ -46,8 +46,9 @@ public class UserController {
     @GetMapping("/userPage")
     @Operation(summary = "用户分页列表")
     public CommonResult<CommonPage<User>> userPage(@RequestParam("pageNum") Integer pageNum,
-                                             @RequestParam("pageSize") Integer pageSize) {
-        List<User> userPageVoList = userService.userPage(pageNum, pageSize);
+                                                   @RequestParam("pageSize") Integer pageSize,
+                                                   @RequestParam(value = "role", required = false) String role) {
+        List<User> userPageVoList = userService.userPage(pageNum, pageSize, role);
         return CommonResult.success(CommonPage.restPage(userPageVoList));
     }
 

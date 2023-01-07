@@ -30,8 +30,9 @@ public class StorageController {
     @GetMapping("/storagePage")
     @Operation(summary = "驱动分页列表")
     public CommonResult<CommonPage<Storage>> storagePage(@RequestParam("pageNum") Integer pageNum,
-                                                         @RequestParam("pageSize") Integer pageSize) {
-        List<Storage> storageList = storageService.storagePage(pageNum, pageSize);
+                                                         @RequestParam("pageSize") Integer pageSize,
+                                                         @RequestParam(value = "type", required = false) Integer type) {
+        List<Storage> storageList = storageService.storagePage(pageNum, pageSize, type);
         return CommonResult.success(CommonPage.restPage(storageList));
     }
 
