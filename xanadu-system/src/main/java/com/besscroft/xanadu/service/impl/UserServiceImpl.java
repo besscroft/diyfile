@@ -14,6 +14,7 @@ import com.besscroft.xanadu.common.param.user.UserUpdateParam;
 import com.besscroft.xanadu.mapper.UserMapper;
 import com.besscroft.xanadu.service.UserService;
 import com.github.pagehelper.PageHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -25,6 +26,7 @@ import java.util.*;
  * @Author Bess Croft
  * @Date 2022/12/15 14:34
  */
+@Slf4j
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
@@ -32,6 +34,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public SaTokenInfo login(String username, String password, Boolean isRememberMe) {
         User user = this.baseMapper.selectByUsername(username);
         Assert.notNull(user, "账号或密码错误！");
+        log.info("用户发起登录请求:{}", username);
         if (!Objects.equals(SaSecureUtil.sha256(password), user.getPassword()))
             throw new XanaduException("账号或密码错误！");
         // 登录
@@ -41,6 +44,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // TODO satoken 暂未适配 springboot3，先整个假的
         SaTokenInfo info = new SaTokenInfo();
         info.setTokenValue(IdUtil.randomUUID());
+        log.info("登录成功:{}", username);
         return info;
     }
 
