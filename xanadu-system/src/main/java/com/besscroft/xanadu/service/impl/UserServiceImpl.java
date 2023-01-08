@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -45,6 +46,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // TODO satoken 暂未适配 springboot3，先整个假的
         SaTokenInfo info = new SaTokenInfo();
         info.setTokenValue(IdUtil.randomUUID());
+        // 设置最后登录时间
+        user.setLoginTime(LocalDateTime.now());
+        this.updateById(user);
         log.info("登录成功:{}", username);
         return info;
     }

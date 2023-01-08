@@ -62,28 +62,10 @@ public class User extends BaseEntity {
     @Schema(title = "昵称", type = "String")
     private String name;
 
-    /** 真实姓名 */
-    @TableField(value = "real_name")
-    @Schema(title = "真实姓名", type = "String")
-    private String realName;
-
     /** 手机 */
     @TableField(value = "telephone")
     @Schema(title = "手机", type = "String")
     private String telephone;
-
-    /** 生日 */
-    @TableField(value = "birthday")
-    @Schema(title = "生日", type = "Date")
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime birthday;
-
-    /** 性别 */
-    @TableField(value = "sex")
-    @Schema(title = "性别", type = "Integer")
-    private Integer sex;
 
     /** 备注 */
     @TableField(value = "remark")

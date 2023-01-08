@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 /**
  * @Description 新增用户请求参数
  * @Author Bess Croft
@@ -35,17 +33,8 @@ public class UserAddParam {
     @Schema(title = "昵称", type = "String")
     private String name;
 
-    @Schema(title = "真实姓名", type = "String")
-    private String realName;
-
     @Schema(title = "手机", type = "String")
     private String telephone;
-
-    @Schema(title = "生日", type = "Date")
-    private LocalDateTime birthday;
-
-    @Schema(title = "性别", type = "Integer")
-    private Integer sex;
 
     @Schema(title = "备注", type = "String")
     private String remark;

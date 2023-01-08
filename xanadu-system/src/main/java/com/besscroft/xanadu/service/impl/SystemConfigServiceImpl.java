@@ -37,4 +37,9 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
         return configList.stream().collect(Collectors.toMap(SystemConfig::getConfigKey, SystemConfig::getConfigValue));
     }
 
+    @Override
+    public String getBeian() {
+        return this.baseMapper.queryByConfigKey("beian").getConfigValue();
+    }
+
 }

@@ -12,10 +12,7 @@
         <result column="role" property="role"/>
         <result column="email" property="email"/>
         <result column="name" property="name"/>
-        <result column="real_name" property="realName"/>
         <result column="telephone" property="telephone"/>
-        <result column="birthday" property="birthday"/>
-        <result column="sex" property="sex"/>
         <result column="remark" property="remark"/>
         <result column="login_time" property="loginTime"/>
         <result column="status" property="status"/>
@@ -35,10 +32,7 @@
             email,
             role,
             name,
-            real_name,
             telephone,
-            birthday,
-            sex,
             remark,
             login_time,
             creator,
@@ -66,10 +60,7 @@
             email,
             role,
             name,
-            real_name,
             telephone,
-            birthday,
-            sex,
             remark,
             login_time,
             creator,

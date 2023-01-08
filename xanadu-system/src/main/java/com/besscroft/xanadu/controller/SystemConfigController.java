@@ -39,4 +39,11 @@ public class SystemConfigController {
         return AjaxResult.success(systemConfigService.getSiteConfig());
     }
 
+    @GetMapping("/getBeian")
+    @Operation(summary = "获取备案信息")
+    public AjaxResult getBeian() {
+        String beian = systemConfigService.getBeian();
+        return AjaxResult.success("操作成功！", beian);
+    }
+
 }

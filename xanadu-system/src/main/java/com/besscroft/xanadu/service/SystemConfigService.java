@@ -31,4 +31,10 @@ public interface SystemConfigService extends IService<SystemConfig> {
      */
     Map<String, String> getSiteConfig();
 
+    /**
+     * 获取备案信息
+     * @return 备案信息
+     */
+    String getBeian();
+
 }
