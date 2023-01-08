@@ -157,6 +157,16 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 参数异常 IllegalArgumentException
+     */
+    @ResponseBody
+    @ExceptionHandler(IllegalArgumentException.class)
+    public CommonResult<?> handleException(IllegalArgumentException ex) {
+        log.error("参数异常.[异常原因={}]", ex.getMessage(), ex);
+        return CommonResult.failed(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage(), null);
+    }
+
+    /**
      * 全局异常拦截 handleException
      */
     @ResponseBody
