@@ -18,17 +18,17 @@ public class CustomMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-        // TODO
-        String username = "TODO";
-        this.strictInsertFill(metaObject, "creator", String.class, username);
+        // TODO 适配用户上下文后更新此处以便获取用户 id
+        Long userId = 1L;
+        this.strictInsertFill(metaObject, "creator", Long.class, userId);
         this.strictInsertFill(metaObject, "createTime", LocalDateTime::now, LocalDateTime.class);
-        this.strictInsertFill(metaObject, "updater", String.class, username);
+        this.strictInsertFill(metaObject, "updater", Long.class, userId);
         this.strictInsertFill(metaObject, "updateTime", LocalDateTime::now, LocalDateTime.class);
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        this.strictUpdateFill(metaObject, "updater", () -> "TODO", String.class);
+        this.strictUpdateFill(metaObject, "updater", () -> 1L, Long.class);
         this.strictUpdateFill(metaObject, "updateTime", LocalDateTime::now, LocalDateTime.class);
     }
 

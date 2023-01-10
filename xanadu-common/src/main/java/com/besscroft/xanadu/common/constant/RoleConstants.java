@@ -19,7 +19,7 @@ public interface RoleConstants {
     /** 平台观察员：查看系统平台中的所有非机密资源 */
     String PLATFORM_VIEW = "platform-view";
 
-    /** 游客：查看系统平台中处后台外所有非机密资源 */
+    /** 游客：查看系统平台中除后台外所有非机密资源 */
     String PLATFORM_VISITOR = "platform-visitor";
 
 }

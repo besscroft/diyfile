@@ -76,8 +76,15 @@ public class UserController {
     @Operation(summary = "用户更新接口")
     @PutMapping("/update")
     public AjaxResult update(@RequestBody @Valid UserUpdateParam param) {
-
+        userService.updateUser(param);
         return AjaxResult.success();
+    }
+
+    @Operation(summary = "用户查询接口")
+    @GetMapping("/getUser/{userId:[\\d]+}")
+    public CommonResult<User> getUser(@PathVariable(name = "userId") Long userId) {
+        User user = userService.getUserById(userId);
+        return CommonResult.success(user);
     }
 
 }

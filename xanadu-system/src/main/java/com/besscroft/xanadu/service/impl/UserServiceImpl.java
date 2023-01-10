@@ -84,6 +84,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public User getUserById(Long id) {
+        return this.baseMapper.selectById(id);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void addUser(UserAddParam param) {
         User user = UserConverterMapper.INSTANCE.AddParamToUser(param);
@@ -102,9 +107,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if ((!Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN) && Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))
                 || (Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN) && !Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN)))
             throw new XanaduException("违反规则！更新用户失败！");
-        if (StrUtil.isNotBlank(param.getPassword())) {
-            user.setPassword(SaSecureUtil.sha256(param.getPassword().trim()));
-        }
         Assert.isTrue(this.baseMapper.updateById(user) > 0, "更新用户失败！");
     }
 

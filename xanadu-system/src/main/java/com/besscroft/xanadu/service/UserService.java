@@ -53,6 +53,13 @@ public interface UserService extends IService<User> {
     User getUser(String username);
 
     /**
+     * 获取用户
+     * @param id 用户 id
+     * @return
+     */
+    User getUserById(Long id);
+
+    /**
      * 新增用户
      * @param param 请求参数
      */

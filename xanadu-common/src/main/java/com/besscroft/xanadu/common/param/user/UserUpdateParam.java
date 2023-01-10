@@ -1,7 +1,6 @@
 package com.besscroft.xanadu.common.param.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -17,14 +16,6 @@ public class UserUpdateParam {
     @Schema(title = "用户 id", type = "Long", required = true)
     @NotNull(message = "用户 id 不能为空！")
     private Long id;
-
-    @Schema(title = "用户名", type = "String", required = true)
-    @NotBlank(message = "用户名不能为空！")
-    private String username;
-
-    @Schema(title = "密码", type = "String", required = true)
-    @NotBlank(message = "密码不能为空！")
-    private String password;
 
     @Schema(title = "头像(地址)", type = "String")
     private String avatar;
@@ -43,9 +34,5 @@ public class UserUpdateParam {
 
     @Schema(title = "备注", type = "String")
     private String remark;
-
-    @Schema(title = "帐号启用状态：0->禁用；1->启用", type = "Integer")
-    @NotBlank(message = "账号启用状态不能为空！")
-    private Integer status;
 
 }
