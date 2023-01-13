@@ -63,4 +63,12 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         return vo;
     }
 
+    @Override
+    public void updateStatus(Long storageId, Integer status) {
+        Storage storage = this.baseMapper.selectById(storageId);
+        Assert.notNull(storage, "存储不存在！");
+        storage.setEnable(status);
+        Assert.isTrue(this.baseMapper.updateById(storage) > 0, "更新状态失败！");
+    }
+
 }

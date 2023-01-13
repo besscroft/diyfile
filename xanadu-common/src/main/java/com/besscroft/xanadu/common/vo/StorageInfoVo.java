@@ -9,12 +9,12 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 /**
- * @Description 驱动详情返回参数
+ * @Description 存储详情返回参数
  * @Author Bess Croft
  * @Date 2022/12/28 21:17
  */
 @Data
-@Schema(title = "驱动详情返回参数")
+@Schema(title = "存储详情返回参数")
 @EqualsAndHashCode(callSuper = true)
 public class StorageInfoVo extends BaseEntity {
 

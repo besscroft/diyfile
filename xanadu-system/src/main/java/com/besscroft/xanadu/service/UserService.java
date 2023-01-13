@@ -71,4 +71,11 @@ public interface UserService extends IService<User> {
      */
     void updateUser(UserUpdateParam param);
 
+    /**
+     * 更新用户状态
+     * @param id 用户 id
+     * @param status 状态
+     */
+    void updateStatus(Long id, Integer status);
+
 }

@@ -3,7 +3,6 @@ package com.besscroft.xanadu.service.impl;
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.besscroft.xanadu.common.constant.RoleConstants;
 import com.besscroft.xanadu.common.constant.SystemConstants;
@@ -108,6 +107,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 || (Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN) && !Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN)))
             throw new XanaduException("违反规则！更新用户失败！");
         Assert.isTrue(this.baseMapper.updateById(user) > 0, "更新用户失败！");
+    }
+
+    @Override
+    public void updateStatus(Long id, Integer status) {
+        User user = this.baseMapper.selectById(id);
+        Assert.notNull(user, "用户不存在！");
+        if (Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))
+            throw new XanaduException("超级管理员不允许被禁用！");
+        user.setStatus(status);
+        Assert.isTrue(this.baseMapper.updateById(user) > 0, "更新用户状态失败！");
     }
 
 }

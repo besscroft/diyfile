@@ -16,37 +16,44 @@ import java.util.List;
 public interface StorageService extends IService<Storage> {
 
     /**
-     * 驱动分页列表
+     * 存储分页列表
      * @param pageNum 页码
      * @param pageSize 页大小
-     * @param type 驱动类型
-     * @return 驱动分页列表数据
+     * @param type 存储类型
+     * @return 存储分页列表数据
      */
     List<Storage> storagePage(Integer pageNum, Integer pageSize, Integer type);
 
     /**
-     * 删除驱动
-     * @param storageId 驱动 id
+     * 删除存储
+     * @param storageId 存储 id
      */
     void deleteStorage(Long storageId);
 
     /**
-     * 新增驱动
+     * 新增存储
      * @param param 请求参数
      */
     void addStorage(StorageAddParam param);
 
     /**
-     * 更新驱动
+     * 更新存储
      * @param param 请求参数
      */
     void updateStorage(StorageUpdateParam param);
 
     /**
      * 获取存储配置详情
-     * @param storageId 存储id
+     * @param storageId 存储 id
      * @return 存储配置详情
      */
     StorageInfoVo getInfo(Long storageId);
+
+    /**
+     * 更新存储启用状态
+     * @param storageId 存储 id
+     * @param status 启用状态
+     */
+    void updateStatus(Long storageId, Integer status);
 
 }

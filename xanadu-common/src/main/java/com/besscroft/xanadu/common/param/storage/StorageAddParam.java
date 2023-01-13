@@ -9,7 +9,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @Description 驱动新增请求参数
+ * @Description 存储新增请求参数
  * @Author Bess Croft
  * @Date 2022/12/21 14:53
  */

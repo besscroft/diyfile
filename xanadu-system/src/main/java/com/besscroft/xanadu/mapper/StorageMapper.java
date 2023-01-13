@@ -15,7 +15,7 @@ public interface StorageMapper extends BaseMapper<Storage> {
 
     /**
      * 列表查询
-     * @param type 驱动类型
+     * @param type 存储类型
      * @return
      */
     List<Storage> selectPage(@Param("type") Integer type);

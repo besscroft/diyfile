@@ -3,6 +3,7 @@ package com.besscroft.xanadu.controller;
 import com.besscroft.xanadu.common.entity.Storage;
 import com.besscroft.xanadu.common.param.storage.StorageAddParam;
 import com.besscroft.xanadu.common.param.storage.StorageUpdateParam;
+import com.besscroft.xanadu.common.param.storage.StorageUpdateStatusParam;
 import com.besscroft.xanadu.common.result.AjaxResult;
 import com.besscroft.xanadu.common.result.CommonResult;
 import com.besscroft.xanadu.common.util.CommonPage;
@@ -28,7 +29,7 @@ public class StorageController {
     private final StorageService storageService;
 
     @GetMapping("/storagePage")
-    @Operation(summary = "驱动分页列表")
+    @Operation(summary = "存储分页列表")
     public CommonResult<CommonPage<Storage>> storagePage(@RequestParam("pageNum") Integer pageNum,
                                                          @RequestParam("pageSize") Integer pageSize,
                                                          @RequestParam(value = "type", required = false) Integer type) {
@@ -36,31 +37,38 @@ public class StorageController {
         return CommonResult.success(CommonPage.restPage(storageList));
     }
 
-    @Operation(summary = "驱动删除接口")
+    @Operation(summary = "存储删除接口")
     @DeleteMapping("/delete/{storageId:[\\d]+}")
     public AjaxResult delete(@PathVariable(name = "storageId") Long storageId) {
         storageService.deleteStorage(storageId);
         return AjaxResult.success("删除成功！");
     }
 
-    @Operation(summary = "驱动新增接口")
+    @Operation(summary = "存储新增接口")
     @PostMapping("/add")
     public AjaxResult add(@RequestBody @Valid StorageAddParam param) {
         storageService.addStorage(param);
         return AjaxResult.success("新增成功！");
     }
 
-    @Operation(summary = "驱动更新接口")
+    @Operation(summary = "存储更新接口")
     @PutMapping("/update")
     public AjaxResult update(@RequestBody @Valid StorageUpdateParam param) {
         storageService.updateStorage(param);
         return AjaxResult.success("更新成功！");
     }
 
-    @Operation(summary = "驱动详情接口")
+    @Operation(summary = "存储详情接口")
     @GetMapping("/info/{storageId:[\\d]+}")
     public CommonResult<StorageInfoVo> info(@PathVariable(name = "storageId") Long storageId) {
         return CommonResult.success(storageService.getInfo(storageId));
+    }
+    
+    @Operation(summary = "存储启用状态更新接口")
+    @PutMapping("/updateStatus")
+    public AjaxResult updateStatus(@RequestBody @Valid StorageUpdateStatusParam param) {
+        storageService.updateStatus(param.getStorageId(), param.getStatus());
+        return AjaxResult.success("更新成功！");
     }
 
 }

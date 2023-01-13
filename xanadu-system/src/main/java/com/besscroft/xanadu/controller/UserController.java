@@ -5,6 +5,7 @@ import com.besscroft.xanadu.common.entity.User;
 import com.besscroft.xanadu.common.param.LoginParam;
 import com.besscroft.xanadu.common.param.user.UserAddParam;
 import com.besscroft.xanadu.common.param.user.UserUpdateParam;
+import com.besscroft.xanadu.common.param.user.UserUpdateStatusParam;
 import com.besscroft.xanadu.common.result.AjaxResult;
 import com.besscroft.xanadu.common.result.CommonResult;
 import com.besscroft.xanadu.common.util.CommonPage;
@@ -85,6 +86,13 @@ public class UserController {
     public CommonResult<User> getUser(@PathVariable(name = "userId") Long userId) {
         User user = userService.getUserById(userId);
         return CommonResult.success(user);
+    }
+
+    @Operation(summary = "用户启用状态更新接口")
+    @PutMapping("/updateStatus")
+    public AjaxResult updateStatus(@RequestBody @Valid UserUpdateStatusParam param) {
+        userService.updateStatus(param.getUserId(), param.getStatus());
+        return AjaxResult.success("更新成功！");
     }
 
 }
