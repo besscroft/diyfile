@@ -1,7 +1,7 @@
 package com.besscroft.xanadu.common.vo;
 
-import com.besscroft.xanadu.common.dto.StorageConfigDto;
 import com.besscroft.xanadu.common.entity.BaseEntity;
+import com.besscroft.xanadu.common.entity.StorageConfig;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,6 +34,6 @@ public class StorageInfoVo extends BaseEntity {
     private String remark;
 
     @Schema(title = "存储配置参数列表", type = "List")
-    private List<StorageConfigDto> configList;
+    private List<StorageConfig> configList;
 
 }

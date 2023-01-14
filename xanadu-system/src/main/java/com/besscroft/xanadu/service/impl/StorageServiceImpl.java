@@ -3,9 +3,12 @@ package com.besscroft.xanadu.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.besscroft.xanadu.common.converter.StorageConverterMapper;
 import com.besscroft.xanadu.common.entity.Storage;
+import com.besscroft.xanadu.common.entity.StorageConfig;
+import com.besscroft.xanadu.common.exception.XanaduException;
 import com.besscroft.xanadu.common.param.storage.StorageAddParam;
 import com.besscroft.xanadu.common.param.storage.StorageUpdateParam;
 import com.besscroft.xanadu.common.vo.StorageInfoVo;
+import com.besscroft.xanadu.mapper.StorageConfigMapper;
 import com.besscroft.xanadu.mapper.StorageMapper;
 import com.besscroft.xanadu.service.StorageConfigService;
 import com.besscroft.xanadu.service.StorageService;
@@ -16,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Description
@@ -27,6 +31,7 @@ import java.util.List;
 public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> implements StorageService {
 
     private final StorageConfigService storageConfigService;
+    private final StorageConfigMapper storageConfigMapper;
 
     @Override
     public List<Storage> storagePage(Integer pageNum, Integer pageSize, Integer type) {
@@ -36,7 +41,8 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
 
     @Override
     public void deleteStorage(Long storageId) {
-        Assert.isTrue(this.baseMapper.deleteById(storageId) > 0, "用户删除失败！");
+        Assert.isTrue(this.baseMapper.deleteById(storageId) > 0, "存储删除失败！");
+        Assert.isTrue(storageConfigMapper.deleteByStorageId(storageId) > 0, "存储删除失败！");
     }
 
     @Override
@@ -44,6 +50,7 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
     public void addStorage(StorageAddParam param) {
         Storage storage = StorageConverterMapper.INSTANCE.AddParamToStorage(param);
         this.baseMapper.insert(storage);
+        param.getConfigList().forEach(storageConfig -> storageConfig.setStorageId(storage.getId()));
         storageConfigService.saveBatch(param.getConfigList());
     }
 
@@ -51,6 +58,9 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
     @Transactional(rollbackFor = Exception.class)
     public void updateStorage(StorageUpdateParam param) {
         Storage storage = StorageConverterMapper.INSTANCE.UpdateParamToStorage(param);
+        Storage oldStorage = this.baseMapper.selectById(storage.getId());
+        if (!Objects.equals(storage.getType(), oldStorage.getType()))
+            throw new XanaduException("存储类型不允许修改！");
         this.baseMapper.updateById(storage);
         storageConfigService.updateBatchById(param.getConfigList());
     }
@@ -59,7 +69,9 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
     public StorageInfoVo getInfo(Long storageId) {
         Storage storage = this.baseMapper.selectById(storageId);
         StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
-        // TODO mp 适配 sb3 之后，补充配置信息查询
+        // 配置信息查询
+        List<StorageConfig> configList = storageConfigMapper.selectByStorageId(storageId);
+        vo.setConfigList(configList);
         return vo;
     }
 

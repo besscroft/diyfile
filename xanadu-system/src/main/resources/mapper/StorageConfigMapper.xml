@@ -13,4 +13,20 @@
         <result column="description" property="description"/>
     </resultMap>
 
+    <delete id="deleteByStorageId">
+        DELETE FROM
+            storage_config
+        WHERE
+            storage_id = #{storageId}
+    </delete>
+
+    <select id="selectByStorageId" resultSets="java.util.List" resultMap="storageConfigMap">
+        SELECT
+            *
+        FROM
+            storage_config
+        WHERE
+            storage_id = #{storageId}
+    </select>
+
 </mapper>
