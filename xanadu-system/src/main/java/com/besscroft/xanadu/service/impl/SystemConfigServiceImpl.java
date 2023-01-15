@@ -5,6 +5,8 @@ import com.besscroft.xanadu.common.entity.SystemConfig;
 import com.besscroft.xanadu.mapper.SystemConfigMapper;
 import com.besscroft.xanadu.service.SystemConfigService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
@@ -40,6 +42,13 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
     @Override
     public String getBeian() {
         return this.baseMapper.queryByConfigKey("beian").getConfigValue();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateConfig(String configKey, String configValue) {
+        // TODO 更新用户获取
+        Assert.isTrue(this.baseMapper.updateConfig(configKey, configValue, 1L) > 0, "更新失败！");
     }
 
 }

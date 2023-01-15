@@ -40,4 +40,15 @@
             type = #{type}
     </select>
 
+    <update id="updateConfig">
+        UPDATE
+            system_config
+        SET
+            config_value = #{configValue},
+            updater = #{updater},
+            update_time = now()
+        WHERE
+            config_key = #{configKey}
+    </update>
+
 </mapper>

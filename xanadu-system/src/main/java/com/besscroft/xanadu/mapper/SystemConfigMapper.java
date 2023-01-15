@@ -27,4 +27,14 @@ public interface SystemConfigMapper extends BaseMapper<SystemConfig> {
      */
     List<SystemConfig> queryAllByType(@Param("type") Integer type);
 
+    /**
+     * 更新配置
+     * @param configKey 配置键
+     * @param configValue 配置值
+     * @param updater 更新人
+     */
+    int updateConfig(@Param("configKey") String configKey,
+                     @Param("configValue") String configValue,
+                     @Param("updater") Long updater);
+
 }
