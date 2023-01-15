@@ -136,7 +136,7 @@ public class CommonResult<T> {
      * @return 错误消息
      */
     public static <T> CommonResult<T> failed(int code, String message, T data) {
-        return new CommonResult<T>(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, data);
+        return new CommonResult<T>(code, message, data);
     }
 
 }

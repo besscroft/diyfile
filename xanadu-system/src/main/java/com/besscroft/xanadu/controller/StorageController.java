@@ -1,5 +1,8 @@
 package com.besscroft.xanadu.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
+import com.besscroft.xanadu.common.constant.RoleConstants;
 import com.besscroft.xanadu.common.entity.Storage;
 import com.besscroft.xanadu.common.param.storage.StorageAddParam;
 import com.besscroft.xanadu.common.param.storage.StorageUpdateParam;
@@ -38,6 +41,7 @@ public class StorageController {
     }
 
     @Operation(summary = "存储删除接口")
+    @SaCheckRole(value = { RoleConstants.PLATFORM_SUPER_ADMIN, RoleConstants.PLATFORM_ADMIN }, mode = SaMode.OR)
     @DeleteMapping("/delete/{storageId:[\\d]+}")
     public AjaxResult delete(@PathVariable(name = "storageId") Long storageId) {
         storageService.deleteStorage(storageId);
@@ -63,7 +67,7 @@ public class StorageController {
     public CommonResult<StorageInfoVo> info(@PathVariable(name = "storageId") Long storageId) {
         return CommonResult.success(storageService.getInfo(storageId));
     }
-    
+
     @Operation(summary = "存储启用状态更新接口")
     @PutMapping("/updateStatus")
     public AjaxResult updateStatus(@RequestBody @Valid StorageUpdateStatusParam param) {

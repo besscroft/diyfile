@@ -1,6 +1,10 @@
 package com.besscroft.xanadu.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaIgnore;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.dev33.satoken.stp.SaTokenInfo;
+import com.besscroft.xanadu.common.constant.RoleConstants;
 import com.besscroft.xanadu.common.entity.User;
 import com.besscroft.xanadu.common.param.LoginParam;
 import com.besscroft.xanadu.common.param.user.UserAddParam;
@@ -30,6 +34,7 @@ public class UserController {
 
     private final UserService userService;
 
+    @SaIgnore
     @PostMapping("/login")
     @Operation(summary = "登录")
     public AjaxResult login(@RequestBody @Valid LoginParam param) {
@@ -54,6 +59,7 @@ public class UserController {
     }
 
     @Operation(summary = "用户删除接口")
+    @SaCheckRole({ RoleConstants.PLATFORM_SUPER_ADMIN })
     @DeleteMapping("/delete/{userId:[\\d]+}")
     public AjaxResult delete(@PathVariable(name = "userId") Long userId) {
         userService.deleteUser(userId);
@@ -68,6 +74,7 @@ public class UserController {
     }
 
     @Operation(summary = "用户新增接口")
+    @SaCheckRole(value = { RoleConstants.PLATFORM_SUPER_ADMIN, RoleConstants.PLATFORM_ADMIN }, mode = SaMode.OR)
     @PostMapping("/add")
     public AjaxResult add(@RequestBody @Valid UserAddParam param) {
         userService.addUser(param);
@@ -75,6 +82,7 @@ public class UserController {
     }
 
     @Operation(summary = "用户更新接口")
+    @SaCheckRole(value = { RoleConstants.PLATFORM_SUPER_ADMIN, RoleConstants.PLATFORM_ADMIN }, mode = SaMode.OR)
     @PutMapping("/update")
     public AjaxResult update(@RequestBody @Valid UserUpdateParam param) {
         userService.updateUser(param);
@@ -89,6 +97,7 @@ public class UserController {
     }
 
     @Operation(summary = "用户启用状态更新接口")
+    @SaCheckRole(value = { RoleConstants.PLATFORM_SUPER_ADMIN, RoleConstants.PLATFORM_ADMIN }, mode = SaMode.OR)
     @PutMapping("/updateStatus")
     public AjaxResult updateStatus(@RequestBody @Valid UserUpdateStatusParam param) {
         userService.updateStatus(param.getUserId(), param.getStatus());

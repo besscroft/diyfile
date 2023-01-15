@@ -2,7 +2,7 @@ package com.besscroft.xanadu.service.impl;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.SaTokenInfo;
-import cn.hutool.core.util.IdUtil;
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.besscroft.xanadu.common.constant.RoleConstants;
 import com.besscroft.xanadu.common.constant.SystemConstants;
@@ -39,17 +39,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (!Objects.equals(SaSecureUtil.sha256(password), user.getPassword()))
             throw new XanaduException("账号或密码错误！");
         // 登录
-//        StpUtil.login(user.getId());
-//        // 获取 Token 相关参数
-//        return StpUtil.getTokenInfo();
-        // TODO satoken 暂未适配 springboot3，先整个假的
-        SaTokenInfo info = new SaTokenInfo();
-        info.setTokenValue(IdUtil.randomUUID());
+        StpUtil.login(user.getId());
         // 设置最后登录时间
         user.setLoginTime(LocalDateTime.now());
         this.updateById(user);
         log.info("登录成功:{}", username);
-        return info;
+        return StpUtil.getTokenInfo();
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.besscroft.xanadu.common.exception;
 
+import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.exception.NotRoleException;
 import com.besscroft.xanadu.common.result.CommonResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.ConstraintViolation;
@@ -164,6 +166,26 @@ public class GlobalExceptionHandler {
     public CommonResult<?> handleException(IllegalArgumentException ex) {
         log.error("参数异常.[异常原因={}]", ex.getMessage(), ex);
         return CommonResult.failed(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage(), null);
+    }
+
+    /**
+     * 登录失效/token失效 NotLoginException
+     */
+    @ResponseBody
+    @ExceptionHandler(NotLoginException.class)
+    public CommonResult<?> handleException(NotLoginException ex) {
+        log.error("参数异常.[异常原因={}]", ex.getMessage(), ex);
+        return CommonResult.failed(HttpStatus.UNAUTHORIZED.value(), ex.getMessage(), null);
+    }
+
+    /**
+     * 角色不匹配异常 NotRoleException
+     */
+    @ResponseBody
+    @ExceptionHandler(NotRoleException.class)
+    public CommonResult<?> handleException(NotRoleException ex) {
+        log.error("参数异常.[异常原因={}]", ex.getMessage(), ex);
+        return CommonResult.failed(HttpStatus.FORBIDDEN.value(), "您当前用户的角色暂无权限！", null);
     }
 
     /**

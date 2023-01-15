@@ -1,5 +1,6 @@
 package com.besscroft.xanadu.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import com.besscroft.xanadu.common.param.system.SystemUpdateConfigParam;
 import com.besscroft.xanadu.common.result.AjaxResult;
 import com.besscroft.xanadu.service.SystemConfigService;
@@ -27,6 +28,7 @@ public class SystemConfigController {
     }
 
     @GetMapping("/getSiteTitle")
+    @SaIgnore
     @Operation(summary = "获取网站标题")
     public AjaxResult getSiteTitle() {
         String siteTitle = systemConfigService.getSiteTitle();
@@ -40,6 +42,7 @@ public class SystemConfigController {
     }
 
     @GetMapping("/getBeian")
+    @SaIgnore
     @Operation(summary = "获取备案信息")
     public AjaxResult getBeian() {
         String beian = systemConfigService.getBeian();
