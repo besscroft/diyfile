@@ -78,4 +78,22 @@
         </if>
     </select>
 
+    <select id="selectPasswordById" resultType="java.lang.String">
+        SELECT
+            password
+        FROM
+            user
+        WHERE
+            id = #{id}
+    </select>
+
+    <update id="updatePasswordById">
+        UPDATE
+            user
+        SET
+            password = #{password}
+        WHERE
+            id = #{id}
+    </update>
+
 </mapper>

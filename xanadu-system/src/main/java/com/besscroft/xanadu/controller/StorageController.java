@@ -32,6 +32,15 @@ public class StorageController {
     private final StorageService storageService;
 
     @GetMapping("/storagePage")
+    @SaCheckRole(
+            value = {
+                    RoleConstants.PLATFORM_SUPER_ADMIN,
+                    RoleConstants.PLATFORM_ADMIN,
+                    RoleConstants.PLATFORM_SELF_PROVISIONER,
+                    RoleConstants.PLATFORM_VIEW
+            },
+            mode = SaMode.OR
+    )
     @Operation(summary = "存储分页列表")
     public CommonResult<CommonPage<Storage>> storagePage(@RequestParam("pageNum") Integer pageNum,
                                                          @RequestParam("pageSize") Integer pageSize,
@@ -41,7 +50,14 @@ public class StorageController {
     }
 
     @Operation(summary = "存储删除接口")
-    @SaCheckRole(value = { RoleConstants.PLATFORM_SUPER_ADMIN, RoleConstants.PLATFORM_ADMIN }, mode = SaMode.OR)
+    @SaCheckRole(
+            value = {
+                    RoleConstants.PLATFORM_SUPER_ADMIN,
+                    RoleConstants.PLATFORM_ADMIN,
+                    RoleConstants.PLATFORM_SELF_PROVISIONER
+            },
+            mode = SaMode.OR
+    )
     @DeleteMapping("/delete/{storageId:[\\d]+}")
     public AjaxResult delete(@PathVariable(name = "storageId") Long storageId) {
         storageService.deleteStorage(storageId);
@@ -49,6 +65,14 @@ public class StorageController {
     }
 
     @Operation(summary = "存储新增接口")
+    @SaCheckRole(
+            value = {
+                    RoleConstants.PLATFORM_SUPER_ADMIN,
+                    RoleConstants.PLATFORM_ADMIN,
+                    RoleConstants.PLATFORM_SELF_PROVISIONER
+            },
+            mode = SaMode.OR
+    )
     @PostMapping("/add")
     public AjaxResult add(@RequestBody @Valid StorageAddParam param) {
         storageService.addStorage(param);
@@ -56,6 +80,14 @@ public class StorageController {
     }
 
     @Operation(summary = "存储更新接口")
+    @SaCheckRole(
+            value = {
+                    RoleConstants.PLATFORM_SUPER_ADMIN,
+                    RoleConstants.PLATFORM_ADMIN,
+                    RoleConstants.PLATFORM_SELF_PROVISIONER
+            },
+            mode = SaMode.OR
+    )
     @PutMapping("/update")
     public AjaxResult update(@RequestBody @Valid StorageUpdateParam param) {
         storageService.updateStorage(param);
@@ -63,12 +95,28 @@ public class StorageController {
     }
 
     @Operation(summary = "存储详情接口")
+    @SaCheckRole(
+            value = {
+                    RoleConstants.PLATFORM_SUPER_ADMIN,
+                    RoleConstants.PLATFORM_ADMIN,
+                    RoleConstants.PLATFORM_SELF_PROVISIONER
+            },
+            mode = SaMode.OR
+    )
     @GetMapping("/info/{storageId:[\\d]+}")
     public CommonResult<StorageInfoVo> info(@PathVariable(name = "storageId") Long storageId) {
         return CommonResult.success(storageService.getInfo(storageId));
     }
 
     @Operation(summary = "存储启用状态更新接口")
+    @SaCheckRole(
+            value = {
+                    RoleConstants.PLATFORM_SUPER_ADMIN,
+                    RoleConstants.PLATFORM_ADMIN,
+                    RoleConstants.PLATFORM_SELF_PROVISIONER
+            },
+            mode = SaMode.OR
+    )
     @PutMapping("/updateStatus")
     public AjaxResult updateStatus(@RequestBody @Valid StorageUpdateStatusParam param) {
         storageService.updateStatus(param.getStorageId(), param.getStatus());

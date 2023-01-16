@@ -1,6 +1,9 @@
 package com.besscroft.xanadu.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaIgnore;
+import cn.dev33.satoken.annotation.SaMode;
+import com.besscroft.xanadu.common.constant.RoleConstants;
 import com.besscroft.xanadu.common.param.system.SystemUpdateConfigParam;
 import com.besscroft.xanadu.common.result.AjaxResult;
 import com.besscroft.xanadu.service.SystemConfigService;
@@ -22,6 +25,15 @@ public class SystemConfigController {
     private final SystemConfigService systemConfigService;
 
     @GetMapping("/getConfig")
+    @SaCheckRole(
+            value = {
+                    RoleConstants.PLATFORM_SUPER_ADMIN,
+                    RoleConstants.PLATFORM_ADMIN,
+                    RoleConstants.PLATFORM_SELF_PROVISIONER,
+                    RoleConstants.PLATFORM_VIEW
+            },
+            mode = SaMode.OR
+    )
     @Operation(summary = "获取系统配置")
     public AjaxResult getConfig(){
         return AjaxResult.success(systemConfigService.getConfig());
@@ -36,6 +48,15 @@ public class SystemConfigController {
     }
 
     @GetMapping("/getSiteConfig")
+    @SaCheckRole(
+            value = {
+                    RoleConstants.PLATFORM_SUPER_ADMIN,
+                    RoleConstants.PLATFORM_ADMIN,
+                    RoleConstants.PLATFORM_SELF_PROVISIONER,
+                    RoleConstants.PLATFORM_VIEW
+            },
+            mode = SaMode.OR
+    )
     @Operation(summary = "获取网站配置")
     public AjaxResult getSiteConfig() {
         return AjaxResult.success(systemConfigService.getSiteConfig());
@@ -50,6 +71,7 @@ public class SystemConfigController {
     }
 
     @PutMapping("/updateConfig")
+    @SaCheckRole(value = { RoleConstants.PLATFORM_SUPER_ADMIN, RoleConstants.PLATFORM_ADMIN }, mode = SaMode.OR)
     @Operation(summary = "更新配置接口")
     public AjaxResult updateConfig(@RequestBody @Valid SystemUpdateConfigParam param) {
         systemConfigService.updateConfig(param.getConfigKey(), param.getConfigValue());

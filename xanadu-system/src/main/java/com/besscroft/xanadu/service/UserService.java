@@ -78,4 +78,11 @@ public interface UserService extends IService<User> {
      */
     void updateStatus(Long id, Integer status);
 
+    /**
+     * 更新用户密码
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     */
+    void updatePassword(String oldPassword, String newPassword);
+
 }

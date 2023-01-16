@@ -9,6 +9,7 @@ import com.besscroft.xanadu.common.entity.User;
 import com.besscroft.xanadu.common.param.LoginParam;
 import com.besscroft.xanadu.common.param.user.UserAddParam;
 import com.besscroft.xanadu.common.param.user.UserUpdateParam;
+import com.besscroft.xanadu.common.param.user.UserUpdatePwdParam;
 import com.besscroft.xanadu.common.param.user.UserUpdateStatusParam;
 import com.besscroft.xanadu.common.result.AjaxResult;
 import com.besscroft.xanadu.common.result.CommonResult;
@@ -50,6 +51,14 @@ public class UserController {
     }
 
     @GetMapping("/userPage")
+    @SaCheckRole(
+            value = {
+                    RoleConstants.PLATFORM_SUPER_ADMIN,
+                    RoleConstants.PLATFORM_ADMIN,
+                    RoleConstants.PLATFORM_SELF_PROVISIONER
+            },
+            mode = SaMode.OR
+    )
     @Operation(summary = "用户分页列表")
     public CommonResult<CommonPage<User>> userPage(@RequestParam("pageNum") Integer pageNum,
                                                    @RequestParam("pageSize") Integer pageSize,
@@ -67,6 +76,14 @@ public class UserController {
     }
 
     @Operation(summary = "用户信息获取接口")
+    @SaCheckRole(
+            value = {
+                    RoleConstants.PLATFORM_SUPER_ADMIN,
+                    RoleConstants.PLATFORM_ADMIN,
+                    RoleConstants.PLATFORM_SELF_PROVISIONER
+            },
+            mode = SaMode.OR
+    )
     @GetMapping("/info/{username}")
     public CommonResult<User> get(@PathVariable(name = "username") String username) {
         User user = userService.getUser(username);
@@ -90,6 +107,7 @@ public class UserController {
     }
 
     @Operation(summary = "用户查询接口")
+    @SaCheckRole(value = { RoleConstants.PLATFORM_SUPER_ADMIN, RoleConstants.PLATFORM_ADMIN }, mode = SaMode.OR)
     @GetMapping("/getUser/{userId:[\\d]+}")
     public CommonResult<User> getUser(@PathVariable(name = "userId") Long userId) {
         User user = userService.getUserById(userId);
@@ -101,6 +119,13 @@ public class UserController {
     @PutMapping("/updateStatus")
     public AjaxResult updateStatus(@RequestBody @Valid UserUpdateStatusParam param) {
         userService.updateStatus(param.getUserId(), param.getStatus());
+        return AjaxResult.success("更新成功！");
+    }
+
+    @Operation(summary = "用户密码更新接口")
+    @PutMapping("/updatePassword")
+    public AjaxResult updatePassword(@RequestBody @Valid UserUpdatePwdParam param) {
+        userService.updatePassword(param.getOldPassword(), param.getNewPassword());
         return AjaxResult.success("更新成功！");
     }
 

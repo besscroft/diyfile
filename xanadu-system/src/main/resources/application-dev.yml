@@ -85,3 +85,5 @@ sa-token:
   is-log: false
   # Cookie配置
   is-read-cookie: false
+  # logo打印
+  isPrint: false

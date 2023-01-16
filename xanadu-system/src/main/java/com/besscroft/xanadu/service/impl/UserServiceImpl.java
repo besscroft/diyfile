@@ -114,4 +114,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Assert.isTrue(this.baseMapper.updateById(user) > 0, "更新用户状态失败！");
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updatePassword(String oldPassword, String newPassword) {
+        Long userId = Long.parseLong(StpUtil.getLoginId().toString());
+        String password = this.baseMapper.selectPasswordById(userId);
+        if (!Objects.equals(SaSecureUtil.sha256(oldPassword), password))
+            throw new XanaduException("旧密码错误！");
+        String sha256Pwd = SaSecureUtil.sha256(newPassword);
+        this.baseMapper.updatePasswordById(userId, sha256Pwd);
+    }
+
 }
