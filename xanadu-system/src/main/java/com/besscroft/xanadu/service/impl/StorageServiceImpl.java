@@ -1,5 +1,6 @@
 package com.besscroft.xanadu.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.besscroft.xanadu.common.converter.StorageConverterMapper;
 import com.besscroft.xanadu.common.entity.Storage;
@@ -75,6 +76,14 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
         // 配置信息查询
         List<StorageConfig> configList = storageConfigMapper.selectByStorageId(storageId);
+        for (StorageConfig config: configList) {
+            if (Objects.equals(config.getConfigKey(), "client_secret")) {
+                config.setConfigValue(StrUtil.sub(config.getConfigValue(), 0, 15) + "***");
+            }
+            if (Objects.equals(config.getConfigKey(), "refresh_token")) {
+                config.setConfigValue(StrUtil.sub(config.getConfigValue(), 0, 15) + "***");
+            }
+        }
         vo.setConfigList(configList);
         return vo;
     }

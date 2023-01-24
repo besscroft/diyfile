@@ -11,7 +11,7 @@
  Target Server Version : 101002 (10.10.2-MariaDB-1:10.10.2+maria~ubu2204)
  File Encoding         : 65001
 
- Date: 10/01/2023 21:08:57
+ Date: 24/01/2023 23:27:06
 */
 
 SET NAMES utf8mb4;
@@ -26,6 +26,7 @@ CREATE TABLE `storage`  (
   `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储名称',
   `type` tinyint NULL DEFAULT NULL COMMENT '存储类型：0->本地存储；1->OneDrive',
   `enable` tinyint NULL DEFAULT 0 COMMENT '存储启用状态：0->禁用；1->启用',
+  `default_status` tinyint NULL DEFAULT 0 COMMENT '存储默认值状态：0->非默认；1->默认',
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
   `creator` bigint NULL DEFAULT NULL COMMENT '创建者',
   `updater` bigint NULL DEFAULT NULL COMMENT '更新者',
@@ -33,14 +34,14 @@ CREATE TABLE `storage`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `del` tinyint NOT NULL DEFAULT 1 COMMENT '逻辑删除：0->删除状态；1->可用状态',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '存储表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '存储表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of storage
 -- ----------------------------
-INSERT INTO `storage` VALUES (1, '测试本地存储', 0, 1, '测试本地存储用的', 1, 1, '2022-12-29 23:07:48', '2022-12-29 23:08:00', 1);
-INSERT INTO `storage` VALUES (2, 'Onedrive测试', 1, 0, '测试Onedrive', 1, 1, '2023-01-10 20:36:44', '2023-01-10 20:36:29', 1);
-INSERT INTO `storage` VALUES (3, '测试', 0, 0, '测试', 1, 1, '2023-01-10 21:08:05', '2023-01-10 20:22:58', 1);
+INSERT INTO `storage` VALUES (11, '本地存储', 0, 1, 0, '测试服务器本地存储用', NULL, NULL, '2023-01-15 18:39:28', '2023-01-15 18:39:49', 1);
+INSERT INTO `storage` VALUES (12, 'OneDrive E5', 1, 1, 1, '测试 OneDrive 用', NULL, NULL, '2023-01-24 14:37:34', '2023-01-20 17:40:51', 1);
+INSERT INTO `storage` VALUES (13, 'OneDrive E3', 1, 1, 0, '测试 OneDrive 用', NULL, NULL, '2023-01-20 09:40:51', '2023-01-20 17:40:51', 1);
 
 -- ----------------------------
 -- Table structure for storage_config
@@ -51,15 +52,20 @@ CREATE TABLE `storage_config`  (
   `storage_id` bigint NOT NULL COMMENT '存储id',
   `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储配置名称',
   `config_key` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储配置键',
-  `config_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储配置值',
+  `config_value` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储配置值',
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储配置描述',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '存储配置表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '存储配置表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of storage_config
 -- ----------------------------
-INSERT INTO `storage_config` VALUES (1, 1, '根路径', 'path', 'D:\\app-log', '访问本地存储的根路径');
+INSERT INTO `storage_config` VALUES (14, 11, '挂载路径', 'mount_path', '/root', '本地存储挂载路径');
+INSERT INTO `storage_config` VALUES (15, 12, '客户端ID', 'client_id', 'd87bcc39-1750-4ca0-ad54-f8d0efbb2735', 'OneDrive 客户端ID');
+INSERT INTO `storage_config` VALUES (16, 12, '客户端机密', 'client_secret', '', 'OneDrive 客户端机密');
+INSERT INTO `storage_config` VALUES (17, 12, '刷新令牌', 'refresh_token', '', 'OneDrive 刷新令牌');
+INSERT INTO `storage_config` VALUES (18, 12, '重定向 URI', 'redirect_uri', 'http://localhost', 'OneDrive 重定向 URI');
+INSERT INTO `storage_config` VALUES (19, 12, '挂载路径', 'mount_path', '/genshin', 'OneDrive 挂载路径');
 
 -- ----------------------------
 -- Table structure for system_config
@@ -78,14 +84,14 @@ CREATE TABLE `system_config`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `del` tinyint NOT NULL DEFAULT 1 COMMENT '逻辑删除：0->删除状态；1->可用状态',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '系统配置表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '系统配置表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of system_config
 -- ----------------------------
-INSERT INTO `system_config` VALUES (1, '网站标题', 1, 'title', 'Xanadu', '动态加载的网站标题', 1, 1, '2023-01-07 20:49:30', '2023-01-07 19:13:02', 1);
+INSERT INTO `system_config` VALUES (1, '网站标题', 1, 'title', 'Xanadu', '动态加载的网站标题', 1, 1, '2023-01-15 13:49:47', '2023-01-15 13:49:47', 1);
 INSERT INTO `system_config` VALUES (2, '测试key', 1, 'test', 'value', '测试用的', 1, 1, '2023-01-07 20:45:50', '2023-01-07 20:26:54', 1);
-INSERT INTO `system_config` VALUES (3, '备案号', 1, 'beian', '', '备案号', 1, 1, '2023-01-08 23:29:08', '2023-01-07 20:52:51', 1);
+INSERT INTO `system_config` VALUES (3, '备案号', 1, 'beian', '', '备案号', 1, 1, '2023-01-15 15:11:23', '2023-01-15 15:10:40', 1);
 
 -- ----------------------------
 -- Table structure for user
@@ -110,16 +116,16 @@ CREATE TABLE `user`  (
   `del` tinyint NOT NULL DEFAULT 1 COMMENT '逻辑删除：0->删除状态；1->可用状态',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `username`(`username` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'xanadu', '94edf28c6d6da38fd35d7ad53e485307f89fbeaf120485c8d17a43f323deee71', 'https://besscroft.com/uploads/avatar.jpeg', 'platform-super-admin', 'admin@qq.com', '旅行者', '13612345678', '只要不失去你的崇高，整个世界都会向你敞开。', 1, NULL, '2023-01-10 20:14:50', '2023-01-10 20:15:10', '2023-01-10 20:46:39', 1, 1);
-INSERT INTO `user` VALUES (2, 'test1', 'eqw', 'https://besscroft.com/uploads/avatar.jpeg', 'platform-admin', 'test1@qq.com', '测试', '13612345678', '我超，原！只要不失去你的崇高，整个世界都会向你敞开。只要不失去你的崇高，整个世界都会向你敞开。只要不失去你的崇高，整个世界都会向你敞开。', 1, 1, '2023-01-10 19:24:01', NULL, '2022-12-19 17:14:39', 1, 1);
-INSERT INTO `user` VALUES (3, 'test2', 'eqw', 'https://besscroft.com/uploads/avatar.jpeg', 'platform-self-provisioner', 'test2@qq.com', '测试', '13612345678', '我超，原!', 1, 1, '2023-01-10 19:24:24', NULL, '2022-12-19 17:14:39', 1, 1);
+INSERT INTO `user` VALUES (1, 'xanadu', '94edf28c6d6da38fd35d7ad53e485307f89fbeaf120485c8d17a43f323deee71', 'https://besscroft.com/uploads/avatar.jpeg', 'platform-super-admin', 'admin@qq.com', '旅行者', '13612345678', '只要不失去你的崇高，整个世界都会向你敞开。', 1, 1, '2023-01-16 16:39:19', '2023-01-10 20:15:10', '2023-01-24 23:22:39', 1, 1);
+INSERT INTO `user` VALUES (2, 'test1', 'eqw', 'https://besscroft.com/uploads/avatar.jpeg', 'platform-admin', 'test1@qq.com', '测试', '13612345678', '我超，原！只要不失去你的崇高，整个世界都会向你敞开。只要不失去你的崇高，整个世界都会向你敞开。只要不失去你的崇高，整个世界都会向你敞开。', 1, 1, '2023-01-10 19:24:01', '2023-01-13 19:25:54', '2022-12-19 17:14:39', 1, 1);
+INSERT INTO `user` VALUES (3, 'test2', 'eqw', 'https://besscroft.com/uploads/avatar.jpeg', 'platform-self-provisioner', 'test2@qq.com', '测试', '13612345678', '我超，原!', 1, 1, '2023-01-10 19:24:24', '2023-01-15 20:36:22', '2022-12-19 17:14:39', 1, 1);
 INSERT INTO `user` VALUES (4, 'test3', 'eqw', 'https://besscroft.com/uploads/avatar.jpeg', 'platform-view', 'test3@qq.com', '测试', '13612345678', '我超，原...原来你也玩原神', 1, 1, '2023-01-10 19:24:36', NULL, '2022-12-19 17:14:39', 1, 1);
-INSERT INTO `user` VALUES (5, 'test4', 'eqw', 'https://besscroft.com/uploads/avatar.jpeg', 'platform-visitor', 'test4@qq.com', '测试', '13612345678', '我超，终于可以玩原神了', 1, 1, '2023-01-10 19:25:09', NULL, '2022-12-19 17:14:39', 1, 1);
+INSERT INTO `user` VALUES (5, 'test4', 'eqw', 'https://besscroft.com/uploads/avatar.jpeg', 'platform-visitor', 'test4@qq.com', '测试', '13612345678', '我超，终于可以玩原神了', 1, 1, '2023-01-13 19:04:35', '2023-01-13 19:25:08', '2022-12-19 17:14:39', 1, 1);
 INSERT INTO `user` VALUES (6, 'test5', 'eqw', 'https://besscroft.com/uploads/avatar.jpeg', 'platform-visitor', 'test5@qq.com', '测试', '13612345678', '当然是原神了', 1, 1, '2023-01-10 19:25:12', NULL, '2022-12-19 17:14:39', 1, 0);
 
 SET FOREIGN_KEY_CHECKS = 1;
