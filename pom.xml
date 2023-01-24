@@ -35,6 +35,8 @@
         <mybatis.version>3.0.1</mybatis.version>
         <pagehelper.version>1.4.6</pagehelper.version>
         <oshi.version>6.4.0</oshi.version>
+        <okhttps.version>3.5.3</okhttps.version>
+        <caffeine.version>3.1.2</caffeine.version>
     </properties>
 
     <modules>
@@ -135,6 +137,18 @@
                 <groupId>com.github.oshi</groupId>
                 <artifactId>oshi-core</artifactId>
                 <version>${oshi.version}</version>
+            </dependency>
+            <!-- http 请求 -->
+            <dependency>
+                <groupId>com.ejlchina</groupId>
+                <artifactId>okhttps-jackson</artifactId>
+                <version>${okhttps.version}</version>
+            </dependency>
+            <!-- 缓存 -->
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -2,6 +2,7 @@ package com.besscroft.xanadu.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.besscroft.xanadu.common.entity.Storage;
+import com.besscroft.xanadu.common.param.FileInitParam;
 import com.besscroft.xanadu.common.param.storage.StorageAddParam;
 import com.besscroft.xanadu.common.param.storage.StorageUpdateParam;
 import com.besscroft.xanadu.common.vo.StorageInfoVo;
@@ -9,7 +10,7 @@ import com.besscroft.xanadu.common.vo.StorageInfoVo;
 import java.util.List;
 
 /**
- * @Description
+ * @Description 存储服务
  * @Author Bess Croft
  * @Date 2022/12/18 21:12
  */
@@ -55,5 +56,12 @@ public interface StorageService extends IService<Storage> {
      * @param status 启用状态
      */
     void updateStatus(Long storageId, Integer status);
+
+    /**
+     * 获取存储服务配置参数
+     * @param storageId 存储 id
+     * @return 存储服务配置参数
+     */
+    FileInitParam getFileInitParam(Long storageId);
 
 }

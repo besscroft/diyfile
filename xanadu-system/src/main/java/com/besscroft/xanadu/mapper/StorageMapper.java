@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * @Description
+ * @Description 存储映射接口
  * @Author Bess Croft
  * @Date 2022/12/18 21:09
  */
@@ -16,8 +16,14 @@ public interface StorageMapper extends BaseMapper<Storage> {
     /**
      * 列表查询
      * @param type 存储类型
-     * @return
+     * @return 存储列表
      */
     List<Storage> selectPage(@Param("type") Integer type);
+
+    /**
+     * 查询默认存储的 id
+     * @return 存储 id
+     */
+    Long selectIdByDefault();
 
 }

@@ -9,6 +9,7 @@
         <result column="name" property="name"/>
         <result column="type" property="type"/>
         <result column="enable" property="enable"/>
+        <result column="default_status" property="defaultStatus"/>
         <result column="remark" property="remark"/>
         <result column="creator" property="creator"/>
         <result column="updater" property="updater"/>
@@ -23,6 +24,7 @@
             name,
             type,
             enable,
+            default_status,
             remark,
             creator,
             updater,
@@ -36,6 +38,19 @@
         <if test="type != null">
             AND type = #{type}
         </if>
+    </select>
+
+    <select id="selectIdByDefault" resultType="java.lang.Long">
+        SELECT
+            id
+        FROM
+            storage
+        WHERE
+            del = 1
+        AND
+            enable = 1
+        AND
+            default_status = 1
     </select>
 
 </mapper>

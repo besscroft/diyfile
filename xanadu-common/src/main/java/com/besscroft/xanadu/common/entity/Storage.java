@@ -40,6 +40,11 @@ public class Storage extends BaseEntity {
     @Schema(title = "存储启用状态：0->禁用；1->启用", type = "Integer")
     private Integer enable;
 
+    /** 存储默认值状态：0->非默认；1->默认 */
+    @TableField(value = "default_status")
+    @Schema(title = "存储默认值状态：0->非默认；1->默认", type = "Integer")
+    private Integer defaultStatus;
+
     /** 备注 */
     @TableField(value = "remark")
     @Schema(title = "备注", type = "String")

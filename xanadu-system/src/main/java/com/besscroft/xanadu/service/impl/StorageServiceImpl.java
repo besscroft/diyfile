@@ -5,8 +5,10 @@ import com.besscroft.xanadu.common.converter.StorageConverterMapper;
 import com.besscroft.xanadu.common.entity.Storage;
 import com.besscroft.xanadu.common.entity.StorageConfig;
 import com.besscroft.xanadu.common.exception.XanaduException;
+import com.besscroft.xanadu.common.param.FileInitParam;
 import com.besscroft.xanadu.common.param.storage.StorageAddParam;
 import com.besscroft.xanadu.common.param.storage.StorageUpdateParam;
+import com.besscroft.xanadu.common.param.storage.init.OneDriveParam;
 import com.besscroft.xanadu.common.vo.StorageInfoVo;
 import com.besscroft.xanadu.mapper.StorageConfigMapper;
 import com.besscroft.xanadu.mapper.StorageMapper;
@@ -19,10 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
- * @Description
+ * @Description 存储服务实现类
  * @Author Bess Croft
  * @Date 2022/12/18 21:13
  */
@@ -81,6 +85,24 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         Assert.notNull(storage, "存储不存在！");
         storage.setEnable(status);
         Assert.isTrue(this.baseMapper.updateById(storage) > 0, "更新状态失败！");
+    }
+
+    @Override
+    public FileInitParam getFileInitParam(Long storageId) {
+        Storage storage = this.baseMapper.selectById(storageId);
+        Assert.notNull(storage, "存储不存在！");
+        List<StorageConfig> configList = storageConfigMapper.selectByStorageId(storageId);
+        Map<String, String> configMap = configList.stream().collect(Collectors.toMap(StorageConfig::getConfigKey, StorageConfig::getConfigValue));
+        if (Objects.equals(storage.getType(), 1)) {
+            return OneDriveParam.builder()
+                    .clientId(configMap.get("client_id"))
+                    .clientSecret(configMap.get("client_secret"))
+                    .redirectUri(configMap.get("redirect_uri"))
+                    .refreshToken(configMap.get("refresh_token"))
+                    .mountPath(configMap.get("mount_path"))
+                    .build();
+        }
+        return null;
     }
 
 }
