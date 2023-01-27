@@ -39,7 +39,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public List<FileInfoVo> getItem(Long storageId, String folderPath) {
         AbstractFileBaseService<FileInitParam> service = storageApplicationContext.getServiceByStorageId(storageId);
-        // TODO 如果设定的挂载路径不是 "/"，那么传入的挂载路径为 "/" 时应该限制查询！
+        // 如果设定的挂载路径不是 "/"，那么传入的挂载路径为 "/" 时应该限制查询！
         OneDriveParam param = (OneDriveParam) service.getInitParam();
         String mountPath = param.getMountPath();
         if (!Objects.equals(mountPath, "/") && Objects.equals(folderPath, "/")) {
