@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : xanadu
+ Source Server         : localhost
  Source Server Type    : MySQL
- Source Server Version : 101002 (10.10.2-MariaDB-1:10.10.2+maria~ubu2204)
- Source Host           : 140.238.17.232:30003
+ Source Server Version : 100904 (10.9.4-MariaDB-1:10.9.4+maria~ubu2204)
+ Source Host           : localhost:3306
  Source Schema         : xanadu
 
  Target Server Type    : MySQL
- Target Server Version : 101002 (10.10.2-MariaDB-1:10.10.2+maria~ubu2204)
+ Target Server Version : 100904 (10.9.4-MariaDB-1:10.9.4+maria~ubu2204)
  File Encoding         : 65001
 
- Date: 24/01/2023 23:27:06
+ Date: 28/01/2023 14:46:28
 */
 
 SET NAMES utf8mb4;
@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS `storage`;
 CREATE TABLE `storage`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储名称',
+  `storage_key` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '存储 key，用于标识存储路径头',
   `type` tinyint NULL DEFAULT NULL COMMENT '存储类型：0->本地存储；1->OneDrive',
   `enable` tinyint NULL DEFAULT 0 COMMENT '存储启用状态：0->禁用；1->启用',
   `default_status` tinyint NULL DEFAULT 0 COMMENT '存储默认值状态：0->非默认；1->默认',
@@ -39,9 +40,9 @@ CREATE TABLE `storage`  (
 -- ----------------------------
 -- Records of storage
 -- ----------------------------
-INSERT INTO `storage` VALUES (11, '本地存储', 0, 1, 0, '测试服务器本地存储用', NULL, NULL, '2023-01-15 18:39:28', '2023-01-15 18:39:49', 1);
-INSERT INTO `storage` VALUES (12, 'OneDrive E5', 1, 1, 1, '测试 OneDrive 用', NULL, NULL, '2023-01-24 14:37:34', '2023-01-20 17:40:51', 1);
-INSERT INTO `storage` VALUES (13, 'OneDrive E3', 1, 1, 0, '测试 OneDrive 用', NULL, NULL, '2023-01-20 09:40:51', '2023-01-20 17:40:51', 1);
+INSERT INTO `storage` VALUES (11, '本地存储', 'local', 0, 1, 0, '测试服务器本地存储用', NULL, NULL, '2023-01-28 02:24:12', '2023-01-15 18:39:49', 1);
+INSERT INTO `storage` VALUES (12, 'OneDrive E5', 'od', 1, 1, 1, '测试 OneDrive 用', NULL, NULL, '2023-01-28 02:24:16', '2023-01-20 17:40:51', 1);
+INSERT INTO `storage` VALUES (13, 'OneDrive E3', 'od3', 1, 1, 0, '测试 OneDrive 用', NULL, NULL, '2023-01-28 02:24:19', '2023-01-20 17:40:51', 1);
 
 -- ----------------------------
 -- Table structure for storage_config
@@ -61,7 +62,7 @@ CREATE TABLE `storage_config`  (
 -- Records of storage_config
 -- ----------------------------
 INSERT INTO `storage_config` VALUES (14, 11, '挂载路径', 'mount_path', '/root', '本地存储挂载路径');
-INSERT INTO `storage_config` VALUES (15, 12, '客户端ID', 'client_id', 'd87bcc39-1750-4ca0-ad54-f8d0efbb2735', 'OneDrive 客户端ID');
+INSERT INTO `storage_config` VALUES (15, 12, '客户端ID', 'client_id', '', 'OneDrive 客户端ID');
 INSERT INTO `storage_config` VALUES (16, 12, '客户端机密', 'client_secret', '', 'OneDrive 客户端机密');
 INSERT INTO `storage_config` VALUES (17, 12, '刷新令牌', 'refresh_token', '', 'OneDrive 刷新令牌');
 INSERT INTO `storage_config` VALUES (18, 12, '重定向 URI', 'redirect_uri', 'http://localhost', 'OneDrive 重定向 URI');

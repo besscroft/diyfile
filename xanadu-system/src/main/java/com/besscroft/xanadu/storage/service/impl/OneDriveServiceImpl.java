@@ -1,5 +1,6 @@
 package com.besscroft.xanadu.storage.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -93,6 +95,7 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
             log.info("获取 OneDrive 文件列表结果：{}", result);
             JSONArray jsonArray = result.getJSONArray("value");
             // TODO accessToken 过期处理
+            if (Objects.isNull(jsonArray)) return CollUtil.newArrayList();
             return getCouvertFileList(jsonArray, folderPath);
         } catch (JsonProcessingException e) {
             throw new XanaduException("获取 OneDrive 文件列表失败！");
@@ -166,7 +169,7 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
      * @param folderPath 文件夹路径
      * @return 文件列表
      */
-    private List<FileInfoVo> getCouvertFileList(JSONArray jsonArray, String folderPath) {
+    private List<FileInfoVo> getCouvertFileList(@NonNull JSONArray jsonArray, String folderPath) {
         List<FileInfoVo> list = new ArrayList<>();
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);

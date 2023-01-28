@@ -81,6 +81,7 @@ public class StorageApplicationContext implements ApplicationContextAware {
         // 初始化处理
         baseFileService.setStorageId(storageId);
         baseFileService.setName(storageName);
+        baseFileService.setStorageKey(storage.getStorageKey());
         FileInitParam initParam = getFileInitParam(storageId);
         baseFileService.setInitParam(initParam);
         baseFileService.init();

@@ -26,4 +26,17 @@ public interface StorageMapper extends BaseMapper<Storage> {
      */
     Long selectIdByDefault();
 
+    /**
+     * 查询默认存储
+     * @return 存储
+     */
+    Storage selectByDefault();
+
+    /**
+     * 根据存储 key 查询存储 id
+     * @param storageKey 存储 key
+     * @return 存储 id
+     */
+    Long selectIdByStorageKey(@Param("storageKey") String storageKey);
+
 }

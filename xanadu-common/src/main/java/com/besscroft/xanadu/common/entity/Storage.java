@@ -30,6 +30,11 @@ public class Storage extends BaseEntity {
     @Schema(title = "存储名称", type = "String")
     private String name;
 
+    /** 存储 key，用于标识存储路径头 */
+    @TableField(value = "storage_key")
+    @Schema(title = "存储 key", type = "String")
+    private String storageKey;
+
     /** 存储类型 */
     @TableField(value = "type")
     @Schema(title = "存储类型", type = "Integer")

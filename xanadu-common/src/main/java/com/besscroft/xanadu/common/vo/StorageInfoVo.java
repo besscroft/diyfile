@@ -24,6 +24,9 @@ public class StorageInfoVo extends BaseEntity {
     @Schema(title = "存储名称", type = "String")
     private String name;
 
+    @Schema(title = "存储 key", type = "String")
+    private String storageKey;
+
     @Schema(title = "存储类型", type = "Integer")
     private Integer type;
 

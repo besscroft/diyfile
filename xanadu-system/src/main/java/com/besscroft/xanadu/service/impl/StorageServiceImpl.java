@@ -17,6 +17,7 @@ import com.besscroft.xanadu.service.StorageConfigService;
 import com.besscroft.xanadu.service.StorageService;
 import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -112,6 +113,12 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
                     .build();
         }
         return null;
+    }
+
+    @Override
+    @Cacheable(cacheNames = "storageKey" ,key = "#storageKey", unless = "#result == null")
+    public Long getStorageIdByStorageKey(String storageKey) {
+        return this.baseMapper.selectIdByStorageKey(storageKey);
     }
 
 }

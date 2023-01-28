@@ -64,4 +64,11 @@ public interface StorageService extends IService<Storage> {
      */
     FileInitParam getFileInitParam(Long storageId);
 
+    /**
+     * 获取默认存储 id
+     * @param storageKey 存储 key
+     * @return 存储 id
+     */
+    Long getStorageIdByStorageKey(String storageKey);
+
 }

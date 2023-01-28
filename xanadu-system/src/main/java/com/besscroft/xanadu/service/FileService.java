@@ -1,6 +1,7 @@
 package com.besscroft.xanadu.service;
 
 import com.besscroft.xanadu.common.vo.FileInfoVo;
+import com.besscroft.xanadu.common.vo.StorageInfoVo;
 
 import java.util.List;
 
@@ -12,6 +13,12 @@ import java.util.List;
 public interface FileService {
 
     /**
+     * 获取默认驱动信息
+     * @return 驱动信息
+     */
+    StorageInfoVo defaultStorage();
+
+    /**
      * 获取默认文件列表
      * @return 文件列表
      */
@@ -21,8 +28,16 @@ public interface FileService {
      * 获取文件列表
      * @param storageId 存储 id
      * @param folderPath 文件夹路径
-     * @return
+     * @return 文件列表
      */
     List<FileInfoVo> getItem(Long storageId, String folderPath);
+
+    /**
+     * 获取文件列表
+     * @param storageKey 存储 key
+     * @param folderPath 文件夹路径
+     * @return 文件列表
+     */
+    List<FileInfoVo> getItemByKey(String storageKey, String folderPath);
 
 }

@@ -20,6 +20,9 @@ public abstract class AbstractFileBaseService<T extends FileInitParam> implement
     /** 存储 id */
     public Long storageId;
 
+    /** 存储 key */
+    public String storageKey;
+
     /** 存储名称 */
     private String name;
 
@@ -78,6 +81,12 @@ public abstract class AbstractFileBaseService<T extends FileInitParam> implement
         this.storageId = storageId;
     }
 
+    public void setStorageKey(String storageKey) {
+        if (Objects.nonNull(this.storageKey))
+            throw new IllegalStateException("当前存储服务不允许重复初始化！");
+        this.storageKey = storageKey;
+    }
+
     public void setName(String name) {
         if (StrUtil.isNotBlank(this.name))
             throw new IllegalStateException("当前存储服务不允许重复初始化！");
@@ -112,6 +121,14 @@ public abstract class AbstractFileBaseService<T extends FileInitParam> implement
      */
     public Long getStorageId() {
         return storageId;
+    }
+
+    /**
+     * 获取存储 key
+     * @return 存储 key
+     */
+    public String getStorageKey() {
+        return storageKey;
     }
 
     /**
