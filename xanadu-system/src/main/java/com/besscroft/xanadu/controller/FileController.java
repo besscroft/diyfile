@@ -1,6 +1,7 @@
 package com.besscroft.xanadu.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
+import com.besscroft.xanadu.common.param.file.GetFileInfoParam;
 import com.besscroft.xanadu.common.param.file.GetItemByKeyParam;
 import com.besscroft.xanadu.common.result.CommonResult;
 import com.besscroft.xanadu.common.vo.FileInfoVo;
@@ -52,6 +53,13 @@ public class FileController {
     @PostMapping("/getItemByKey")
     public CommonResult<List<FileInfoVo>> baseByKey(@RequestBody @Valid GetItemByKeyParam param) {
         return CommonResult.success(fileService.getItemByKey(param.getStorageKey(), param.getFolderPath()));
+    }
+
+    @SaIgnore
+    @Operation(summary = "文件信息")
+    @PostMapping("/getFileInfo")
+    public CommonResult<FileInfoVo> getFileInfo(@RequestBody GetFileInfoParam param) {
+        return CommonResult.success(fileService.getFileInfo(param.getStorageKey(), param.getFilePath(), param.getFileName()));
     }
 
 }

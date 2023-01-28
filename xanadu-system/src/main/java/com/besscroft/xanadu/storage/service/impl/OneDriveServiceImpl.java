@@ -82,7 +82,7 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
     }
 
     @Override
-    public List<FileInfoVo> getFileList(String folderPath) {
+    public List<FileInfoVo> getFileList(@NonNull String folderPath) {
         if (StrUtil.isBlank(folderPath)) {
             folderPath = initParam.getMountPath();
         }
@@ -96,15 +96,25 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
             JSONArray jsonArray = result.getJSONArray("value");
             // TODO accessToken 过期处理
             if (Objects.isNull(jsonArray)) return CollUtil.newArrayList();
-            return getCouvertFileList(jsonArray, folderPath);
+            return getConvertFileList(jsonArray, folderPath);
         } catch (JsonProcessingException e) {
             throw new XanaduException("获取 OneDrive 文件列表失败！");
         }
     }
 
     @Override
-    public FileInfoVo getFileInfo(String filePath, String fileName) {
-        return null;
+    public FileInfoVo getFileInfo(@NonNull String filePath, String fileName) {
+        try {
+            String url = OneDriveConstants.DRIVE_FILE_URL.replace("{path}", filePath);
+            JSONObject result = JSONUtil.parseObj(OkHttps.sync(url)
+                    .addHeader("Authorization", getAccessToken())
+                    .get().getBody().toString());
+            log.info("获取 OneDrive 文件信息结果：{}", result);
+            // TODO accessToken 过期处理
+            return getConvertFileInfo(result, filePath);
+        } catch (Exception e) {
+            throw new XanaduException("获取 OneDrive 文件信息失败！");
+        }
     }
 
     @Override
@@ -164,12 +174,29 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
     }
 
     /**
+     * 处理 OneDrive 返回的文件信息 JSON 数据
+     * @param jsonObject OneDrive 返回的文件信息 JSON 数据
+     * @param filePath 文件路径
+     * @return 文件信息
+     */
+    private FileInfoVo getConvertFileInfo(JSONObject jsonObject, String filePath) {
+        FileInfoVo fileInfoVo = new FileInfoVo();
+        fileInfoVo.setName(jsonObject.getStr("name"));
+        fileInfoVo.setSize(jsonObject.getLong("size"));
+        fileInfoVo.setLastModifiedDateTime(jsonObject.getLocalDateTime("lastModifiedDateTime", LocalDateTime.MIN));
+        fileInfoVo.setType("file");
+        // 设置文件下载地址
+        fileInfoVo.setUrl(jsonObject.getStr("@microsoft.graph.downloadUrl"));
+        return fileInfoVo;
+    }
+
+    /**
      * 处理 OneDrive 返回的文件列表 JSON 数据
      * @param jsonArray OneDrive 返回的文件列表 JSON 数据
      * @param folderPath 文件夹路径
      * @return 文件列表
      */
-    private List<FileInfoVo> getCouvertFileList(@NonNull JSONArray jsonArray, String folderPath) {
+    private List<FileInfoVo> getConvertFileList(@NonNull JSONArray jsonArray, String folderPath) {
         List<FileInfoVo> list = new ArrayList<>();
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);

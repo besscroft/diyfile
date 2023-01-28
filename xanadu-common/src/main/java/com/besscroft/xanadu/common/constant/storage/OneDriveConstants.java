@@ -19,4 +19,7 @@ public interface OneDriveConstants {
     /** 使用刷新令牌获取新的访问令牌 */
     String AUTHENTICATE_URL = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
 
+    /** 获取单个项目文件 */
+    String DRIVE_FILE_URL = "https://graph.microsoft.com/v1.0/me/drive/root:{path}?select=name,size,lastModifiedDateTime,file,@microsoft.graph.downloadUrl";
+
 }

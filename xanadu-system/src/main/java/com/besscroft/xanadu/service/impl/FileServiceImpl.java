@@ -77,4 +77,18 @@ public class FileServiceImpl implements FileService {
         return getItem(storageId, folderPath);
     }
 
+    @Override
+    public FileInfoVo getFileInfo(Long storageId, String filePath, String fileName) {
+        AbstractFileBaseService<FileInitParam> service = storageApplicationContext.getServiceByStorageId(storageId);
+        OneDriveParam param = (OneDriveParam) service.getInitParam();
+        filePath = param.getMountPath() + filePath;
+        return service.getFileInfo(filePath, fileName);
+    }
+
+    @Override
+    public FileInfoVo getFileInfo(String storageKey, String filePath, String fileName) {
+        Long storageId = storageService.getStorageIdByStorageKey(storageKey);
+        return getFileInfo(storageId, filePath, fileName);
+    }
+
 }

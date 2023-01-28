@@ -40,4 +40,22 @@ public interface FileService {
      */
     List<FileInfoVo> getItemByKey(String storageKey, String folderPath);
 
+    /**
+     * 获取文件信息
+     * @param storageId 存储 id
+     * @param filePath 文件路径
+     * @param fileName 文件名称
+     * @return 文件信息
+     */
+    FileInfoVo getFileInfo(Long storageId, String filePath, String fileName);
+
+    /**
+     * 获取文件信息
+     * @param storageKey 存储 key
+     * @param filePath 文件路径
+     * @param fileName 文件名称
+     * @return 文件信息
+     */
+    FileInfoVo getFileInfo(String storageKey, String filePath, String fileName);
+
 }
