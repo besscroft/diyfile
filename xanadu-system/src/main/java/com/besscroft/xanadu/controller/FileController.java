@@ -1,16 +1,15 @@
 package com.besscroft.xanadu.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
+import com.besscroft.xanadu.common.param.file.GetItemByKeyParam;
 import com.besscroft.xanadu.common.result.CommonResult;
 import com.besscroft.xanadu.common.vo.FileInfoVo;
 import com.besscroft.xanadu.common.vo.StorageInfoVo;
 import com.besscroft.xanadu.service.FileService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -50,10 +49,9 @@ public class FileController {
 
     @SaIgnore
     @Operation(summary = "首页文件列表")
-    @GetMapping("/getItemByKey")
-    public CommonResult<List<FileInfoVo>> baseByKey(@RequestParam(value = "storageKey") String storageKey,
-                                                    @RequestParam(value = "folderPath") String folderPath) {
-        return CommonResult.success(fileService.getItemByKey(storageKey, folderPath));
+    @PostMapping("/getItemByKey")
+    public CommonResult<List<FileInfoVo>> baseByKey(@RequestBody @Valid GetItemByKeyParam param) {
+        return CommonResult.success(fileService.getItemByKey(param.getStorageKey(), param.getFolderPath()));
     }
 
 }
