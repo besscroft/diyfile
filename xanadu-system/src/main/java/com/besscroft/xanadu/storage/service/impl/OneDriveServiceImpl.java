@@ -185,6 +185,8 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
         fileInfoVo.setSize(jsonObject.getLong("size"));
         fileInfoVo.setLastModifiedDateTime(jsonObject.getLocalDateTime("lastModifiedDateTime", LocalDateTime.MIN));
         fileInfoVo.setType("file");
+        fileInfoVo.setPath(filePath);
+        fileInfoVo.setFile(jsonObject.getJSONObject("file"));
         // 设置文件下载地址
         fileInfoVo.setUrl(jsonObject.getStr("@microsoft.graph.downloadUrl"));
         return fileInfoVo;
@@ -213,6 +215,7 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
                 fileInfoVo.setType("folder");
             }
             fileInfoVo.setPath(folderPath);
+            fileInfoVo.setFile(jsonObject.getJSONObject("file"));
             list.add(fileInfoVo);
         }
         return list;
