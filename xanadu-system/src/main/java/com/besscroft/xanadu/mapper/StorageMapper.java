@@ -39,4 +39,10 @@ public interface StorageMapper extends BaseMapper<Storage> {
      */
     Long selectIdByStorageKey(@Param("storageKey") String storageKey);
 
+    /**
+     * 设置全部存储为非默认
+     * @return 更新条数
+     */
+    int updateDefaultByNo();
+
 }

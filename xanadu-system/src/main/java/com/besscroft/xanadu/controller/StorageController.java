@@ -123,4 +123,19 @@ public class StorageController {
         return AjaxResult.success("更新成功！");
     }
 
+    @Operation(summary = "默认存储设置")
+    @SaCheckRole(
+            value = {
+                    RoleConstants.PLATFORM_SUPER_ADMIN,
+                    RoleConstants.PLATFORM_ADMIN,
+                    RoleConstants.PLATFORM_SELF_PROVISIONER
+            },
+            mode = SaMode.OR
+    )
+    @PutMapping("/setDefault/{storageId:[\\d]+}")
+    public AjaxResult setDefault(@PathVariable(name = "storageId") Long storageId) {
+        storageService.setDefault(storageId);
+        return AjaxResult.success("设置成功！");
+    }
+
 }

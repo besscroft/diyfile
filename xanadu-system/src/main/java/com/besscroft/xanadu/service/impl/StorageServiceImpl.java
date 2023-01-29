@@ -2,6 +2,7 @@ package com.besscroft.xanadu.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.besscroft.xanadu.common.constant.SystemConstants;
 import com.besscroft.xanadu.common.converter.StorageConverterMapper;
 import com.besscroft.xanadu.common.entity.Storage;
 import com.besscroft.xanadu.common.entity.StorageConfig;
@@ -95,6 +96,16 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         Assert.notNull(storage, "存储不存在！");
         storage.setEnable(status);
         Assert.isTrue(this.baseMapper.updateById(storage) > 0, "更新状态失败！");
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void setDefault(Long storageId) {
+        Storage storage = this.baseMapper.selectById(storageId);
+        Assert.notNull(storage, "存储不存在！");
+        this.baseMapper.updateDefaultByNo();
+        storage.setDefaultStatus(SystemConstants.STATUS_OK);
+        Assert.isTrue(this.baseMapper.updateById(storage) > 0, "设置默认存储失败！");
     }
 
     @Override

@@ -92,4 +92,15 @@
             storage_key = #{storageKey}
     </select>
 
+    <update id="updateDefaultByNo">
+        UPDATE
+            storage
+        SET
+            default_status = 0
+        WHERE
+            del = 1
+        AND
+            default_status = 1
+    </update>
+
 </mapper>

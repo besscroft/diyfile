@@ -58,6 +58,12 @@ public interface StorageService extends IService<Storage> {
     void updateStatus(Long storageId, Integer status);
 
     /**
+     * 设置默认存储
+     * @param storageId 存储 id
+     */
+    void setDefault(Long storageId);
+
+    /**
      * 获取存储服务配置参数
      * @param storageId 存储 id
      * @return 存储服务配置参数
