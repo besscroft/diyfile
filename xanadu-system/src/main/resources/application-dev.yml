@@ -73,7 +73,7 @@ springdoc:
 
 sa-token:
   # token名称 (同时也是cookie名称)
-  token-name: authorization
+  token-name: Authorization
   # token前缀
   token-prefix: Bearer
   # token有效期，单位s 默认30天, -1代表永不过期
