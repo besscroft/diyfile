@@ -49,9 +49,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public Map<String, Object> info() {
+        long userId = StpUtil.getLoginIdAsLong();
+        User user = this.baseMapper.selectById(userId);
+        Assert.notNull(user, "暂未登录！");
         Map<String, Object> map = new HashMap<>();
-        map.put("userName", "旅行者");
-        map.put("avatar", "https://besscroft.com/uploads/avatar.jpeg");
+        map.put("userName", user.getName());
+        map.put("avatar", user.getAvatar());
+        map.put("role", user.getRole());
         return map;
     }
 
