@@ -55,7 +55,8 @@ public class UserController {
             value = {
                     RoleConstants.PLATFORM_SUPER_ADMIN,
                     RoleConstants.PLATFORM_ADMIN,
-                    RoleConstants.PLATFORM_SELF_PROVISIONER
+                    RoleConstants.PLATFORM_SELF_PROVISIONER,
+                    RoleConstants.PLATFORM_VIEW
             },
             mode = SaMode.OR
     )
