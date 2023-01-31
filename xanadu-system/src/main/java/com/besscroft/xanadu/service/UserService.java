@@ -80,9 +80,11 @@ public interface UserService extends IService<User> {
 
     /**
      * 更新用户密码
+     * @param userId 用户 id
+     * @param isSelf 是否是自己
      * @param oldPassword 旧密码
      * @param newPassword 新密码
      */
-    void updatePassword(String oldPassword, String newPassword);
+    void updatePassword(Long userId, Boolean isSelf, String oldPassword, String newPassword);
 
 }

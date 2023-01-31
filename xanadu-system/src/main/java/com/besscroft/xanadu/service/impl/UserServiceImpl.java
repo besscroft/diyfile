@@ -120,8 +120,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updatePassword(String oldPassword, String newPassword) {
-        Long userId = Long.parseLong(StpUtil.getLoginId().toString());
+    public void updatePassword(Long userId, Boolean isSelf,String oldPassword, String newPassword) {
+        if (isSelf) {
+            // 如果是自己要修改密码，那么就从上下文中获取用户 id
+            userId = StpUtil.getLoginIdAsLong();
+        }
         String password = this.baseMapper.selectPasswordById(userId);
         if (!Objects.equals(SaSecureUtil.sha256(oldPassword), password))
             throw new XanaduException("旧密码错误！");

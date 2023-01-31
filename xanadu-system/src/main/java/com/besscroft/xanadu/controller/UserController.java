@@ -126,7 +126,7 @@ public class UserController {
     @Operation(summary = "用户密码更新接口")
     @PutMapping("/updatePassword")
     public AjaxResult updatePassword(@RequestBody @Valid UserUpdatePwdParam param) {
-        userService.updatePassword(param.getOldPassword(), param.getNewPassword());
+        userService.updatePassword(param.getUserId(), param.getIsSelf(), param.getOldPassword(), param.getNewPassword());
         return AjaxResult.success("更新成功！");
     }
 
