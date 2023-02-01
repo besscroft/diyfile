@@ -102,8 +102,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void updateUser(UserUpdateParam param) {
         User user = UserConverterMapper.INSTANCE.UpdateParamToUser(param);
         User oldUser = this.baseMapper.selectById(user.getId());
+        // 如果原来不是超级管理员，现在是超级管理员，或者原来是超级管理员，现在不是超级管理员，抛出异常
         if ((!Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN) && Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))
                 || (Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN) && !Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN)))
+            throw new XanaduException("违反规则！更新用户失败！");
+        // 非管理员只能修改自己的信息
+        if (!(Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN) || Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_ADMIN))
+                && !Objects.equals(oldUser.getId(), user.getId()))
             throw new XanaduException("违反规则！更新用户失败！");
         Assert.isTrue(this.baseMapper.updateById(user) > 0, "更新用户失败！");
     }
