@@ -6,6 +6,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.besscroft.xanadu.common.constant.storage.OneDriveConstants;
+import com.besscroft.xanadu.common.enums.StorageTypeEnum;
 import com.besscroft.xanadu.common.exception.XanaduException;
 import com.besscroft.xanadu.common.param.storage.init.OneDriveParam;
 import com.besscroft.xanadu.common.vo.FileInfoVo;
@@ -46,7 +47,7 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
 
     @Override
     public Integer getStorageType() {
-        return 1;
+        return StorageTypeEnum.ONE_DRIVE.getValue();
     }
 
     @Override

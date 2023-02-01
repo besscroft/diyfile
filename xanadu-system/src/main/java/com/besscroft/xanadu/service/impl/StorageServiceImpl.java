@@ -6,6 +6,7 @@ import com.besscroft.xanadu.common.constant.SystemConstants;
 import com.besscroft.xanadu.common.converter.StorageConverterMapper;
 import com.besscroft.xanadu.common.entity.Storage;
 import com.besscroft.xanadu.common.entity.StorageConfig;
+import com.besscroft.xanadu.common.enums.StorageTypeEnum;
 import com.besscroft.xanadu.common.exception.XanaduException;
 import com.besscroft.xanadu.common.param.FileInitParam;
 import com.besscroft.xanadu.common.param.storage.StorageAddParam;
@@ -114,7 +115,7 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         Assert.notNull(storage, "存储不存在！");
         List<StorageConfig> configList = storageConfigMapper.selectByStorageId(storageId);
         Map<String, String> configMap = configList.stream().collect(Collectors.toMap(StorageConfig::getConfigKey, StorageConfig::getConfigValue));
-        if (Objects.equals(storage.getType(), 1)) {
+        if (Objects.equals(storage.getType(), StorageTypeEnum.ONE_DRIVE.getValue())) {
             return OneDriveParam.builder()
                     .clientId(configMap.get("client_id"))
                     .clientSecret(configMap.get("client_secret"))
