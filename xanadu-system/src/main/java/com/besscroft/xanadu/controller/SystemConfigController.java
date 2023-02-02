@@ -78,4 +78,12 @@ public class SystemConfigController {
         return AjaxResult.success("操作成功！");
     }
 
+    @GetMapping("/getBarkId")
+    @SaCheckRole(value = { RoleConstants.PLATFORM_SUPER_ADMIN, RoleConstants.PLATFORM_ADMIN }, mode = SaMode.OR)
+    @Operation(summary = "获取 Bark 推送 id")
+    public AjaxResult getBarkId() {
+        String barkId = systemConfigService.getBarkId();
+        return AjaxResult.success("操作成功！", barkId);
+    }
+
 }

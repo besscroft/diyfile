@@ -44,4 +44,10 @@ public interface SystemConfigService extends IService<SystemConfig> {
      */
     void updateConfig(String configKey, String configValue);
 
+    /**
+     * 获取 Bark 推送 id
+     * @return Bark 推送 id
+     */
+    String getBarkId();
+
 }

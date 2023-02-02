@@ -1,5 +1,6 @@
 package com.besscroft.xanadu.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.besscroft.xanadu.common.entity.SystemConfig;
 import com.besscroft.xanadu.mapper.SystemConfigMapper;
@@ -49,6 +50,15 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
     public void updateConfig(String configKey, String configValue) {
         // TODO 更新用户获取
         Assert.isTrue(this.baseMapper.updateConfig(configKey, configValue, 1L) > 0, "更新失败！");
+    }
+
+    @Override
+    public String getBarkId() {
+        String barkId = this.baseMapper.queryByConfigKey("barkId").getConfigValue();
+        if (StrUtil.isNotBlank(barkId)) {
+            barkId = StrUtil.sub(barkId, 0, 8) + "***";
+        }
+        return barkId;
     }
 
 }
