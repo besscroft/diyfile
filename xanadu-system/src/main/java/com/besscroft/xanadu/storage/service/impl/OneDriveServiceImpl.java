@@ -58,28 +58,31 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
     /**
      * 获取 OneDrive 驱动 id
      * @return OneDrive 驱动 id
-     * @throws JsonProcessingException
      */
-    private String getDriveId() throws JsonProcessingException {
+    private String getDriveId() {
         return Optional.ofNullable(caffeineCache.getIfPresent("storage:driveId:id:" + storageId))
-                .orElse(getDriveIdRest()).toString();
+                .orElseGet(this::getDriveIdRest).toString();
 
     }
 
     /**
      * 通过 Rest 接口获取 OneDrive 驱动 id
      * @return OneDrive 驱动 id
-     * @throws JsonProcessingException
      */
-    private String getDriveIdRest() throws JsonProcessingException {
+    private String getDriveIdRest() {
         String driveRootUrl = OneDriveConstants.DRIVE_ID_URL;
         JSONObject result = JSONUtil.parseObj(OkHttps.sync(driveRootUrl)
                 .addHeader("Authorization", getAccessToken())
                 .get().getBody().toString());
-        Map map = objectMapper.readValue(result.getStr("parentReference"), Map.class);
-        String driveId = map.get("driveId").toString();
-        caffeineCache.put("storage:driveId:id:" + storageId, driveId);
-        return driveId;
+        try {
+            Map map = objectMapper.readValue(result.getStr("parentReference"), Map.class);
+            String driveId = map.get("driveId").toString();
+            caffeineCache.put("storage:driveId:id:" + storageId, driveId);
+            return driveId;
+        } catch (JsonProcessingException e) {
+            log.error("获取 OneDrive 驱动 id 失败！");
+            return "";
+        }
     }
 
     @Override
@@ -98,7 +101,7 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
             // TODO accessToken 过期处理
             if (Objects.isNull(jsonArray)) return CollUtil.newArrayList();
             return getConvertFileList(jsonArray, folderPath);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             throw new XanaduException("获取 OneDrive 文件列表失败！");
         }
     }
@@ -146,7 +149,7 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
         Long storageId = getStorageId();
         // 先从缓存中获取 token，如果没有则从调用 REST API 获取
         return Optional.ofNullable(caffeineCache.getIfPresent("storage:token:id:" + storageId))
-                .orElse(refreshAccessToken()).toString();
+                .orElseGet(this::refreshAccessToken).toString();
     }
 
     /**

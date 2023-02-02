@@ -5,6 +5,7 @@ import com.besscroft.xanadu.common.param.FileInitParam;
 import com.besscroft.xanadu.common.vo.FileInfoVo;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -18,10 +19,10 @@ public abstract class AbstractFileBaseService<T extends FileInitParam> implement
     public T initParam;
 
     /** 存储 id */
-    public Long storageId;
+    protected Long storageId;
 
     /** 存储 key */
-    public String storageKey;
+    protected String storageKey;
 
     /** 存储名称 */
     private String name;
