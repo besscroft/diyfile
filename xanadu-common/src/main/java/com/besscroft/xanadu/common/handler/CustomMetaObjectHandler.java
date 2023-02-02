@@ -1,5 +1,6 @@
 package com.besscroft.xanadu.common.handler;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
@@ -18,8 +19,7 @@ public class CustomMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-        // TODO 适配用户上下文后更新此处以便获取用户 id
-        Long userId = 1L;
+        long userId = StpUtil.getLoginIdAsLong();
         this.strictInsertFill(metaObject, "creator", Long.class, userId);
         this.strictInsertFill(metaObject, "createTime", LocalDateTime::now, LocalDateTime.class);
         this.strictInsertFill(metaObject, "updater", Long.class, userId);
@@ -28,7 +28,8 @@ public class CustomMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        this.strictUpdateFill(metaObject, "updater", () -> 1L, Long.class);
+        long userId = StpUtil.getLoginIdAsLong();
+        this.strictUpdateFill(metaObject, "updater", () -> userId, Long.class);
         this.strictUpdateFill(metaObject, "updateTime", LocalDateTime::now, LocalDateTime.class);
     }
 
