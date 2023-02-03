@@ -1,6 +1,5 @@
 package com.besscroft.xanadu.storage.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -91,16 +90,8 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
             folderPath = initParam.getMountPath();
         }
         try {
-            String url = OneDriveConstants.DRIVE_ITEM_URL.replace("{drive-id}", getDriveId())
-                    .replace("{path-relative-to-root}", folderPath);
-            JSONObject result = JSONUtil.parseObj(OkHttps.sync(url)
-                    .addHeader("Authorization", getAccessToken())
-                    .get().getBody().toString());
-            log.info("获取 OneDrive 文件列表结果：{}", result);
-            JSONArray jsonArray = result.getJSONArray("value");
-            // TODO accessToken 过期处理
-            if (Objects.isNull(jsonArray)) return CollUtil.newArrayList();
-            return getConvertFileList(jsonArray, folderPath);
+            List<FileInfoVo> list = new ArrayList<>();
+            return handleFileList(list, folderPath);
         } catch (Exception e) {
             throw new XanaduException("获取 OneDrive 文件列表失败！");
         }
@@ -221,6 +212,56 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
             fileInfoVo.setPath(folderPath);
             fileInfoVo.setFile(jsonObject.getJSONObject("file"));
             list.add(fileInfoVo);
+        }
+        return list;
+    }
+
+    /**
+     * 获取文件列表
+     * @param list 文件列表
+     * @param folderPath 文件夹路径
+     * @return 文件列表
+     */
+    private List<FileInfoVo> handleFileList(List<FileInfoVo> list, @NonNull String folderPath) {
+        String url = OneDriveConstants.DRIVE_ITEM_URL.replace("{drive-id}", getDriveId())
+                .replace("{path-relative-to-root}", folderPath);
+        JSONObject result = JSONUtil.parseObj(OkHttps.sync(url)
+                .addHeader("Authorization", getAccessToken())
+                .get().getBody().toString());
+        log.info("获取 OneDrive 文件列表结果：{}", result);
+        JSONArray jsonArray = result.getJSONArray("value");
+        // TODO accessToken 过期处理
+        if (Objects.nonNull(jsonArray)) {
+            // 数据处理
+            list.addAll(getConvertFileList(jsonArray, folderPath));
+        }
+        if (StrUtil.isNotBlank(result.getStr("@odata.nextLink"))) {
+            // 如果集合超出默认页面大小（200 项），则在响应中返回 @odata.nextLink 属性以指示有更多项可用，并提供下一页项目的请求 URL。
+            handleFileListNext(list, folderPath, result.getStr("@odata.nextLink"));
+        }
+        return list;
+    }
+
+    /**
+     * 获取下一级文件列表
+     * @param list 文件列表
+     * @param folderPath 文件夹路径
+     * @param nextLink 下一级文件列表请求地址
+     * @return 文件列表
+     */
+    private List<FileInfoVo> handleFileListNext(List<FileInfoVo> list, @NonNull String folderPath, @NonNull String nextLink) {
+        JSONObject result = JSONUtil.parseObj(OkHttps.sync(nextLink)
+                .addHeader("Authorization", getAccessToken())
+                .get().getBody().toString());
+        log.info("获取 OneDrive 文件列表结果：{}", result);
+        JSONArray jsonArray = result.getJSONArray("value");
+        // TODO accessToken 过期处理
+        if (Objects.nonNull(jsonArray)) {
+            // 数据处理
+            list.addAll(getConvertFileList(jsonArray, folderPath));
+        }
+        if (StrUtil.isNotBlank(result.getStr("@odata.nextLink"))) {
+            handleFileListNext(list, folderPath, result.getStr("@odata.nextLink"));
         }
         return list;
     }
