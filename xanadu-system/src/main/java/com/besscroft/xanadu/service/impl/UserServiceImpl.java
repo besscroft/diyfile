@@ -12,8 +12,11 @@ import com.besscroft.xanadu.common.exception.XanaduException;
 import com.besscroft.xanadu.common.param.user.UserAddParam;
 import com.besscroft.xanadu.common.param.user.UserUpdateParam;
 import com.besscroft.xanadu.mapper.UserMapper;
+import com.besscroft.xanadu.message.PushService;
+import com.besscroft.xanadu.service.SystemConfigService;
 import com.besscroft.xanadu.service.UserService;
 import com.github.pagehelper.PageHelper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +24,7 @@ import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @Description 用户服务实现类
@@ -29,7 +33,11 @@ import java.util.*;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+
+    private final PushService pushService;
+    private final SystemConfigService systemConfigService;
 
     @Override
     public SaTokenInfo login(String username, String password, Boolean isRememberMe) {
@@ -43,7 +51,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 设置最后登录时间
         user.setLoginTime(LocalDateTime.now());
         this.updateById(user);
-        log.info("登录成功:{}", username);
+        CompletableFuture.runAsync(() -> {
+            log.info("登录成功:{}", username);
+            pushService.pushBark(systemConfigService.getBarkId(), String.format("用户：%s 在：%s 登录 Xanadu 系统！", user.getName(), LocalDateTime.now()));
+        });
         return StpUtil.getTokenInfo();
     }
 

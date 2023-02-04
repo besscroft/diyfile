@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.besscroft.xanadu.common.entity.SystemConfig;
 import com.besscroft.xanadu.mapper.SystemConfigMapper;
 import com.besscroft.xanadu.service.SystemConfigService;
+import com.github.benmanes.caffeine.cache.Cache;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -13,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -21,7 +24,10 @@ import java.util.stream.Collectors;
  * @Date 2023/1/7 19:09
  */
 @Service
+@RequiredArgsConstructor
 public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, SystemConfig> implements SystemConfigService {
+
+    private final Cache<String, Object> caffeineCache;
 
     @Override
     public List<SystemConfig> getConfig() {
@@ -54,9 +60,15 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
 
     @Override
     public String getBarkId() {
+        // 先从缓存中获取 token，如果没有则从数据库获取
+        return Optional.ofNullable(caffeineCache.getIfPresent("system:barkId"))
+                .orElseGet(this::getBarkIdFromDb).toString();
+    }
+
+    private String getBarkIdFromDb() {
         String barkId = this.baseMapper.queryByConfigKey("barkId").getConfigValue();
         if (StrUtil.isNotBlank(barkId)) {
-            barkId = StrUtil.sub(barkId, 0, 8) + "***";
+            caffeineCache.put("system:barkId", barkId);
         }
         return barkId;
     }

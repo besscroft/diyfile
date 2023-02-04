@@ -61,7 +61,6 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
     private String getDriveId() {
         return Optional.ofNullable(caffeineCache.getIfPresent("storage:driveId:id:" + storageId))
                 .orElseGet(this::getDriveIdRest).toString();
-
     }
 
     /**
