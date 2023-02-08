@@ -45,4 +45,10 @@ public interface StorageMapper extends BaseMapper<Storage> {
      */
     int updateDefaultByNo();
 
+    /**
+     * 查询全部启用的存储
+     * @return 存储列表
+     */
+    List<Storage> selectAllByEnable();
+
 }

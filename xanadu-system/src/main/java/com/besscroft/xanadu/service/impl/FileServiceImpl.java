@@ -78,11 +78,11 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public String getUploadUrl(String storageKey, String folderPath) {
+    public String getUploadUrl(String storageKey, String path) {
         Long storageId = storageService.getStorageIdByStorageKey(storageKey);
         AbstractFileBaseService<FileInitParam> service = storageApplicationContext.getServiceByStorageId(storageId);
         OneDriveParam param = (OneDriveParam) service.getInitParam();
-        String path = handlePath(param.getMountPath(), folderPath);
+        path = handlePath(param.getMountPath(), path);
         return service.getUploadSession(path);
     }
 

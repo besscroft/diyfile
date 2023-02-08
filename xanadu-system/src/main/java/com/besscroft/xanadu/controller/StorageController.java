@@ -1,6 +1,7 @@
 package com.besscroft.xanadu.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.annotation.SaMode;
 import com.besscroft.xanadu.common.constant.RoleConstants;
 import com.besscroft.xanadu.common.entity.Storage;
@@ -136,6 +137,13 @@ public class StorageController {
     public AjaxResult setDefault(@PathVariable(name = "storageId") Long storageId) {
         storageService.setDefault(storageId);
         return AjaxResult.success("设置成功！");
+    }
+
+    @SaIgnore
+    @Operation(summary = "已启用存储接口")
+    @GetMapping("/getEnableStorage")
+    public CommonResult<List<Storage>> getEnableStorage() {
+        return CommonResult.success(storageService.getEnableStorage());
     }
 
 }

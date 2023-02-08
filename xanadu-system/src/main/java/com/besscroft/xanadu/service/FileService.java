@@ -61,9 +61,9 @@ public interface FileService {
     /**
      * 获取文件上传地址
      * @param storageKey 存储 key
-     * @param folderPath 文件夹路径
+     * @param path 文件/夹路径
      * @return 文件上传地址
      */
-    String getUploadUrl(String storageKey, String folderPath);
+    String getUploadUrl(String storageKey, String path);
 
 }

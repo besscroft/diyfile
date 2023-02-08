@@ -77,4 +77,10 @@ public interface StorageService extends IService<Storage> {
      */
     Long getStorageIdByStorageKey(String storageKey);
 
+    /**
+     * 获取已启用存储列表
+     * @return 存储列表
+     */
+    List<Storage> getEnableStorage();
+
 }

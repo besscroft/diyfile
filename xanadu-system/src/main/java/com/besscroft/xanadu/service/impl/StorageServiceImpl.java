@@ -133,4 +133,9 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         return this.baseMapper.selectIdByStorageKey(storageKey);
     }
 
+    @Override
+    public List<Storage> getEnableStorage() {
+        return this.baseMapper.selectAllByEnable();
+    }
+
 }
