@@ -22,4 +22,7 @@ public interface OneDriveConstants {
     /** 获取单个项目文件 */
     String DRIVE_FILE_URL = "https://graph.microsoft.com/v1.0/me/drive/root:{path}?select=name,size,lastModifiedDateTime,file,@microsoft.graph.downloadUrl";
 
+    /** 上载会话创建 API */
+    String DRIVE_UPLOAD_SESSION_URL = "https://graph.microsoft.com/v1.0/me/drive/root:{path}:/createUploadSession";
+
 }

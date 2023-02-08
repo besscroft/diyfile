@@ -131,6 +131,15 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
 
     }
 
+    @Override
+    public String getUploadSession(String folderPath) {
+        String url = OneDriveConstants.DRIVE_UPLOAD_SESSION_URL.replace("{path}", folderPath);
+        JSONObject result = JSONUtil.parseObj(OkHttps.sync(url)
+                .addHeader("Authorization", getAccessToken())
+                .post().getBody().toString());
+        return result.getStr("uploadUrl");
+    }
+
     /**
      * 刷新 token 并返回新的 token
      * @return 新的 token

@@ -3,6 +3,7 @@ package com.besscroft.xanadu.controller;
 import cn.dev33.satoken.annotation.SaIgnore;
 import com.besscroft.xanadu.common.param.file.GetFileInfoParam;
 import com.besscroft.xanadu.common.param.file.GetItemByKeyParam;
+import com.besscroft.xanadu.common.result.AjaxResult;
 import com.besscroft.xanadu.common.result.CommonResult;
 import com.besscroft.xanadu.common.vo.FileInfoVo;
 import com.besscroft.xanadu.common.vo.StorageInfoVo;
@@ -60,6 +61,13 @@ public class FileController {
     @PostMapping("/getFileInfo")
     public CommonResult<FileInfoVo> getFileInfo(@RequestBody GetFileInfoParam param) {
         return CommonResult.success(fileService.getFileInfo(param.getStorageKey(), param.getFilePath(), param.getFileName()));
+    }
+
+    @Operation(summary = "获取文件上传地址")
+    @GetMapping("/getUploadUrl")
+    public AjaxResult getUploadUrl(@RequestParam(value = "storageKey") String storageKey,
+                                   @RequestParam(value = "folderPath") String folderPath) {
+        return AjaxResult.success("获取成功！", fileService.getUploadUrl(storageKey, folderPath));
     }
 
 }

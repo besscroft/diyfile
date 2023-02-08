@@ -76,6 +76,13 @@ public abstract class AbstractFileBaseService<T extends FileInitParam> implement
      */
     public abstract void uploadItem(String folderPath, String fileName);
 
+    /**
+     * 获取 OneDrive 上载会话
+     * @param folderPath 文件路径
+     * @return 会话
+     */
+    public abstract String getUploadSession(String folderPath);
+
     public void setStorageId(Long storageId) {
         if (Objects.nonNull(this.storageId))
             throw new IllegalStateException("当前存储服务不允许重复初始化！");

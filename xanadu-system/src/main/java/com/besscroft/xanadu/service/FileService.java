@@ -58,4 +58,12 @@ public interface FileService {
      */
     FileInfoVo getFileInfo(String storageKey, String filePath, String fileName);
 
+    /**
+     * 获取文件上传地址
+     * @param storageKey 存储 key
+     * @param folderPath 文件夹路径
+     * @return 文件上传地址
+     */
+    String getUploadUrl(String storageKey, String folderPath);
+
 }

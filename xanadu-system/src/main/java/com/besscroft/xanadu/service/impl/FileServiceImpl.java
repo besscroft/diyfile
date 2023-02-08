@@ -53,22 +53,8 @@ public class FileServiceImpl implements FileService {
     public List<FileInfoVo> getItem(Long storageId, String folderPath) {
         AbstractFileBaseService<FileInitParam> service = storageApplicationContext.getServiceByStorageId(storageId);
         OneDriveParam param = (OneDriveParam) service.getInitParam();
-        String mountPath = param.getMountPath();
-        // 如果传入的挂载路径为空，则使用默认挂载路径
-        if (StrUtil.isBlank(folderPath)) {
-            return service.getFileList(mountPath);
-        }
-        // 如果设定的挂载路径不是 "/"，那么传入的挂载路径为 "/" 时，查询默认挂载路径！
-        if (!Objects.equals(mountPath, "/") && Objects.equals(folderPath, "/")) {
-            return service.getFileList(mountPath);
-        }
-        // 如果设定的挂载路径不是 "/"，那么传入的挂载路径不为 "/" 时，应该将挂载路径和传入的挂载路径拼接起来！
-        if (!Objects.equals(mountPath, "/") && !Objects.equals(folderPath, "/")) {
-            folderPath = mountPath + folderPath;
-        }
-        // 如果设定的挂载路径是 "/"，那么传入的挂载路径不为 "/" 时，直接查询！
-        // 如果设定的挂载路径是 "/"，那么传入的挂载路径为 "/" 时，直接查询！
-        return service.getFileList(folderPath);
+        String path = handlePath(param.getMountPath(), folderPath);
+        return service.getFileList(path);
     }
 
     @Override
@@ -81,14 +67,56 @@ public class FileServiceImpl implements FileService {
     public FileInfoVo getFileInfo(Long storageId, String filePath, String fileName) {
         AbstractFileBaseService<FileInitParam> service = storageApplicationContext.getServiceByStorageId(storageId);
         OneDriveParam param = (OneDriveParam) service.getInitParam();
-        filePath = param.getMountPath() + filePath;
-        return service.getFileInfo(filePath, fileName);
+        String path = handlePath(param.getMountPath(), filePath);
+        return service.getFileInfo(path, fileName);
     }
 
     @Override
     public FileInfoVo getFileInfo(String storageKey, String filePath, String fileName) {
         Long storageId = storageService.getStorageIdByStorageKey(storageKey);
         return getFileInfo(storageId, filePath, fileName);
+    }
+
+    @Override
+    public String getUploadUrl(String storageKey, String folderPath) {
+        Long storageId = storageService.getStorageIdByStorageKey(storageKey);
+        AbstractFileBaseService<FileInitParam> service = storageApplicationContext.getServiceByStorageId(storageId);
+        OneDriveParam param = (OneDriveParam) service.getInitParam();
+        String path = handlePath(param.getMountPath(), folderPath);
+        return service.getUploadSession(path);
+    }
+
+    /**
+     * 文件/夹路径处理
+     * @param path 文件/夹路径
+     * @return 处理后的文件/夹路径
+     */
+    private String handlePath(String mountPath, String path) {
+        // 如果设定的挂载路径为 "/"
+        if (Objects.equals("/", mountPath)) {
+            // 如果传入的挂载路径为空，则使用默认挂载路径
+            if (StrUtil.isBlank(path)) {
+                return mountPath;
+            } else if (!Objects.equals("/", path)) {
+                // 如果传入的挂载路径不为空，且不是 "/"
+                return mountPath + path;
+            } else {
+                // 如果传入的挂载路径不为空，且是 "/"，则使用默认挂载路径
+                return mountPath;
+            }
+        } else {
+            // 如果设定的挂载路径不是 "/"
+            // 如果传入的挂载路径为空，则使用默认挂载路径
+            if (StrUtil.isBlank(path)) {
+                return mountPath;
+            } else if (!Objects.equals("/", path)) {
+                // 如果传入的挂载路径不为空，且不是 "/"
+                return mountPath + path;
+            } else {
+                // 如果传入的挂载路径不为空，且是 "/"，则使用默认挂载路径
+                return mountPath;
+            }
+        }
     }
 
 }
