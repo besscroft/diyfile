@@ -1,6 +1,9 @@
 package com.besscroft.xanadu.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaIgnore;
+import cn.dev33.satoken.annotation.SaMode;
+import com.besscroft.xanadu.common.constant.RoleConstants;
 import com.besscroft.xanadu.common.param.file.GetFileInfoParam;
 import com.besscroft.xanadu.common.param.file.GetItemByKeyParam;
 import com.besscroft.xanadu.common.param.file.GetUploadUrlParam;
@@ -64,6 +67,14 @@ public class FileController {
         return CommonResult.success(fileService.getFileInfo(param.getStorageKey(), param.getFilePath(), param.getFileName()));
     }
 
+    @SaCheckRole(
+            value = {
+                    RoleConstants.PLATFORM_SUPER_ADMIN,
+                    RoleConstants.PLATFORM_ADMIN,
+                    RoleConstants.PLATFORM_SELF_PROVISIONER
+            },
+            mode = SaMode.OR
+    )
     @Operation(summary = "获取文件上传地址")
     @PostMapping("/getUploadUrl")
     public AjaxResult getUploadUrl(@RequestBody @Valid GetUploadUrlParam param) {
