@@ -9,11 +9,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.besscroft.xanadu</groupId>
-    <artifactId>xanadu</artifactId>
+    <groupId>com.besscroft.diyfile</groupId>
+    <artifactId>diyfile</artifactId>
     <version>${revision}</version>
-    <name>xanadu</name>
-    <description>xanadu</description>
+    <name>diyfile</name>
+    <description>diyfile</description>
     <packaging>pom</packaging>
 
     <properties>
@@ -40,9 +40,9 @@
     </properties>
 
     <modules>
-        <module>xanadu-system</module>
-        <module>xanadu-common</module>
-        <module>xanadu-doc</module>
+        <module>diyfile-system</module>
+        <module>diyfile-common</module>
+        <module>diyfile-doc</module>
     </modules>
 
     <dependencies>
