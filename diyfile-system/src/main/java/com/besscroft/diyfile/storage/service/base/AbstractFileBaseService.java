@@ -54,19 +54,17 @@ public abstract class AbstractFileBaseService<T extends FileInitParam> implement
     public abstract void createItem(String folderPath, String fileName);
 
     /**
-     * 更新项目(更新驱动器中的 driveItem)
-     * @param folderPath 文件夹路径
+     * 更新项目(更新驱动器中的 driveItem，暂时只写更新文件)
+     * @param filePath 文件路径
      * @param fileName 文件名
-     * @param newName 新文件名
      */
-    public abstract void updateItem(String folderPath, String fileName, String newName);
+    public abstract void updateItem(String filePath, String fileName);
 
     /**
-     * 删除项目(删除驱动器中的 driveItem)
-     * @param folderPath 文件夹路径
-     * @param fileName 文件名
+     * 删除项目(删除驱动器中的 driveItem，暂时只写删除文件)
+     * @param filePath 文件路径
      */
-    public abstract void deleteItem(String folderPath, String fileName);
+    public abstract void deleteItem(String filePath);
 
     /**
      * 上传项目(将内容上传到指定的驱动器中)

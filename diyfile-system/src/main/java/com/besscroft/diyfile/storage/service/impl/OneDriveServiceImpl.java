@@ -6,7 +6,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.besscroft.diyfile.common.constant.storage.OneDriveConstants;
 import com.besscroft.diyfile.common.enums.StorageTypeEnum;
-import com.besscroft.diyfile.common.exception.XanaduException;
+import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.storage.init.OneDriveParam;
 import com.besscroft.diyfile.common.vo.FileInfoVo;
 import com.besscroft.diyfile.storage.service.base.AbstractFileBaseService;
@@ -92,7 +92,7 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
             List<FileInfoVo> list = new ArrayList<>();
             return handleFileList(list, folderPath);
         } catch (Exception e) {
-            throw new XanaduException("获取 OneDrive 文件列表失败！");
+            throw new DiyFileException("获取 OneDrive 文件列表失败！");
         }
     }
 
@@ -107,7 +107,7 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
             // TODO accessToken 过期处理
             return getConvertFileInfo(result, filePath);
         } catch (Exception e) {
-            throw new XanaduException("获取 OneDrive 文件信息失败！");
+            throw new DiyFileException("获取 OneDrive 文件信息失败！");
         }
     }
 
@@ -117,13 +117,26 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
     }
 
     @Override
-    public void updateItem(String folderPath, String fileName, String newName) {
-
+    public void updateItem(String filePath, String fileName) {
+        String url = OneDriveConstants.DRIVER_ITEM_OPERATOR_URL.replace("{path}", filePath);
+        Map<String, String> map = new HashMap<>();
+        map.put("name", fileName);
+        HttpResult result = OkHttps.sync(url)
+                .addHeader("Authorization", getAccessToken())
+                .setBodyPara(map)
+                .patch();
+        if (result.getStatus() != 200)
+            throw new DiyFileException("文件重命名失败！");
     }
 
     @Override
-    public void deleteItem(String folderPath, String fileName) {
-
+    public void deleteItem(String filePath) {
+        String url = OneDriveConstants.DRIVER_ITEM_OPERATOR_URL.replace("{path}", filePath);
+        HttpResult result = OkHttps.sync(url)
+                .addHeader("Authorization", getAccessToken())
+                .delete();
+        if (result.getStatus() != 204)
+            throw new DiyFileException("删除文件失败！");
     }
 
     @Override
@@ -172,7 +185,7 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
             caffeineCache.put("storage:token:id:" + getStorageId(), accessToken);
             return accessToken;
         } catch (Exception e) {
-            throw new XanaduException(e.getMessage());
+            throw new DiyFileException(e.getMessage());
         }
     }
 

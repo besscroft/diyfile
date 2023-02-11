@@ -8,7 +8,7 @@ import com.besscroft.diyfile.common.constant.RoleConstants;
 import com.besscroft.diyfile.common.constant.SystemConstants;
 import com.besscroft.diyfile.common.converter.UserConverterMapper;
 import com.besscroft.diyfile.common.entity.User;
-import com.besscroft.diyfile.common.exception.XanaduException;
+import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.user.UserAddParam;
 import com.besscroft.diyfile.common.param.user.UserUpdateParam;
 import com.besscroft.diyfile.mapper.UserMapper;
@@ -45,7 +45,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Assert.notNull(user, "账号或密码错误！");
         log.info("用户发起登录请求:{}", username);
         if (!Objects.equals(SaSecureUtil.sha256(password), user.getPassword()))
-            throw new XanaduException("账号或密码错误！");
+            throw new DiyFileException("账号或密码错误！");
         // 登录
         StpUtil.login(user.getId());
         // 设置最后登录时间
@@ -83,7 +83,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = this.baseMapper.selectById(userId);
         Assert.notNull(user, "用户不存在！");
         if (Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))
-            throw new XanaduException("超级管理员不允许被删除！");
+            throw new DiyFileException("超级管理员不允许被删除！");
         Assert.isTrue(this.baseMapper.deleteById(userId) > 0, "用户删除失败！");
     }
 
@@ -102,7 +102,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void addUser(UserAddParam param) {
         User user = UserConverterMapper.INSTANCE.AddParamToUser(param);
         if (Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))
-            throw new XanaduException("违反规则！超级管理员角色不允许被添加！");
+            throw new DiyFileException("违反规则！超级管理员角色不允许被添加！");
         user.setStatus(SystemConstants.STATUS_NO);
         user.setPassword(SaSecureUtil.sha256(param.getPassword().trim()));
         Assert.isTrue(this.baseMapper.insert(user) > 0, "新增用户失败！");
@@ -116,11 +116,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 如果原来不是超级管理员，现在是超级管理员，或者原来是超级管理员，现在不是超级管理员，抛出异常
         if ((!Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN) && Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))
                 || (Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN) && !Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN)))
-            throw new XanaduException("违反规则！更新用户失败！");
+            throw new DiyFileException("违反规则！更新用户失败！");
         // 非管理员只能修改自己的信息
         if (!(Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN) || Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_ADMIN))
                 && !Objects.equals(oldUser.getId(), user.getId()))
-            throw new XanaduException("违反规则！更新用户失败！");
+            throw new DiyFileException("违反规则！更新用户失败！");
         Assert.isTrue(this.baseMapper.updateById(user) > 0, "更新用户失败！");
     }
 
@@ -129,7 +129,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = this.baseMapper.selectById(id);
         Assert.notNull(user, "用户不存在！");
         if (Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))
-            throw new XanaduException("超级管理员不允许被禁用！");
+            throw new DiyFileException("超级管理员不允许被禁用！");
         user.setStatus(status);
         Assert.isTrue(this.baseMapper.updateById(user) > 0, "更新用户状态失败！");
     }
@@ -143,7 +143,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         String password = this.baseMapper.selectPasswordById(userId);
         if (!Objects.equals(SaSecureUtil.sha256(oldPassword), password))
-            throw new XanaduException("旧密码错误！");
+            throw new DiyFileException("旧密码错误！");
         String sha256Pwd = SaSecureUtil.sha256(newPassword);
         this.baseMapper.updatePasswordById(userId, sha256Pwd);
     }

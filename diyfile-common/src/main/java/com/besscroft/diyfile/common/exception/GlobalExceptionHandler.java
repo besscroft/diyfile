@@ -129,8 +129,8 @@ public class GlobalExceptionHandler {
      * 自定义异常 PiscesException
      */
     @ResponseBody
-    @ExceptionHandler(value = XanaduException.class)
-    public CommonResult<?> piscesExceptionHandler(XanaduException ex) {
+    @ExceptionHandler(value = DiyFileException.class)
+    public CommonResult<?> piscesExceptionHandler(DiyFileException ex) {
         log.info("自定义异常.[异常原因={}]", ex.getMessage(), ex);
         return CommonResult.failed(ex.getCode(), ex.getMessage(), null);
     }

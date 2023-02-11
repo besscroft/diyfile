@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class XanaduException extends RuntimeException {
+public class DiyFileException extends RuntimeException {
 
     private static final Long serialVersionUID = 1L;
 
@@ -24,20 +24,20 @@ public class XanaduException extends RuntimeException {
     /**
      * 空构造方法，避免反序列化问题
      */
-    public XanaduException() {
+    public DiyFileException() {
     }
 
-    public XanaduException(ErrorCode errorCode) {
+    public DiyFileException(ErrorCode errorCode) {
         this.code = errorCode.getCode();
         this.message = errorCode.getMessage();
     }
 
-    public XanaduException(String message) {
+    public DiyFileException(String message) {
         this.code = HttpStatus.INTERNAL_SERVER_ERROR.value();
         this.message = message;
     }
 
-    public XanaduException(Integer code, String message) {
+    public DiyFileException(Integer code, String message) {
         this.code = code;
         this.message = message;
     }
@@ -46,7 +46,7 @@ public class XanaduException extends RuntimeException {
         return code;
     }
 
-    public XanaduException setCode(Integer code) {
+    public DiyFileException setCode(Integer code) {
         this.code = code;
         return this;
     }
@@ -56,7 +56,7 @@ public class XanaduException extends RuntimeException {
         return message;
     }
 
-    public XanaduException setMessage(String message) {
+    public DiyFileException setMessage(String message) {
         this.message = message;
         return this;
     }

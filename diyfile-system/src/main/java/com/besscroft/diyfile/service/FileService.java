@@ -66,4 +66,11 @@ public interface FileService {
      */
     String getUploadUrl(String storageKey, String path);
 
+    /**
+     * 删除文件
+     * @param storageKey 存储 key
+     * @param filePath 文件路径
+     */
+    void deleteFile(String storageKey, String filePath);
+
 }

@@ -7,7 +7,7 @@ import com.besscroft.diyfile.common.converter.StorageConverterMapper;
 import com.besscroft.diyfile.common.entity.Storage;
 import com.besscroft.diyfile.common.entity.StorageConfig;
 import com.besscroft.diyfile.common.enums.StorageTypeEnum;
-import com.besscroft.diyfile.common.exception.XanaduException;
+import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.FileInitParam;
 import com.besscroft.diyfile.common.param.storage.StorageAddParam;
 import com.besscroft.diyfile.common.param.storage.StorageUpdateParam;
@@ -68,7 +68,7 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         Storage storage = StorageConverterMapper.INSTANCE.UpdateParamToStorage(param);
         Storage oldStorage = this.baseMapper.selectById(storage.getId());
         if (!Objects.equals(storage.getType(), oldStorage.getType()))
-            throw new XanaduException("存储类型不允许修改！");
+            throw new DiyFileException("存储类型不允许修改！");
         this.baseMapper.updateById(storage);
         storageConfigService.updateBatchById(param.getConfigList());
     }

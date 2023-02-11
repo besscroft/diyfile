@@ -25,4 +25,7 @@ public interface OneDriveConstants {
     /** 上载会话创建 API */
     String DRIVE_UPLOAD_SESSION_URL = "https://graph.microsoft.com/v1.0/me/drive/root:{path}:/createUploadSession";
 
+    /** 文件操作 API，PATCH 更新资源，DELETE 删除资源 */
+    String DRIVER_ITEM_OPERATOR_URL = "https://graph.microsoft.com/v1.0/me/drive/root:{path}";
+
 }

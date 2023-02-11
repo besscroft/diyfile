@@ -86,6 +86,13 @@ public class FileServiceImpl implements FileService {
         return service.getUploadSession(path);
     }
 
+    @Override
+    public void deleteFile(String storageKey, String filePath) {
+        Long storageId = storageService.getStorageIdByStorageKey(storageKey);
+        AbstractFileBaseService<FileInitParam> service = storageApplicationContext.getServiceByStorageId(storageId);
+        service.deleteItem(filePath);
+    }
+
     /**
      * 文件/夹路径处理
      * @param path 文件/夹路径

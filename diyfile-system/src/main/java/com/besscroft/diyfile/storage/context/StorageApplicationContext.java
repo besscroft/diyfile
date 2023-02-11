@@ -2,7 +2,7 @@ package com.besscroft.diyfile.storage.context;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.besscroft.diyfile.common.entity.Storage;
-import com.besscroft.diyfile.common.exception.XanaduException;
+import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.FileInitParam;
 import com.besscroft.diyfile.service.StorageService;
 import com.besscroft.diyfile.storage.service.base.AbstractFileBaseService;
@@ -75,7 +75,7 @@ public class StorageApplicationContext implements ApplicationContextAware {
 
         AbstractFileBaseService<FileInitParam> baseFileService = getInitStorageBeanByStorageId(storageId);
         if (Objects.isNull(baseFileService)) {
-            throw new XanaduException("存储初始化失败！存储 id 为：" + storageId + "，存储名称为：" + storageName);
+            throw new DiyFileException("存储初始化失败！存储 id 为：" + storageId + "，存储名称为：" + storageName);
         }
 
         // 初始化处理

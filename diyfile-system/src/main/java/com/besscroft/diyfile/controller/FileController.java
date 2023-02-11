@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.annotation.SaMode;
 import com.besscroft.diyfile.common.constant.RoleConstants;
+import com.besscroft.diyfile.common.param.file.DeleteFileParam;
 import com.besscroft.diyfile.common.param.file.GetFileInfoParam;
 import com.besscroft.diyfile.common.param.file.GetItemByKeyParam;
 import com.besscroft.diyfile.common.param.file.GetUploadUrlParam;
@@ -79,6 +80,21 @@ public class FileController {
     @PostMapping("/getUploadUrl")
     public AjaxResult getUploadUrl(@RequestBody @Valid GetUploadUrlParam param) {
         return AjaxResult.success("获取成功！", fileService.getUploadUrl(param.getStorageKey(), param.getPath()));
+    }
+
+    @SaCheckRole(
+            value = {
+                    RoleConstants.PLATFORM_SUPER_ADMIN,
+                    RoleConstants.PLATFORM_ADMIN,
+                    RoleConstants.PLATFORM_SELF_PROVISIONER
+            },
+            mode = SaMode.OR
+    )
+    @Operation(summary = "删除文件接口")
+    @PostMapping("/deleteFile")
+    public AjaxResult deleteFile(@RequestBody @Valid DeleteFileParam param) {
+        fileService.deleteFile(param.getStorageKey(), param.getPath());
+        return AjaxResult.success("删除成功！");
     }
 
 }
