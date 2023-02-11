@@ -22,7 +22,7 @@ public interface UserService extends IService<User> {
      * @param password 密码
      * @return Token 相关参数
      */
-    SaTokenInfo login(String username, String password, Boolean isRememberMe);
+    SaTokenInfo login(String username, String password);
 
     /**
      * 获取已登录用户信息

@@ -1,8 +1,8 @@
 package com.besscroft.diyfile.service.impl;
 
-import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.besscroft.diyfile.common.constant.RoleConstants;
 import com.besscroft.diyfile.common.constant.SystemConstants;
@@ -40,11 +40,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private final SystemConfigService systemConfigService;
 
     @Override
-    public SaTokenInfo login(String username, String password, Boolean isRememberMe) {
+    public SaTokenInfo login(String username, String password) {
         User user = this.baseMapper.selectByUsername(username);
         Assert.notNull(user, "账号或密码错误！");
         log.info("用户发起登录请求:{}", username);
-        if (!Objects.equals(SaSecureUtil.sha256(password), user.getPassword()))
+        if (!Objects.equals(SecureUtil.sha256(password), user.getPassword()))
             throw new DiyFileException("账号或密码错误！");
         // 登录
         StpUtil.login(user.getId());
@@ -104,7 +104,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))
             throw new DiyFileException("违反规则！超级管理员角色不允许被添加！");
         user.setStatus(SystemConstants.STATUS_NO);
-        user.setPassword(SaSecureUtil.sha256(param.getPassword().trim()));
+        user.setPassword(SecureUtil.sha256(param.getPassword().trim()));
         Assert.isTrue(this.baseMapper.insert(user) > 0, "新增用户失败！");
     }
 
@@ -142,9 +142,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             userId = StpUtil.getLoginIdAsLong();
         }
         String password = this.baseMapper.selectPasswordById(userId);
-        if (!Objects.equals(SaSecureUtil.sha256(oldPassword), password))
+        if (!Objects.equals(SecureUtil.sha256(oldPassword), password))
             throw new DiyFileException("旧密码错误！");
-        String sha256Pwd = SaSecureUtil.sha256(newPassword);
+        String sha256Pwd = SecureUtil.sha256(newPassword);
         this.baseMapper.updatePasswordById(userId, sha256Pwd);
     }
 

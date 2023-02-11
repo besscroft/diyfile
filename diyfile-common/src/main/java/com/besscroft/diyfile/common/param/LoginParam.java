@@ -23,8 +23,4 @@ public class LoginParam {
     @Schema(title = "密码", type = "String", required = true)
     private String password;
 
-    /** 记住我 */
-    @Schema(title = "记住我", type = "Boolean")
-    private Boolean isRememberMe;
-
 }
