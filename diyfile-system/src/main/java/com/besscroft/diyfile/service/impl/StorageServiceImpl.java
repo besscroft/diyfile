@@ -68,6 +68,7 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         Storage oldStorage = this.baseMapper.selectById(storage.getId());
         if (!Objects.equals(storage.getType(), oldStorage.getType()))
             throw new DiyFileException("存储类型不允许修改！");
+        storage.setStorageKey(oldStorage.getStorageKey());
         this.baseMapper.updateById(storage);
         storageConfigService.updateBatchById(param.getConfigList());
     }

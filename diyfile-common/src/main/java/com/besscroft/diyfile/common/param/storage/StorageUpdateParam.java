@@ -24,6 +24,10 @@ public class StorageUpdateParam {
     @NotBlank(message = "存储名称不能为空！")
     private String name;
 
+    @Schema(title = "存储 key", type = "String")
+    @NotBlank(message = "存储 key 不能为空！")
+    private String storageKey;
+
     @Schema(title = "存储类型", type = "Integer")
     @NotNull(message = "存储类型不能为空！")
     private Integer type;
