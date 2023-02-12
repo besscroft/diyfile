@@ -6,17 +6,17 @@ import com.besscroft.diyfile.common.constant.SystemConstants;
 import com.besscroft.diyfile.common.converter.StorageConverterMapper;
 import com.besscroft.diyfile.common.entity.Storage;
 import com.besscroft.diyfile.common.entity.StorageConfig;
-import com.besscroft.diyfile.common.enums.StorageTypeEnum;
 import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.FileInitParam;
 import com.besscroft.diyfile.common.param.storage.StorageAddParam;
 import com.besscroft.diyfile.common.param.storage.StorageUpdateParam;
-import com.besscroft.diyfile.common.param.storage.init.OneDriveParam;
+import com.besscroft.diyfile.common.util.ParamUtils;
 import com.besscroft.diyfile.common.vo.StorageInfoVo;
 import com.besscroft.diyfile.mapper.StorageConfigMapper;
 import com.besscroft.diyfile.mapper.StorageMapper;
 import com.besscroft.diyfile.service.StorageConfigService;
 import com.besscroft.diyfile.service.StorageService;
+import com.besscroft.diyfile.storage.context.StorageApplicationContext;
 import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -25,9 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @Description 存储服务实现类
@@ -40,6 +38,7 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
 
     private final StorageConfigService storageConfigService;
     private final StorageConfigMapper storageConfigMapper;
+    private final StorageApplicationContext storageApplicationContext;
 
     @Override
     public List<Storage> storagePage(Integer pageNum, Integer pageSize, Integer type) {
@@ -97,6 +96,8 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         Assert.notNull(storage, "存储不存在！");
         storage.setEnable(status);
         Assert.isTrue(this.baseMapper.updateById(storage) > 0, "更新状态失败！");
+        if (Objects.equals(status, SystemConstants.STATUS_OK))
+            storageApplicationContext.init(storage);
     }
 
     @Override
@@ -114,17 +115,7 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         Storage storage = this.baseMapper.selectById(storageId);
         Assert.notNull(storage, "存储不存在！");
         List<StorageConfig> configList = storageConfigMapper.selectByStorageId(storageId);
-        Map<String, String> configMap = configList.stream().collect(Collectors.toMap(StorageConfig::getConfigKey, StorageConfig::getConfigValue));
-        if (Objects.equals(storage.getType(), StorageTypeEnum.ONE_DRIVE.getValue())) {
-            return OneDriveParam.builder()
-                    .clientId(configMap.get("client_id"))
-                    .clientSecret(configMap.get("client_secret"))
-                    .redirectUri(configMap.get("redirect_uri"))
-                    .refreshToken(configMap.get("refresh_token"))
-                    .mountPath(configMap.get("mount_path"))
-                    .build();
-        }
-        return null;
+        return ParamUtils.getFileInitParam(storage, configList);
     }
 
     @Override

@@ -24,6 +24,10 @@ public class StorageAddParam {
     @NotNull(message = "存储类型不能为空！")
     private Integer type;
 
+    @Schema(title = "存储 key", type = "String")
+    @NotBlank(message = "存储 key 不能为空！")
+    private String storageKey;
+
     @Schema(title = "备注", type = "String")
     private String remark;
 

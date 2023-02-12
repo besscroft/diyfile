@@ -2,9 +2,12 @@ package com.besscroft.diyfile.storage.context;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.besscroft.diyfile.common.entity.Storage;
+import com.besscroft.diyfile.common.entity.StorageConfig;
 import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.FileInitParam;
-import com.besscroft.diyfile.service.StorageService;
+import com.besscroft.diyfile.common.util.ParamUtils;
+import com.besscroft.diyfile.mapper.StorageConfigMapper;
+import com.besscroft.diyfile.mapper.StorageMapper;
 import com.besscroft.diyfile.storage.service.base.AbstractFileBaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +15,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +32,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class StorageApplicationContext implements ApplicationContextAware {
 
-    private final StorageService storageService;
+    private final StorageMapper storageMapper;
+    private final StorageConfigMapper storageConfigMapper;
 
     /**
      * Map<Long, AbstractBaseFileService>
@@ -44,7 +49,7 @@ public class StorageApplicationContext implements ApplicationContextAware {
         log.debug("获取原始的存储服务 Bean！");
         primitiveStorageServiceMap = applicationContext.getBeansOfType(AbstractFileBaseService.class);
         log.debug("开始初始化文件服务上下文！");
-        List<Storage> storageList = storageService.list();
+        List<Storage> storageList = storageMapper.selectAllByEnable();
         for (Storage storage: storageList) {
             try {
                 init(storage);
@@ -69,7 +74,7 @@ public class StorageApplicationContext implements ApplicationContextAware {
      * 初始化存储 Service, 添加到 Spring 上下文
      * @param storage 存储对象
      */
-    private void init(Storage storage) {
+    public void init(Storage storage) {
         Long storageId = storage.getId();
         String storageName = storage.getName();
 
@@ -95,7 +100,7 @@ public class StorageApplicationContext implements ApplicationContextAware {
      * @return 存储源对应未初始化的 Service
      */
     private AbstractFileBaseService<FileInitParam> getInitStorageBeanByStorageId(Long storageId) {
-        Storage storage = storageService.getById(storageId);
+        Storage storage = storageMapper.selectById(storageId);
         for (AbstractFileBaseService<?> value : primitiveStorageServiceMap.values()) {
             if (Objects.equals(value.getStorageType(), storage.getType())) {
                 return SpringUtil.getBean(value.getClass());
@@ -110,7 +115,10 @@ public class StorageApplicationContext implements ApplicationContextAware {
      * @return 存储初始化参数
      */
     private FileInitParam getFileInitParam(Long storageId) {
-        return storageService.getFileInitParam(storageId);
+        Storage storage = storageMapper.selectById(storageId);
+        Assert.notNull(storage, "存储不存在！");
+        List<StorageConfig> configList = storageConfigMapper.selectByStorageId(storageId);
+        return ParamUtils.getFileInitParam(storage, configList);
     }
 
 }
