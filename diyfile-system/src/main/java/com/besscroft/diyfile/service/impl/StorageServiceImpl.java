@@ -96,9 +96,20 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         Storage storage = this.baseMapper.selectById(storageId);
         Assert.notNull(storage, "存储不存在！");
         storage.setEnable(status);
+        if (Objects.equals(status, SystemConstants.STATUS_OK)) {
+            try {
+                storageApplicationContext.init(storage);
+            } catch (Exception e) {
+                throw new DiyFileException("启用存储失败！");
+            }
+        } else {
+            try {
+                storageApplicationContext.destroy(storage.getId());
+            } catch (Exception e) {
+                throw new DiyFileException("停用存储失败！");
+            }
+        }
         Assert.isTrue(this.baseMapper.updateById(storage) > 0, "更新状态失败！");
-        if (Objects.equals(status, SystemConstants.STATUS_OK))
-            storageApplicationContext.init(storage);
     }
 
     @Override

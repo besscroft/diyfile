@@ -95,6 +95,14 @@ public class StorageApplicationContext implements ApplicationContextAware {
     }
 
     /**
+     * 销毁存储 Service
+     * @param storageId 存储 id
+     */
+    public void destroy(Long storageId) {
+        storageServiceMap.remove(storageId);
+    }
+
+    /**
      * 获取指定存储源初始状态的 Service Bean
      * @param storageId 存储 id
      * @return 存储源对应未初始化的 Service
