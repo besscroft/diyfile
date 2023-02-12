@@ -34,6 +34,9 @@ public class ParamUtils {
                     .refreshToken(configMap.get("refresh_token"))
                     .mountPath(configMap.get("mount_path"))
                     .build();
+        } else if (Objects.equals(storage.getType(), StorageTypeEnum.ALIYUN_OSS.getValue())) {
+            // TODO 阿里云 OSS 初始化参数处理
+            return null;
         }
         return null;
     }

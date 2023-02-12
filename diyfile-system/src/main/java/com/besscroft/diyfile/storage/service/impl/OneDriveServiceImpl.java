@@ -41,7 +41,7 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
 
     @Override
     public void init() {
-
+        initialized = true;
     }
 
     @Override
@@ -52,35 +52,6 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
     @Override
     public String getFileDownloadUrl(String fileName, String filePath) {
         return null;
-    }
-
-    /**
-     * 获取 OneDrive 驱动 id
-     * @return OneDrive 驱动 id
-     */
-    private String getDriveId() {
-        return Optional.ofNullable(caffeineCache.getIfPresent("storage:driveId:id:" + storageId))
-                .orElseGet(this::getDriveIdRest).toString();
-    }
-
-    /**
-     * 通过 Rest 接口获取 OneDrive 驱动 id
-     * @return OneDrive 驱动 id
-     */
-    private String getDriveIdRest() {
-        String driveRootUrl = OneDriveConstants.DRIVE_ID_URL;
-        JSONObject result = JSONUtil.parseObj(OkHttps.sync(driveRootUrl)
-                .addHeader("Authorization", getAccessToken())
-                .get().getBody().toString());
-        try {
-            Map map = objectMapper.readValue(result.getStr("parentReference"), Map.class);
-            String driveId = map.get("driveId").toString();
-            caffeineCache.put("storage:driveId:id:" + storageId, driveId);
-            return driveId;
-        } catch (JsonProcessingException e) {
-            log.error("获取 OneDrive 驱动 id 失败！");
-            return "";
-        }
     }
 
     @Override
@@ -151,6 +122,35 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
                 .addHeader("Authorization", getAccessToken())
                 .post().getBody().toString());
         return result.getStr("uploadUrl");
+    }
+
+    /**
+     * 获取 OneDrive 驱动 id
+     * @return OneDrive 驱动 id
+     */
+    private String getDriveId() {
+        return Optional.ofNullable(caffeineCache.getIfPresent("storage:driveId:id:" + storageId))
+                .orElseGet(this::getDriveIdRest).toString();
+    }
+
+    /**
+     * 通过 Rest 接口获取 OneDrive 驱动 id
+     * @return OneDrive 驱动 id
+     */
+    private String getDriveIdRest() {
+        String driveRootUrl = OneDriveConstants.DRIVE_ID_URL;
+        JSONObject result = JSONUtil.parseObj(OkHttps.sync(driveRootUrl)
+                .addHeader("Authorization", getAccessToken())
+                .get().getBody().toString());
+        try {
+            Map map = objectMapper.readValue(result.getStr("parentReference"), Map.class);
+            String driveId = map.get("driveId").toString();
+            caffeineCache.put("storage:driveId:id:" + storageId, driveId);
+            return driveId;
+        } catch (JsonProcessingException e) {
+            log.error("获取 OneDrive 驱动 id 失败！");
+            return "";
+        }
     }
 
     /**
