@@ -41,6 +41,7 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
 
     @Override
     public void init() {
+        refreshAccessToken();
         initialized = true;
     }
 

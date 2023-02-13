@@ -65,6 +65,7 @@ springdoc:
   swagger-ui:
     # 页面展示
     enabled: true
+    path: "/swagger-ui.html"
   # 配置扫描的包
   packages-to-scan: com.besscroft.diyfile
   cache:
