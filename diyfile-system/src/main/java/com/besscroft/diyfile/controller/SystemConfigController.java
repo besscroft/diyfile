@@ -8,6 +8,7 @@ import com.besscroft.diyfile.common.param.system.SystemUpdateConfigParam;
 import com.besscroft.diyfile.common.result.AjaxResult;
 import com.besscroft.diyfile.service.SystemConfigService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
  * @Author Bess Croft
  * @Date 2023/1/7 19:10
  */
+@Tag(name = "系统配置接口")
 @RequestMapping("/systemConfig")
 @RestController
 @RequiredArgsConstructor

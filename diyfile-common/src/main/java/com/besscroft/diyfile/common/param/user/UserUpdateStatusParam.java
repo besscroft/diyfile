@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
  * @Date 2023/1/13 19:17
  */
 @Data
+@Schema(title = "用户状态更新请求参数")
 public class UserUpdateStatusParam {
 
     @Schema(title = "用户 id", type = "Long")

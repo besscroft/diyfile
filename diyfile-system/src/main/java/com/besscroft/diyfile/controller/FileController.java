@@ -14,6 +14,7 @@ import com.besscroft.diyfile.common.vo.FileInfoVo;
 import com.besscroft.diyfile.common.vo.StorageInfoVo;
 import com.besscroft.diyfile.service.FileService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import java.util.List;
  * @Author Bess Croft
  * @Date 2023/1/20 21:54
  */
+@Tag(name = "文件接口")
 @RestController
 @RequestMapping("/file")
 @RequiredArgsConstructor

@@ -22,7 +22,18 @@ public class SaTokenConfigure implements WebMvcConfigurer {
         registry.addInterceptor(new SaInterceptor(handle -> {
             // 登录校验，登录后才允许放行
             StpUtil.checkLogin();
-        })).addPathPatterns("/**");
+        })).addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/v3/**",
+                        "/api-docs/**",
+                        "/swagger-ui.html/**",
+                        "/swagger-ui/**",
+                        "/doc.html/**",
+                        "/error",
+                        "/favicon.ico",
+                        "/actuator/**",
+                        "/api-docs.yaml"
+                );
     }
 
 }

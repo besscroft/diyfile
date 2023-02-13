@@ -1,6 +1,7 @@
 package com.besscroft.diyfile.common.util;
 
 import com.github.pagehelper.PageInfo;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
@@ -10,10 +11,20 @@ import java.util.List;
  * @Date 2022/12/18 16:18
  */
 public class CommonPage<T> {
+
+    @Schema(title = "页码", type = "Integer")
     private Integer pageNum;
+
+    @Schema(title = "页大小", type = "Integer")
     private Integer pageSize;
+
+    @Schema(title = "总页数", type = "Integer")
     private Integer totalPage;
+
+    @Schema(title = "数据总数", type = "Long")
     private Long total;
+
+    @Schema(title = "数据列表", type = "List")
     private List<T> list;
 
     /**

@@ -1,14 +1,16 @@
 package com.besscroft.diyfile.common.result;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 /**
- * @Description 通用返回对象
+ * @Description 泛型通用返回对象
  * @Author Bess Croft
  * @Date 2022/12/15 14:41
  */
 @Data
+@Schema(title = "泛型通用返回对象")
 public class CommonResult<T> {
 
     /** 状态码 */

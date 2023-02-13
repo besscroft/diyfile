@@ -10,6 +10,7 @@ import lombok.Data;
  * @Date 2023/1/15 13:30
  */
 @Data
+@Schema(title = "系统配置更新请求参数")
 public class SystemUpdateConfigParam {
 
     /** 系统配置键 */

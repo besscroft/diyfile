@@ -10,6 +10,7 @@ import lombok.Data;
  * @Date 2023/1/28 16:59
  */
 @Data
+@Schema(title = "根据 key 获取文件列表参数")
 public class GetItemByKeyParam {
 
     @NotBlank(message = "存储 key 不能为空！")

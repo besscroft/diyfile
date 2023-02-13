@@ -1,5 +1,6 @@
 package com.besscroft.diyfile.common.result;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.Objects;
  * @Author Bess Croft
  * @Date 2022/12/15 14:39
  */
+@Schema(title = "通用封装返回对象")
 public class AjaxResult extends HashMap<String, Object> {
 
     private static final long serialVersionUID = 1L;
@@ -17,7 +19,7 @@ public class AjaxResult extends HashMap<String, Object> {
     /** 状态码 */
     public static final String CODE_TAG = "code";
 
-    /** 返回内容 */
+    /** 返回消息 */
     public static final String MSG_TAG = "message";
 
     /** 数据对象 */

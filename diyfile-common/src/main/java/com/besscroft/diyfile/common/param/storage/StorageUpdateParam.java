@@ -14,6 +14,7 @@ import java.util.List;
  * @Date 2022/12/21 14:53
  */
 @Data
+@Schema(title = "存储更新请求参数")
 public class StorageUpdateParam {
 
     @Schema(title = "存储 id", type = "Long")
@@ -39,6 +40,7 @@ public class StorageUpdateParam {
     @Schema(title = "备注", type = "String")
     private String remark;
 
+    @Schema(title = "存储配置", type = "List")
     private List<StorageConfig> configList;
 
 }

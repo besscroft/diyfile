@@ -14,6 +14,7 @@ import com.besscroft.diyfile.common.util.CommonPage;
 import com.besscroft.diyfile.common.vo.StorageInfoVo;
 import com.besscroft.diyfile.service.StorageService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import java.util.List;
  * @Author Bess Croft
  * @Date 2022/12/18 21:23
  */
+@Tag(name = "存储接口")
 @RequestMapping("/storage")
 @RestController
 @RequiredArgsConstructor

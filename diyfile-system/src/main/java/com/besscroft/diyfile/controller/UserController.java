@@ -16,6 +16,7 @@ import com.besscroft.diyfile.common.result.CommonResult;
 import com.besscroft.diyfile.common.util.CommonPage;
 import com.besscroft.diyfile.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,7 @@ import java.util.Map;
  * @Author Bess Croft
  * @Date 2022/12/15 14:34
  */
+@Tag(name = "用户接口")
 @RequestMapping("/user")
 @RestController
 @RequiredArgsConstructor

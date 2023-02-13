@@ -19,12 +19,12 @@ public class OpenApiConfiguration {
     public OpenAPI springShopOpenAPI() {
         return new OpenAPI()
                 .info(new Info().title("DiyFile")
-                        .description("Spring shop sample application")
-                        .version("v0.1.2")
-                        .license(new License().name("Apache 2.0").url("https://github.com/besscroft/Xanadu/blob/main/LICENSE")))
+                        .description("一款好看的在线文件列表程序")
+                        .version("v0.1.6")
+                        .license(new License().name("MIT license").url("https://github.com/besscroft/diyfile/blob/main/LICENSE")))
                 .externalDocs(new ExternalDocumentation()
                         .description("DiyFile 文档")
-                        .url(""));
+                        .url("https://doc.diyfile.besscroft.com"));
     }
 
 }
