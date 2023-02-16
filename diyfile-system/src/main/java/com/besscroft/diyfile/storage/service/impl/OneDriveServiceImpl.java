@@ -5,17 +5,12 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.besscroft.diyfile.common.constant.storage.OneDriveConstants;
-import com.besscroft.diyfile.common.enums.StorageTypeEnum;
 import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.storage.init.OneDriveParam;
 import com.besscroft.diyfile.common.vo.FileInfoVo;
-import com.besscroft.diyfile.storage.service.base.AbstractFileBaseService;
+import com.besscroft.diyfile.storage.service.base.AbstractOneDriveBaseService;
 import com.ejlchina.okhttps.HttpResult;
 import com.ejlchina.okhttps.OkHttps;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.benmanes.caffeine.cache.Cache;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -32,23 +27,8 @@ import java.util.*;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> {
-
-    private final Cache<String, Object> caffeineCache;
-    private final ObjectMapper objectMapper;
-
-    @Override
-    public void init() {
-        refreshAccessToken();
-        initialized = true;
-    }
-
-    @Override
-    public Integer getStorageType() {
-        return StorageTypeEnum.ONE_DRIVE.getValue();
-    }
+public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDriveParam> {
 
     @Override
     public String getFileDownloadUrl(String fileName, String filePath) {
@@ -123,71 +103,6 @@ public class OneDriveServiceImpl extends AbstractFileBaseService<OneDriveParam> 
                 .addHeader("Authorization", getAccessToken())
                 .post().getBody().toString());
         return result.getStr("uploadUrl");
-    }
-
-    /**
-     * 获取 OneDrive 驱动 id
-     * @return OneDrive 驱动 id
-     */
-    private String getDriveId() {
-        return Optional.ofNullable(caffeineCache.getIfPresent("storage:driveId:id:" + storageId))
-                .orElseGet(this::getDriveIdRest).toString();
-    }
-
-    /**
-     * 通过 Rest 接口获取 OneDrive 驱动 id
-     * @return OneDrive 驱动 id
-     */
-    private String getDriveIdRest() {
-        String driveRootUrl = OneDriveConstants.DRIVE_ID_URL;
-        JSONObject result = JSONUtil.parseObj(OkHttps.sync(driveRootUrl)
-                .addHeader("Authorization", getAccessToken())
-                .get().getBody().toString());
-        try {
-            Map map = objectMapper.readValue(result.getStr("parentReference"), Map.class);
-            String driveId = map.get("driveId").toString();
-            caffeineCache.put("storage:driveId:id:" + storageId, driveId);
-            return driveId;
-        } catch (JsonProcessingException e) {
-            log.error("获取 OneDrive 驱动 id 失败！");
-            return "";
-        }
-    }
-
-    /**
-     * 刷新 token 并返回新的 token
-     * @return 新的 token
-     */
-    private String getAccessToken() {
-        Long storageId = getStorageId();
-        // 先从缓存中获取 token，如果没有则从调用 REST API 获取
-        return Optional.ofNullable(caffeineCache.getIfPresent("storage:token:id:" + storageId))
-                .orElseGet(this::refreshAccessToken).toString();
-    }
-
-    /**
-     * 刷新 accessToken
-     * @return 新的 accessToken
-     */
-    private String refreshAccessToken() {
-        OneDriveParam param = getInitParam();
-        Map<String, String> map = new HashMap<>();
-        map.put("client_id", param.getClientId());
-        map.put("scope", "user.read files.read.all offline_access");
-        map.put("refresh_token", param.getRefreshToken());
-        map.put("grant_type", "refresh_token");
-        map.put("client_secret", param.getClientSecret());
-        try {
-            HttpResult result = OkHttps.sync(OneDriveConstants.AUTHENTICATE_URL)
-                    .setBodyPara(map)
-                    .post();
-            Map tokenResult = objectMapper.readValue(result.getBody().toString(), Map.class);
-            String accessToken = tokenResult.get("access_token").toString();
-            caffeineCache.put("storage:token:id:" + getStorageId(), accessToken);
-            return accessToken;
-        } catch (Exception e) {
-            throw new DiyFileException(e.getMessage());
-        }
     }
 
     /**

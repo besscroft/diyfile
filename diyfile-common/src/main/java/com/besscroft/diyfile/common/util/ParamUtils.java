@@ -4,6 +4,7 @@ import com.besscroft.diyfile.common.entity.Storage;
 import com.besscroft.diyfile.common.entity.StorageConfig;
 import com.besscroft.diyfile.common.enums.StorageTypeEnum;
 import com.besscroft.diyfile.common.param.FileInitParam;
+import com.besscroft.diyfile.common.param.storage.init.AliYunOssParam;
 import com.besscroft.diyfile.common.param.storage.init.OneDriveParam;
 
 import java.util.List;
@@ -36,7 +37,15 @@ public class ParamUtils {
                     .build();
         } else if (Objects.equals(storage.getType(), StorageTypeEnum.ALIYUN_OSS.getValue())) {
             // TODO 阿里云 OSS 初始化参数处理
-            return null;
+            return AliYunOssParam.builder()
+                    .accessKeyId(configMap.get("accessKeyId"))
+                    .accessKeySecret(configMap.get("accessKeySecret"))
+                    .endpoint(configMap.get("endpoint"))
+                    .bucketName(configMap.get("bucketName"))
+                    .mountPath(configMap.get("mount_path"))
+                    .build();
+        } else if (Objects.equals(storage.getType(), StorageTypeEnum.LOCAL.getValue())) {
+            // TODO 本地存储初始化参数处理
         }
         return null;
     }
