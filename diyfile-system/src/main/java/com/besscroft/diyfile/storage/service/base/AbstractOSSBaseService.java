@@ -9,4 +9,12 @@ import com.besscroft.diyfile.common.param.storage.init.OssParam;
  */
 public abstract class AbstractOSSBaseService<T extends OssParam> extends AbstractFileBaseService<T> {
 
+    /**
+     * 获取对象访问地址
+     * @param bucketName 桶名称
+     * @param objectName 对象名称
+     * @return 对象访问地址
+     */
+    public abstract String getObjectUrl(String bucketName, String objectName);
+
 }

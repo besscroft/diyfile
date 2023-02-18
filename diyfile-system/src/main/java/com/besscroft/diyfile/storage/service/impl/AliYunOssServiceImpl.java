@@ -21,6 +21,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -60,7 +63,7 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
 
     @Override
     public String getFileDownloadUrl(String fileName, String filePath) {
-        return null;
+        return getObjectUrl(initParam.getBucketName(), filePath);
     }
 
     @Override
@@ -85,7 +88,16 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
 
     @Override
     public FileInfoVo getFileInfo(String filePath, String fileName) {
-        return null;
+        FileInfoVo fileInfoVo = new FileInfoVo();
+        fileInfoVo.setName(fileName);
+        fileInfoVo.setSize(0L);
+        fileInfoVo.setLastModifiedDateTime(null);
+        fileInfoVo.setType("file");
+        fileInfoVo.setPath(filePath);
+        fileInfoVo.setFile(null);
+        // 设置文件下载地址
+        fileInfoVo.setUrl(getObjectUrl(initParam.getBucketName(), filePath));
+        return fileInfoVo;
     }
 
     @Override
@@ -137,6 +149,7 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
             fileInfoVo.setSize(summary.getSize());
             fileInfoVo.setPath(folderPath);
             fileInfoVo.setType("file");
+            fileInfoVo.setUrl(getObjectUrl(initParam.getBucketName(), summary.getKey()));
             infoVoList.add(fileInfoVo);
         }
         for(String prefix : commonPrefixes) {
@@ -178,4 +191,22 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
         return size;
     }
 
+    @Override
+    public String getObjectUrl(String bucketName, String objectName) {
+        try {
+            URL url = new URL(initParam.getEndpoint());
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append(url.getProtocol())
+                    .append("://")
+                    .append(bucketName)
+                    .append(".")
+                    .append(url.getHost())
+                    .append("/")
+                    .append(objectName);
+            return stringBuffer.toString();
+        } catch (MalformedURLException e) {
+            log.error("地址获取失败！:{}", e);
+            throw new DiyFileException("地址获取失败！");
+        }
+    }
 }
