@@ -1,6 +1,5 @@
 package com.besscroft.diyfile.common.param.storage.init;
 
-import com.besscroft.diyfile.common.param.FileInitParam;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class AliYunOssParam extends FileInitParam {
+public class AliYunOssParam extends OssParam {
 
     /** Endpoint 表示 OSS 对外服务的访问域名 */
     private String endpoint;

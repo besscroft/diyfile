@@ -1,9 +1,9 @@
 spring:
   datasource:
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/diyfile?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
-    username: root
-    password: 666666
+    url: jdbc:mysql://${DB_URL:localhost:3306}/${DB_NAME:diyfile}?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:666666}
     hikari:
       # 连接池最大连接数
       maximum-pool-size: 20

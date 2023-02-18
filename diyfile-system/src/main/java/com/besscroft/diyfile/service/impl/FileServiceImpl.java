@@ -106,7 +106,12 @@ public class FileServiceImpl implements FileService {
                 return mountPath;
             } else if (!Objects.equals("/", path)) {
                 // 如果传入的挂载路径不为空，且不是 "/"
-                return mountPath + path;
+                if (Objects.equals("/", mountPath)) {
+                    // 如果设定的挂载路径为 "/"，传入的挂载路径不为空，且不是 "/"，则使用传入的挂载路径
+                    return path;
+                } else {
+                    return mountPath + path;
+                }
             } else {
                 // 如果传入的挂载路径不为空，且是 "/"，则使用默认挂载路径
                 return mountPath;
