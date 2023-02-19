@@ -1,5 +1,11 @@
 # DiyFile
 
+<p align="center">
+
+![DiyFile](https://besscroft.com/uploads/diyfile.png)
+
+</p>
+
 一款好看的在线文件列表程序，由 Spring Boot 3 和 Vue 驱动。
 
 [![](https://img.shields.io/badge/%E5%BC%80%E5%8F%91%E8%BF%9B%E5%BA%A6-%E5%BC%80%E5%8F%91%E4%B8%AD-brightgreen?style=flat-square)]() [![](https://img.shields.io/github/license/besscroft/diyfile?style=flat-square)](https://github.com/besscroft/diyfile/blob/master/LICENSE) ![GitHub repo size](https://img.shields.io/github/repo-size/besscroft/diyfile?style=flat-square&color=328657)
