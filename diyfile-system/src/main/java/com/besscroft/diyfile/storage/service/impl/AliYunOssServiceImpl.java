@@ -11,7 +11,6 @@ import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.storage.init.AliYunOssParam;
 import com.besscroft.diyfile.common.vo.FileInfoVo;
 import com.besscroft.diyfile.storage.service.base.AbstractOSSBaseService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -112,7 +110,8 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
 
     @Override
     public void deleteItem(String filePath) {
-
+        // 删除文件或目录。如果要删除目录，目录必须为空。
+        ossClient.deleteObject(initParam.getBucketName(), filePath);
     }
 
     @Override
@@ -209,4 +208,5 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
             throw new DiyFileException("地址获取失败！");
         }
     }
+
 }
