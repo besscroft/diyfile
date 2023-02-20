@@ -44,6 +44,8 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
             List<FileInfoVo> list = new ArrayList<>();
             return handleFileList(list, folderPath);
         } catch (Exception e) {
+            // TODO accessToken 过期处理优化，添加重试机制
+            refreshAccessToken();
             throw new DiyFileException("获取 OneDrive 文件列表失败！");
         }
     }
@@ -56,9 +58,10 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
                     .addHeader("Authorization", getAccessToken())
                     .get().getBody().toString());
             log.info("获取 OneDrive 文件信息结果：{}", result);
-            // TODO accessToken 过期处理
             return getConvertFileInfo(result, filePath);
         } catch (Exception e) {
+            // TODO accessToken 过期处理优化，添加重试机制
+            refreshAccessToken();
             throw new DiyFileException("获取 OneDrive 文件信息失败！");
         }
     }
