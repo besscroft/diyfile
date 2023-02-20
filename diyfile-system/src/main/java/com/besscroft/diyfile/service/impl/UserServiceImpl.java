@@ -2,6 +2,8 @@ package com.besscroft.diyfile.service.impl;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.besscroft.diyfile.common.constant.RoleConstants;
@@ -53,7 +55,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         this.updateById(user);
         CompletableFuture.runAsync(() -> {
             log.info("登录成功:{}", username);
-            pushService.pushBark(systemConfigService.getBarkId(), String.format("用户：%s 在：%s 登录 Xanadu 系统！", user.getName(), LocalDateTime.now()));
+            pushService.pushBark(systemConfigService.getBarkId(), String.format("用户：%s 在：%s 登录 DiyFile",
+                    user.getName(), LocalDateTimeUtil.format(LocalDateTime.now(), DatePattern.NORM_DATETIME_PATTERN)));
         });
         return StpUtil.getTokenInfo();
     }
