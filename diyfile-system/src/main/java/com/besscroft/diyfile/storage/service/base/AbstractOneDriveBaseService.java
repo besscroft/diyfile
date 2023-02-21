@@ -101,7 +101,7 @@ public abstract class AbstractOneDriveBaseService<T extends OneDriveParam> exten
      * 刷新 accessToken
      * @return 新的 accessToken
      */
-    private String refreshAccessToken() {
+    protected String refreshAccessToken() {
         OneDriveParam param = getInitParam();
         Map<String, String> map = new HashMap<>();
         map.put("client_id", param.getClientId());

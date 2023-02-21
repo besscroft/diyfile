@@ -7,7 +7,7 @@ on:
 
 jobs:
   docker:
-    name: Running Compile Java Multi-arch Docker Image=
+    name: Running Compile Java Multi-arch Docker Image
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
