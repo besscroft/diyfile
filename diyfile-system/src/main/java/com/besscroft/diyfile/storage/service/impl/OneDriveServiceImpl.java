@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.lang.NonNull;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,33 +38,57 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
 
     @Override
     public List<FileInfoVo> getFileList(@NonNull String folderPath) {
+        RetryTemplate template = RetryTemplate.builder()
+                .maxAttempts(3)
+                .fixedBackoff(2000)
+                .retryOn(DiyFileException.class)
+                .build();
         if (StrUtil.isBlank(folderPath)) {
             folderPath = initParam.getMountPath();
         }
-        try {
-            List<FileInfoVo> list = new ArrayList<>();
-            return handleFileList(list, folderPath);
-        } catch (Exception e) {
-            // TODO accessToken 过期处理优化，添加重试机制
-            refreshAccessToken();
-            throw new DiyFileException("获取 OneDrive 文件列表失败！");
-        }
+        String finalFolderPath = folderPath;
+        List<FileInfoVo> list = new ArrayList<>();
+        template.execute(ctx -> {
+            int retryCount = ctx.getRetryCount();
+            if (retryCount > 0) {
+                log.info("获取 OneDrive 文件列表失败，正在进行第 {} 次重试", retryCount);
+                refreshAccessToken();
+            }
+            try {
+                return handleFileList(list, finalFolderPath);
+            } catch (Exception e) {
+                throw new DiyFileException("获取 OneDrive 文件列表失败！");
+            }
+        });
+        return list;
     }
 
     @Override
     public FileInfoVo getFileInfo(@NonNull String filePath, String fileName) {
-        try {
-            String url = OneDriveConstants.DRIVE_FILE_URL.replace("{path}", filePath);
-            JSONObject result = JSONUtil.parseObj(OkHttps.sync(url)
-                    .addHeader("Authorization", getAccessToken())
-                    .get().getBody().toString());
-            log.info("获取 OneDrive 文件信息结果：{}", result);
-            return getConvertFileInfo(result, filePath);
-        } catch (Exception e) {
-            // TODO accessToken 过期处理优化，添加重试机制
-            refreshAccessToken();
-            throw new DiyFileException("获取 OneDrive 文件信息失败！");
-        }
+        String url = OneDriveConstants.DRIVE_FILE_URL.replace("{path}", filePath);
+        RetryTemplate template = RetryTemplate.builder()
+                .maxAttempts(3)
+                .fixedBackoff(2000)
+                .retryOn(DiyFileException.class)
+                .build();
+        FileInfoVo fileInfoVo = new FileInfoVo();
+        template.execute(ctx -> {
+            int retryCount = ctx.getRetryCount();
+            if (retryCount > 0) {
+                log.info("获取 OneDrive 文件信息失败，正在进行第 {} 次重试", retryCount);
+                refreshAccessToken();
+            }
+            try {
+                JSONObject result = JSONUtil.parseObj(OkHttps.sync(url)
+                        .addHeader("Authorization", getAccessToken())
+                        .get().getBody().toString());
+                log.info("获取 OneDrive 文件信息结果：{}", result);
+                return getConvertFileInfo(result, filePath);
+            } catch (Exception e) {
+                throw new DiyFileException("获取 OneDrive 文件信息失败！");
+            }
+        });
+        return fileInfoVo;
     }
 
     @Override
