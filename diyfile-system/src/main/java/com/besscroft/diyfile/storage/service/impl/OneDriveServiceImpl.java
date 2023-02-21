@@ -48,7 +48,7 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
         }
         String finalFolderPath = folderPath;
         List<FileInfoVo> list = new ArrayList<>();
-        template.execute(ctx -> {
+        return template.execute(ctx -> {
             int retryCount = ctx.getRetryCount();
             if (retryCount > 0) {
                 log.info("获取 OneDrive 文件列表失败，正在进行第 {} 次重试", retryCount);
@@ -60,7 +60,6 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
                 throw new DiyFileException("获取 OneDrive 文件列表失败！");
             }
         });
-        return list;
     }
 
     @Override
@@ -71,8 +70,7 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
                 .fixedBackoff(2000)
                 .retryOn(DiyFileException.class)
                 .build();
-        FileInfoVo fileInfoVo = new FileInfoVo();
-        template.execute(ctx -> {
+        return template.execute(ctx -> {
             int retryCount = ctx.getRetryCount();
             if (retryCount > 0) {
                 log.info("获取 OneDrive 文件信息失败，正在进行第 {} 次重试", retryCount);
@@ -88,7 +86,6 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
                 throw new DiyFileException("获取 OneDrive 文件信息失败！");
             }
         });
-        return fileInfoVo;
     }
 
     @Override
