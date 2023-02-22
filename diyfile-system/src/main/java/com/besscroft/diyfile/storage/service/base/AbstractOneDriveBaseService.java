@@ -2,6 +2,7 @@ package com.besscroft.diyfile.storage.service.base;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.besscroft.diyfile.common.constant.CacheConstants;
 import com.besscroft.diyfile.common.constant.storage.OneDriveConstants;
 import com.besscroft.diyfile.common.enums.StorageTypeEnum;
 import com.besscroft.diyfile.common.exception.DiyFileException;
@@ -19,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * @Description
+ * @Description OneDrive 基础服务
  * @Author Bess Croft
  * @Date 2023/2/15 10:40
  */
@@ -62,7 +63,7 @@ public abstract class AbstractOneDriveBaseService<T extends OneDriveParam> exten
      * @return OneDrive 驱动 id
      */
     protected String getDriveId() {
-        return Optional.ofNullable(caffeineCache.getIfPresent("storage:driveId:id:" + storageId))
+        return Optional.ofNullable(caffeineCache.getIfPresent(CacheConstants.ONEDRIVE_DRIVE_ID + storageId))
                 .orElseGet(this::getDriveIdRest).toString();
     }
 
@@ -78,7 +79,7 @@ public abstract class AbstractOneDriveBaseService<T extends OneDriveParam> exten
         try {
             Map map = objectMapper.readValue(result.getStr("parentReference"), Map.class);
             String driveId = map.get("driveId").toString();
-            caffeineCache.put("storage:driveId:id:" + storageId, driveId);
+            caffeineCache.put(CacheConstants.ONEDRIVE_DRIVE_ID + storageId, driveId);
             return driveId;
         } catch (JsonProcessingException e) {
             log.error("获取 OneDrive 驱动 id 失败！");
@@ -93,7 +94,7 @@ public abstract class AbstractOneDriveBaseService<T extends OneDriveParam> exten
     protected String getAccessToken() {
         Long storageId = getStorageId();
         // 先从缓存中获取 token，如果没有则从调用 REST API 获取
-        return Optional.ofNullable(caffeineCache.getIfPresent("storage:token:id:" + storageId))
+        return Optional.ofNullable(caffeineCache.getIfPresent(CacheConstants.ONEDRIVE_TOKEN + storageId))
                 .orElseGet(this::refreshAccessToken).toString();
     }
 
@@ -115,7 +116,7 @@ public abstract class AbstractOneDriveBaseService<T extends OneDriveParam> exten
                     .post();
             Map tokenResult = objectMapper.readValue(result.getBody().toString(), Map.class);
             String accessToken = tokenResult.get("access_token").toString();
-            caffeineCache.put("storage:token:id:" + getStorageId(), accessToken);
+            caffeineCache.put(CacheConstants.ONEDRIVE_TOKEN + getStorageId(), accessToken);
             return accessToken;
         } catch (Exception e) {
             throw new DiyFileException(e.getMessage());

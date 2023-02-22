@@ -71,7 +71,7 @@ public interface StorageService extends IService<Storage> {
     FileInitParam getFileInitParam(Long storageId);
 
     /**
-     * 获取默认存储 id
+     * 获取存储 id
      * @param storageKey 存储 key
      * @return 存储 id
      */
@@ -82,5 +82,11 @@ public interface StorageService extends IService<Storage> {
      * @return 存储列表
      */
     List<Storage> getEnableStorage();
+
+    /**
+     * 获取默认存储 id
+     * @return 存储 id
+     */
+    Long getDefaultStorageId();
 
 }
