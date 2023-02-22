@@ -28,10 +28,10 @@
 docker run -d --name diyfile \
   -p 8080:8080 \
   -e JAVA_OPTS="-Xms512m -Xmx512m -Duser.timezone=GMT+08 -Dfile.encoding=UTF8" \
-  -e DB_URL="localhost:3306" \
-  -e DB_NAME="diyfile" \
-  -e DB_USERNAME="root" \
-  -e DB_PASSWORD="666666" \
+  -e DB_URL="数据库地址和IP，如 localhost:3306" \
+  -e DB_NAME="数据库名称，如 diyfile" \
+  -e DB_USERNAME="数据库用户名，如 root" \
+  -e DB_PASSWORD="数据库密码，如 666666" \
   besscroft/diyfile:latest
 ```
 
