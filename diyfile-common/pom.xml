@@ -20,11 +20,6 @@
             <artifactId>diyfile-doc</artifactId>
             <version>${revision}</version>
         </dependency>
-        <!-- mybatis-spring-boot-starter -->
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-        </dependency>
         <!-- mybatis-plus -->
         <dependency>
             <groupId>com.baomidou</groupId>
