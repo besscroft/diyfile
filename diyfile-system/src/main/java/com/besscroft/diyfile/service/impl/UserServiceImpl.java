@@ -48,6 +48,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public SaTokenInfo login(String username, String password) {
         User user = this.baseMapper.selectByUsername(username);
         Assert.notNull(user, "账号或密码错误！");
+        if (Objects.equals(user.getStatus(), SystemConstants.STATUS_NO))
+            throw new DiyFileException(String.format("账号：%s 已被禁用，请联系管理员！", username));
         log.info("用户发起登录请求:{}", username);
         if (!Objects.equals(SecureUtil.sha256(password), user.getPassword()))
             throw new DiyFileException("账号或密码错误！");

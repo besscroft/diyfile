@@ -31,12 +31,11 @@
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <springdoc.version>2.0.2</springdoc.version>
         <sa-token.version>1.34.0</sa-token.version>
-        <hutool-all.version>5.8.11</hutool-all.version>
-        <mybatis.version>3.0.1</mybatis.version>
+        <hutool-all.version>5.8.12</hutool-all.version>
         <pagehelper.version>1.4.6</pagehelper.version>
         <oshi.version>6.4.0</oshi.version>
         <okhttps.version>3.5.3</okhttps.version>
-        <caffeine.version>3.1.2</caffeine.version>
+        <caffeine.version>3.1.4</caffeine.version>
         <aliyun-sdk-oss.version>3.16.0</aliyun-sdk-oss.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <activation.version>1.1.1</activation.version>
@@ -101,12 +100,6 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.version}</version>
-            </dependency>
-            <!-- mybatis-spring-boot-starter -->
-            <dependency>
-                <groupId>org.mybatis.spring.boot</groupId>
-                <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>${mybatis.version}</version>
             </dependency>
             <!-- mybatis-plus -->
             <dependency>
