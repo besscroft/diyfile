@@ -3,6 +3,7 @@ package com.besscroft.diyfile.storage.service.impl;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONUtil;
+import com.besscroft.diyfile.common.constant.FileConstants;
 import com.besscroft.diyfile.common.enums.StorageTypeEnum;
 import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.storage.init.LocalParam;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Description 本地文件存储服务实现类
@@ -58,7 +60,19 @@ public class LocalServiceImpl extends AbstractFileBaseService<LocalParam> {
 
     @Override
     public FileInfoVo getFileInfo(String filePath, String fileName) {
-        return null;
+        FileInfoVo fileInfoVo = new FileInfoVo();
+        File file = new File(filePath);
+        if (file.exists() && file.isFile() && Objects.equals(file.getName(), fileName)) {
+            fileInfoVo.setName(file.getName());
+            fileInfoVo.setSize(file.length());
+            fileInfoVo.setPath(file.getPath());
+            fileInfoVo.setLastModifiedDateTime(LocalDateTimeUtil.of(file.lastModified()));
+            // TODO 代理链接生成
+            fileInfoVo.setUrl(file.getAbsolutePath());
+            fileInfoVo.setType(FileConstants.FILE);
+            fileInfoVo.setFile(null);
+        }
+        return fileInfoVo;
     }
 
     @Override
@@ -103,7 +117,7 @@ public class LocalServiceImpl extends AbstractFileBaseService<LocalParam> {
                 fileInfoVo.setPath(file.getPath());
                 fileInfoVo.setLastModifiedDateTime(LocalDateTimeUtil.of(file.lastModified()));
                 fileInfoVo.setUrl(file.getAbsolutePath());
-                fileInfoVo.setType("folder");
+                fileInfoVo.setType(FileConstants.FOLDER);
                 fileInfoVo.setFile(null);
                 fileInfoVoList.add(fileInfoVo);
             } else {
@@ -114,7 +128,7 @@ public class LocalServiceImpl extends AbstractFileBaseService<LocalParam> {
                 fileInfoVo.setPath(file.getPath());
                 fileInfoVo.setLastModifiedDateTime(LocalDateTimeUtil.of(file.lastModified()));
                 fileInfoVo.setUrl(file.getAbsolutePath());
-                fileInfoVo.setType("file");
+                fileInfoVo.setType(FileConstants.FILE);
                 fileInfoVo.setFile(null);
                 fileInfoVoList.add(fileInfoVo);
             }

@@ -2,6 +2,7 @@ package com.besscroft.diyfile.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.besscroft.diyfile.common.constant.CacheConstants;
 import com.besscroft.diyfile.common.converter.StorageConverterMapper;
 import com.besscroft.diyfile.common.entity.Storage;
 import com.besscroft.diyfile.common.param.FileInitParam;
@@ -13,12 +14,14 @@ import com.besscroft.diyfile.service.FileService;
 import com.besscroft.diyfile.service.StorageService;
 import com.besscroft.diyfile.storage.context.StorageApplicationContext;
 import com.besscroft.diyfile.storage.service.base.AbstractFileBaseService;
+import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @Description 文件服务实现类
@@ -33,17 +36,23 @@ public class FileServiceImpl implements FileService {
     private final StorageApplicationContext storageApplicationContext;
     private final StorageMapper storageMapper;
     private final StorageService storageService;
+    private final Cache<String, Object> caffeineCache;
 
     @Override
     public StorageInfoVo defaultStorage() {
-        Storage storage = storageMapper.selectByDefault();
-        if (Objects.isNull(storage)) return new StorageInfoVo();
-        return StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
+        return (StorageInfoVo) Optional.ofNullable(caffeineCache.getIfPresent(CacheConstants.DEFAULT_STORAGE))
+                .orElseGet(() -> {
+                    Storage storage = storageMapper.selectByDefault();
+                    if (Objects.isNull(storage)) return new StorageInfoVo();
+                    StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
+                    caffeineCache.put(CacheConstants.DEFAULT_STORAGE, vo);
+                    return vo;
+                });
     }
 
     @Override
     public List<FileInfoVo> defaultItem() {
-        Long storageId = storageMapper.selectIdByDefault();
+        Long storageId = storageService.getDefaultStorageId();
         if (Objects.isNull(storageId)) return CollUtil.newArrayList();
         AbstractFileBaseService<FileInitParam> service = storageApplicationContext.getServiceByStorageId(storageId);
         return service.getFileList(null);

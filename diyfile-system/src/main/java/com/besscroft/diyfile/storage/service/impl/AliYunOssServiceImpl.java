@@ -6,6 +6,7 @@ import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.ListObjectsRequest;
 import com.aliyun.oss.model.OSSObjectSummary;
 import com.aliyun.oss.model.ObjectListing;
+import com.besscroft.diyfile.common.constant.FileConstants;
 import com.besscroft.diyfile.common.enums.StorageTypeEnum;
 import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.storage.init.AliYunOssParam;
@@ -90,7 +91,7 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
         fileInfoVo.setName(fileName);
         fileInfoVo.setSize(0L);
         fileInfoVo.setLastModifiedDateTime(null);
-        fileInfoVo.setType("file");
+        fileInfoVo.setType(FileConstants.FILE);
         fileInfoVo.setPath(filePath);
         fileInfoVo.setFile(null);
         // 设置文件下载地址
@@ -147,7 +148,7 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
             fileInfoVo.setLastModifiedDateTime(LocalDateTimeUtil.of(summary.getLastModified()));
             fileInfoVo.setSize(summary.getSize());
             fileInfoVo.setPath(folderPath);
-            fileInfoVo.setType("file");
+            fileInfoVo.setType(FileConstants.FILE);
             fileInfoVo.setUrl(getObjectUrl(initParam.getBucketName(), summary.getKey()));
             infoVoList.add(fileInfoVo);
         }
@@ -159,7 +160,7 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
             fileInfoVo.setLastModifiedDateTime(null);
             fileInfoVo.setSize(calculateFolderLength(ossClient, initParam.getBucketName(), prefix));
             fileInfoVo.setPath(folderPath);
-            fileInfoVo.setType("folder");
+            fileInfoVo.setType(FileConstants.FOLDER);
             infoVoList.add(fileInfoVo);
         }
         return infoVoList;
@@ -192,6 +193,7 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
 
     @Override
     public String getObjectUrl(String bucketName, String objectName) {
+        // TODO 获取代理地址
         try {
             URL url = new URL(initParam.getEndpoint());
             StringBuffer stringBuffer = new StringBuffer();

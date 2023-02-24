@@ -6,6 +6,7 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.besscroft.diyfile.common.constant.CacheConstants;
 import com.besscroft.diyfile.common.constant.RoleConstants;
 import com.besscroft.diyfile.common.constant.SystemConstants;
 import com.besscroft.diyfile.common.converter.UserConverterMapper;
@@ -17,6 +18,7 @@ import com.besscroft.diyfile.mapper.UserMapper;
 import com.besscroft.diyfile.message.PushService;
 import com.besscroft.diyfile.service.SystemConfigService;
 import com.besscroft.diyfile.service.UserService;
+import com.github.benmanes.caffeine.cache.Cache;
 import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +42,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     private final PushService pushService;
     private final SystemConfigService systemConfigService;
+    private final Cache<String, Object> caffeineCache;
 
     @Override
     public SaTokenInfo login(String username, String password) {
@@ -64,7 +67,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public Map<String, Object> info() {
         long userId = StpUtil.getLoginIdAsLong();
-        User user = this.baseMapper.selectById(userId);
+        User user = getCacheUserById(userId);
         Assert.notNull(user, "暂未登录！");
         Map<String, Object> map = new HashMap<>();
         map.put("userName", user.getName());
@@ -82,11 +85,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteUser(Long userId) {
-        // TODO 适配后需改成上下文中获取，而不是直接查库
-        User user = this.baseMapper.selectById(userId);
+        User user = getCacheUserById(userId);
         Assert.notNull(user, "用户不存在！");
         if (Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))
             throw new DiyFileException("超级管理员不允许被删除！");
+        caffeineCache.invalidate(CacheConstants.USER + userId);
         Assert.isTrue(this.baseMapper.deleteById(userId) > 0, "用户删除失败！");
     }
 
@@ -97,7 +100,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public User getUserById(Long id) {
-        return this.baseMapper.selectById(id);
+        return getCacheUserById(id);
     }
 
     @Override
@@ -124,6 +127,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (!(Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN) || Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_ADMIN))
                 && !Objects.equals(oldUser.getId(), user.getId()))
             throw new DiyFileException("违反规则！更新用户失败！");
+        caffeineCache.invalidate(CacheConstants.USER + user.getId());
         Assert.isTrue(this.baseMapper.updateById(user) > 0, "更新用户失败！");
     }
 
@@ -134,6 +138,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))
             throw new DiyFileException("超级管理员不允许被禁用！");
         user.setStatus(status);
+        caffeineCache.invalidate(CacheConstants.USER + user.getId());
         Assert.isTrue(this.baseMapper.updateById(user) > 0, "更新用户状态失败！");
     }
 
@@ -148,7 +153,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (!Objects.equals(SecureUtil.sha256(oldPassword), password))
             throw new DiyFileException("旧密码错误！");
         String sha256Pwd = SecureUtil.sha256(newPassword);
+        caffeineCache.invalidate(CacheConstants.USER + userId);
         this.baseMapper.updatePasswordById(userId, sha256Pwd);
+    }
+
+    /**
+     * 从缓存中获取用户信息
+     * @param userId 用户 id
+     * @return 用户信息
+     */
+    private User getCacheUserById(Long userId) {
+        return (User) Optional.ofNullable(caffeineCache.getIfPresent(CacheConstants.USER + userId))
+                .orElseGet(() -> {
+                    User user = this.baseMapper.selectById(userId);
+                    caffeineCache.put(CacheConstants.USER + userId, user);
+                    return user;
+                });
     }
 
 }

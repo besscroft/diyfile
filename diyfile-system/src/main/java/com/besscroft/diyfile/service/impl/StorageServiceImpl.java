@@ -2,6 +2,7 @@ package com.besscroft.diyfile.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.besscroft.diyfile.common.constant.CacheConstants;
 import com.besscroft.diyfile.common.constant.SystemConstants;
 import com.besscroft.diyfile.common.converter.StorageConverterMapper;
 import com.besscroft.diyfile.common.entity.Storage;
@@ -17,6 +18,7 @@ import com.besscroft.diyfile.mapper.StorageMapper;
 import com.besscroft.diyfile.service.StorageConfigService;
 import com.besscroft.diyfile.service.StorageService;
 import com.besscroft.diyfile.storage.context.StorageApplicationContext;
+import com.github.benmanes.caffeine.cache.Cache;
 import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,6 +28,7 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @Description 存储服务实现类
@@ -39,6 +42,7 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
     private final StorageConfigService storageConfigService;
     private final StorageConfigMapper storageConfigMapper;
     private final StorageApplicationContext storageApplicationContext;
+    private final Cache<String, Object> caffeineCache;
 
     @Override
     public List<Storage> storagePage(Integer pageNum, Integer pageSize, Integer type) {
@@ -48,6 +52,8 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
 
     @Override
     public void deleteStorage(Long storageId) {
+        caffeineCache.invalidate(CacheConstants.DEFAULT_STORAGE);
+        caffeineCache.invalidate(CacheConstants.ENABLE_STORAGE);
         Assert.isTrue(this.baseMapper.deleteById(storageId) > 0, "存储删除失败！");
         Assert.isTrue(storageConfigMapper.deleteByStorageId(storageId) > 0, "存储删除失败！");
     }
@@ -69,6 +75,8 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         if (!Objects.equals(storage.getType(), oldStorage.getType()))
             throw new DiyFileException("存储类型不允许修改！");
         storage.setStorageKey(oldStorage.getStorageKey());
+        // 移除缓存
+        caffeineCache.invalidate(CacheConstants.DEFAULT_STORAGE);
         this.baseMapper.updateById(storage);
         storageConfigService.updateBatchById(param.getConfigList());
     }
@@ -119,6 +127,8 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         Assert.notNull(storage, "存储不存在！");
         this.baseMapper.updateDefaultByNo();
         storage.setDefaultStatus(SystemConstants.STATUS_OK);
+        // 移除缓存
+        caffeineCache.invalidate(CacheConstants.DEFAULT_STORAGE);
         Assert.isTrue(this.baseMapper.updateById(storage) > 0, "设置默认存储失败！");
     }
 
@@ -138,7 +148,25 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
 
     @Override
     public List<Storage> getEnableStorage() {
-        return this.baseMapper.selectAllByEnable();
+        return (List<Storage>) Optional.ofNullable(caffeineCache.getIfPresent(CacheConstants.ENABLE_STORAGE))
+                .orElseGet(() -> {
+                    List<Storage> storageList = this.baseMapper.selectAllByEnable();
+                    caffeineCache.put(CacheConstants.ENABLE_STORAGE, storageList);
+                    return storageList;
+                });
+    }
+
+    @Override
+    public Long getDefaultStorageId() {
+        StorageInfoVo infoVo = (StorageInfoVo) Optional.ofNullable(caffeineCache.getIfPresent(CacheConstants.DEFAULT_STORAGE))
+                .orElseGet(() -> {
+                    Storage storage = this.baseMapper.selectByDefault();
+                    if (Objects.isNull(storage)) return new StorageInfoVo();
+                    StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
+                    caffeineCache.put(CacheConstants.DEFAULT_STORAGE, vo);
+                    return vo;
+                });
+        return infoVo.getId();
     }
 
 }
