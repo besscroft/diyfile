@@ -10,10 +10,10 @@ import org.springframework.cache.annotation.EnableCaching;
 @EnableCaching
 @MapperScan("com.besscroft.diyfile.mapper")
 @SpringBootApplication(scanBasePackages = "com.besscroft.diyfile")
-public class XanaduApplication {
+public class DiyFileApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(XanaduApplication.class, args);
+        SpringApplication.run(DiyFileApplication.class, args);
         log.info("""
                             /\\             /\\
                            |`\\\\_,--="=--,_//`|
