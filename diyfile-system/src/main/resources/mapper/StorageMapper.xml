@@ -79,6 +79,28 @@
             default_status = 1
     </select>
 
+    <select id="selectByStorageKey" resultMap="storageMap">
+        SELECT
+            id,
+            name,
+            storage_key,
+            type,
+            enable,
+            default_status,
+            remark,
+            creator,
+            updater,
+            create_time,
+            update_time,
+            del
+        FROM
+            storage
+        WHERE
+            del = 1
+        AND
+            storage_key = #{storageKey}
+    </select>
+
     <select id="selectIdByStorageKey" resultType="java.lang.Long">
         SELECT
             id
@@ -86,8 +108,6 @@
             storage
         WHERE
             del = 1
-        AND
-            enable = 1
         AND
             storage_key = #{storageKey}
     </select>

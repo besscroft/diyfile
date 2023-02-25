@@ -51,6 +51,13 @@ public interface StorageService extends IService<Storage> {
     StorageInfoVo getInfo(Long storageId);
 
     /**
+     * 根据存储 key 获取存储配置详情
+     * @param storageKey 存储 key
+     * @return 存储配置详情
+     */
+    StorageInfoVo getInfoByStorageKey(String storageKey);
+
+    /**
      * 更新存储启用状态
      * @param storageId 存储 id
      * @param status 启用状态

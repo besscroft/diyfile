@@ -13,6 +13,12 @@ public interface CacheConstants {
     /** 已启用存储信息 */
     String ENABLE_STORAGE = "storage:enableStorage";
 
+    /** 存储信息(id) */
+    String STORAGE_ID = "storage:storageId:";
+
+    /** 存储信息(storageKey) */
+    String STORAGE_KEY = "storage:storageKey:";
+
     /** OneDrive driveId */
     String ONEDRIVE_DRIVE_ID = "storage:onedrive:driveId:storageId:";
 

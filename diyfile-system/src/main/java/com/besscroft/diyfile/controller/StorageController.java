@@ -111,6 +111,13 @@ public class StorageController {
         return CommonResult.success(storageService.getInfo(storageId));
     }
 
+    @SaIgnore
+    @Operation(summary = "存储详情接口(不鉴权，脱敏处理)")
+    @GetMapping("/infoByKey/{storageKey}")
+    public CommonResult<StorageInfoVo> info(@PathVariable(name = "storageKey") String storageKey) {
+        return CommonResult.success(storageService.getInfoByStorageKey(storageKey));
+    }
+
     @Operation(summary = "存储启用状态更新接口")
     @SaCheckRole(
             value = {

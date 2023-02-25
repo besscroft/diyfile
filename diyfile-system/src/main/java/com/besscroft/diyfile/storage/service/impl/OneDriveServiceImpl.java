@@ -91,7 +91,7 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
 
     @Override
     public void createItem(String folderPath, String fileName) {
-
+        throw new DiyFileException("暂不支持创建文件！");
     }
 
     @Override
@@ -119,7 +119,7 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
 
     @Override
     public void uploadItem(String folderPath, String fileName) {
-
+        throw new DiyFileException("暂不支持代理上传文件，请通过直链上传！");
     }
 
     @Override

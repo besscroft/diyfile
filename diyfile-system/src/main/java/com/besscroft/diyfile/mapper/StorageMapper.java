@@ -33,6 +33,13 @@ public interface StorageMapper extends BaseMapper<Storage> {
     Storage selectByDefault();
 
     /**
+     * 根据存储 key 查询存储
+     * @param storageKey 存储 key
+     * @return 存储
+     */
+    Storage selectByStorageKey(@Param("storageKey") String storageKey);
+
+    /**
      * 根据存储 key 查询存储 id
      * @param storageKey 存储 key
      * @return 存储 id

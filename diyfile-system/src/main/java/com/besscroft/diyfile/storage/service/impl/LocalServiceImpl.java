@@ -77,22 +77,22 @@ public class LocalServiceImpl extends AbstractFileBaseService<LocalParam> {
 
     @Override
     public void createItem(String folderPath, String fileName) {
-
+        throw new DiyFileException("本地文件存储不支持创建文件！");
     }
 
     @Override
     public void updateItem(String filePath, String fileName) {
-
+        throw new DiyFileException("本地文件存储不支持更新文件！");
     }
 
     @Override
     public void deleteItem(String filePath) {
-
+        throw new DiyFileException("本地文件存储不支持删除文件！");
     }
 
     @Override
     public void uploadItem(String folderPath, String fileName) {
-
+        throw new DiyFileException("本地文件存储不支持上传文件！");
     }
 
     @Override
