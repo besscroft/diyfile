@@ -1,6 +1,7 @@
 package com.besscroft.diyfile.storage.service.impl;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
+import cn.hutool.core.util.StrUtil;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.ListObjectsRequest;
@@ -112,7 +113,11 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
     @Override
     public void deleteItem(String filePath) {
         // 删除文件或目录。如果要删除目录，目录必须为空。
-        ossClient.deleteObject(initParam.getBucketName(), filePath);
+        if (StrUtil.sub(filePath, 0, 2).equals("//")) {
+            ossClient.deleteObject(initParam.getBucketName(), StrUtil.sub(filePath, 2, filePath.length()));
+        } else {
+            ossClient.deleteObject(initParam.getBucketName(), StrUtil.sub(filePath, 1, filePath.length()));
+        }
     }
 
     @Override
@@ -201,8 +206,13 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
                     .append("://")
                     .append(bucketName)
                     .append(".")
-                    .append(url.getHost())
-                    .append(objectName);
+                    .append(url.getHost());
+            if (StrUtil.sub(objectName, 0, 1).equals("/")) {
+                stringBuffer.append(objectName);
+            } else {
+                stringBuffer.append("/")
+                            .append(objectName);
+            }
             return stringBuffer.toString();
         } catch (MalformedURLException e) {
             log.error("地址获取失败！:{}", e);
