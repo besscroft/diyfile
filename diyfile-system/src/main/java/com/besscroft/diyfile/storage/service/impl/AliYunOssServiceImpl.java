@@ -202,7 +202,6 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
                     .append(bucketName)
                     .append(".")
                     .append(url.getHost())
-                    .append("/")
                     .append(objectName);
             return stringBuffer.toString();
         } catch (MalformedURLException e) {
