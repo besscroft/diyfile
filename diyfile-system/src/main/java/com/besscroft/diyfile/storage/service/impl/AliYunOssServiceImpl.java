@@ -101,12 +101,12 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
 
     @Override
     public void createItem(String folderPath, String fileName) {
-
+        throw new DiyFileException("阿里云 OSS 服务不支持创建文件夹");
     }
 
     @Override
     public void updateItem(String filePath, String fileName) {
-
+        throw new DiyFileException("阿里云 OSS 服务不支持更新文件");
     }
 
     @Override
@@ -117,7 +117,7 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
 
     @Override
     public void uploadItem(String folderPath, String fileName) {
-
+        throw new DiyFileException("阿里云 OSS 服务不支持上传文件");
     }
 
     @Override

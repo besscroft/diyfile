@@ -83,20 +83,35 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
 
     @Override
     public StorageInfoVo getInfo(Long storageId) {
-        Storage storage = this.baseMapper.selectById(storageId);
-        StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
-        // 配置信息查询
-        List<StorageConfig> configList = storageConfigMapper.selectByStorageId(storageId);
-        for (StorageConfig config: configList) {
-            if (Objects.equals(config.getConfigKey(), "client_secret")) {
-                config.setConfigValue(StrUtil.sub(config.getConfigValue(), 0, 15) + "***");
-            }
-            if (Objects.equals(config.getConfigKey(), "refresh_token")) {
-                config.setConfigValue(StrUtil.sub(config.getConfigValue(), 0, 15) + "***");
-            }
-        }
-        vo.setConfigList(configList);
-        return vo;
+        return (StorageInfoVo) Optional.ofNullable(caffeineCache.getIfPresent(CacheConstants.STORAGE_ID + storageId))
+                .orElseGet(() -> {
+                    Storage storage = this.baseMapper.selectById(storageId);
+                    StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
+                    // 配置信息查询
+                    List<StorageConfig> configList = storageConfigMapper.selectByStorageId(storageId);
+                    for (StorageConfig config: configList) {
+                        if (Objects.equals(config.getConfigKey(), "client_secret")) {
+                            config.setConfigValue(StrUtil.sub(config.getConfigValue(), 0, 15) + "***");
+                        }
+                        if (Objects.equals(config.getConfigKey(), "refresh_token")) {
+                            config.setConfigValue(StrUtil.sub(config.getConfigValue(), 0, 15) + "***");
+                        }
+                    }
+                    vo.setConfigList(configList);
+                    caffeineCache.put(CacheConstants.STORAGE_ID + vo.getId(), vo);
+                    return vo;
+                });
+    }
+
+    @Override
+    public StorageInfoVo getInfoByStorageKey(String storageKey) {
+        return (StorageInfoVo) Optional.ofNullable(caffeineCache.getIfPresent(CacheConstants.STORAGE_KEY + storageKey))
+                .orElseGet(() -> {
+                    Storage storage = this.baseMapper.selectByStorageKey(storageKey);
+                    StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
+                    caffeineCache.put(CacheConstants.STORAGE_KEY + vo.getId(), vo);
+                    return vo;
+                });
     }
 
     @Override
