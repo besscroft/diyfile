@@ -13,6 +13,9 @@ public interface CacheConstants {
     /** 已启用存储信息 */
     String ENABLE_STORAGE = "storage:enableStorage";
 
+    /** 存储 id(根据 key 返回 id) */
+    String STORAGE_ID_BY_KEY = "storageId:storageKey:";
+
     /** 存储信息(id) */
     String STORAGE_ID = "storage:storageId:";
 

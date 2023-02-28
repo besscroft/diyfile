@@ -18,9 +18,9 @@ import com.besscroft.diyfile.mapper.StorageMapper;
 import com.besscroft.diyfile.service.StorageConfigService;
 import com.besscroft.diyfile.service.StorageService;
 import com.besscroft.diyfile.storage.context.StorageApplicationContext;
-import com.github.benmanes.caffeine.cache.Cache;
 import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,6 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @Description 存储服务实现类
@@ -42,7 +41,6 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
     private final StorageConfigService storageConfigService;
     private final StorageConfigMapper storageConfigMapper;
     private final StorageApplicationContext storageApplicationContext;
-    private final Cache<String, Object> caffeineCache;
 
     @Override
     public List<Storage> storagePage(Integer pageNum, Integer pageSize, Integer type) {
@@ -51,9 +49,13 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
     }
 
     @Override
+    @CacheEvict(value = {
+            CacheConstants.DEFAULT_STORAGE,
+            CacheConstants.STORAGE_ID,
+            CacheConstants.STORAGE_KEY,
+            CacheConstants.ENABLE_STORAGE
+    }, allEntries = true)
     public void deleteStorage(Long storageId) {
-        caffeineCache.invalidate(CacheConstants.DEFAULT_STORAGE);
-        caffeineCache.invalidate(CacheConstants.ENABLE_STORAGE);
         Assert.isTrue(this.baseMapper.deleteById(storageId) > 0, "存储删除失败！");
         Assert.isTrue(storageConfigMapper.deleteByStorageId(storageId) > 0, "存储删除失败！");
     }
@@ -69,52 +71,55 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(value = {
+            CacheConstants.DEFAULT_STORAGE,
+            CacheConstants.STORAGE_ID,
+            CacheConstants.STORAGE_KEY,
+            CacheConstants.ENABLE_STORAGE
+    }, allEntries = true)
     public void updateStorage(StorageUpdateParam param) {
         Storage storage = StorageConverterMapper.INSTANCE.UpdateParamToStorage(param);
         Storage oldStorage = this.baseMapper.selectById(storage.getId());
         if (!Objects.equals(storage.getType(), oldStorage.getType()))
             throw new DiyFileException("存储类型不允许修改！");
         storage.setStorageKey(oldStorage.getStorageKey());
-        // 移除缓存
-        caffeineCache.invalidate(CacheConstants.DEFAULT_STORAGE);
         this.baseMapper.updateById(storage);
         storageConfigService.updateBatchById(param.getConfigList());
     }
 
     @Override
+    @Cacheable(value = CacheConstants.STORAGE_ID, key = "#storageId", unless = "#result == null")
     public StorageInfoVo getInfo(Long storageId) {
-        return (StorageInfoVo) Optional.ofNullable(caffeineCache.getIfPresent(CacheConstants.STORAGE_ID + storageId))
-                .orElseGet(() -> {
-                    Storage storage = this.baseMapper.selectById(storageId);
-                    StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
-                    // 配置信息查询
-                    List<StorageConfig> configList = storageConfigMapper.selectByStorageId(storageId);
-                    for (StorageConfig config: configList) {
-                        if (Objects.equals(config.getConfigKey(), "client_secret")) {
-                            config.setConfigValue(StrUtil.sub(config.getConfigValue(), 0, 15) + "***");
-                        }
-                        if (Objects.equals(config.getConfigKey(), "refresh_token")) {
-                            config.setConfigValue(StrUtil.sub(config.getConfigValue(), 0, 15) + "***");
-                        }
-                    }
-                    vo.setConfigList(configList);
-                    caffeineCache.put(CacheConstants.STORAGE_ID + vo.getId(), vo);
-                    return vo;
-                });
+        Storage storage = this.baseMapper.selectById(storageId);
+        StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
+        // 配置信息查询
+        List<StorageConfig> configList = storageConfigMapper.selectByStorageId(storageId);
+        for (StorageConfig config: configList) {
+            if (Objects.equals(config.getConfigKey(), "client_secret")) {
+                config.setConfigValue(StrUtil.sub(config.getConfigValue(), 0, 15) + "***");
+            }
+            if (Objects.equals(config.getConfigKey(), "refresh_token")) {
+                config.setConfigValue(StrUtil.sub(config.getConfigValue(), 0, 15) + "***");
+            }
+        }
+        vo.setConfigList(configList);
+        return vo;
     }
 
     @Override
+    @Cacheable(value = CacheConstants.STORAGE_KEY, key = "#storageKey", unless = "#result == null")
     public StorageInfoVo getInfoByStorageKey(String storageKey) {
-        return (StorageInfoVo) Optional.ofNullable(caffeineCache.getIfPresent(CacheConstants.STORAGE_KEY + storageKey))
-                .orElseGet(() -> {
-                    Storage storage = this.baseMapper.selectByStorageKey(storageKey);
-                    StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
-                    caffeineCache.put(CacheConstants.STORAGE_KEY + vo.getId(), vo);
-                    return vo;
-                });
+        Storage storage = this.baseMapper.selectByStorageKey(storageKey);
+        return StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
     }
 
     @Override
+    @CacheEvict(value = {
+            CacheConstants.DEFAULT_STORAGE,
+            CacheConstants.STORAGE_ID,
+            CacheConstants.STORAGE_KEY,
+            CacheConstants.ENABLE_STORAGE
+    }, allEntries = true)
     public void updateStatus(Long storageId, Integer status) {
         Storage storage = this.baseMapper.selectById(storageId);
         Assert.notNull(storage, "存储不存在！");
@@ -137,13 +142,17 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(value = {
+            CacheConstants.DEFAULT_STORAGE,
+            CacheConstants.STORAGE_ID,
+            CacheConstants.STORAGE_KEY,
+            CacheConstants.ENABLE_STORAGE
+    }, allEntries = true)
     public void setDefault(Long storageId) {
         Storage storage = this.baseMapper.selectById(storageId);
         Assert.notNull(storage, "存储不存在！");
         this.baseMapper.updateDefaultByNo();
         storage.setDefaultStatus(SystemConstants.STATUS_OK);
-        // 移除缓存
-        caffeineCache.invalidate(CacheConstants.DEFAULT_STORAGE);
         Assert.isTrue(this.baseMapper.updateById(storage) > 0, "设置默认存储失败！");
     }
 
@@ -156,32 +165,24 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
     }
 
     @Override
-    @Cacheable(cacheNames = "storageKey" ,key = "#storageKey", unless = "#result == null")
+    @Cacheable(value = CacheConstants.STORAGE_ID_BY_KEY ,key = "#storageKey", unless = "#result == null")
     public Long getStorageIdByStorageKey(String storageKey) {
         return this.baseMapper.selectIdByStorageKey(storageKey);
     }
 
     @Override
+    @Cacheable(value = CacheConstants.ENABLE_STORAGE, unless = "#result == null")
     public List<Storage> getEnableStorage() {
-        return (List<Storage>) Optional.ofNullable(caffeineCache.getIfPresent(CacheConstants.ENABLE_STORAGE))
-                .orElseGet(() -> {
-                    List<Storage> storageList = this.baseMapper.selectAllByEnable();
-                    caffeineCache.put(CacheConstants.ENABLE_STORAGE, storageList);
-                    return storageList;
-                });
+        return this.baseMapper.selectAllByEnable();
     }
 
     @Override
+    @Cacheable(value = CacheConstants.DEFAULT_STORAGE, unless = "#result == null")
     public Long getDefaultStorageId() {
-        StorageInfoVo infoVo = (StorageInfoVo) Optional.ofNullable(caffeineCache.getIfPresent(CacheConstants.DEFAULT_STORAGE))
-                .orElseGet(() -> {
-                    Storage storage = this.baseMapper.selectByDefault();
-                    if (Objects.isNull(storage)) return new StorageInfoVo();
-                    StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
-                    caffeineCache.put(CacheConstants.DEFAULT_STORAGE, vo);
-                    return vo;
-                });
-        return infoVo.getId();
+        Storage storage = this.baseMapper.selectByDefault();
+        if (Objects.isNull(storage)) return null;
+        StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
+        return vo.getId();
     }
 
 }

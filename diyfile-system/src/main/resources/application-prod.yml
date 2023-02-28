@@ -60,10 +60,10 @@ management:
 # SpringDoc 配置
 springdoc:
   api-docs:
-    enabled: false
+    enabled: ${DOC_ENABLE:false}
     path: "/api-docs"
   swagger-ui:
-    enabled: false
+    enabled: ${DOC_UI_ENABLE:false}
     path: "/swagger-ui.html"
   # 配置扫描的包
   packagesToScan: com.besscroft.diyfile.controller

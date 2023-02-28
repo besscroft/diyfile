@@ -14,14 +14,13 @@ import com.besscroft.diyfile.service.FileService;
 import com.besscroft.diyfile.service.StorageService;
 import com.besscroft.diyfile.storage.context.StorageApplicationContext;
 import com.besscroft.diyfile.storage.service.base.AbstractFileBaseService;
-import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @Description 文件服务实现类
@@ -36,18 +35,13 @@ public class FileServiceImpl implements FileService {
     private final StorageApplicationContext storageApplicationContext;
     private final StorageMapper storageMapper;
     private final StorageService storageService;
-    private final Cache<String, Object> caffeineCache;
 
     @Override
+    @Cacheable(value = CacheConstants.DEFAULT_STORAGE, unless = "#result == null")
     public StorageInfoVo defaultStorage() {
-        return (StorageInfoVo) Optional.ofNullable(caffeineCache.getIfPresent(CacheConstants.DEFAULT_STORAGE))
-                .orElseGet(() -> {
-                    Storage storage = storageMapper.selectByDefault();
-                    if (Objects.isNull(storage)) return new StorageInfoVo();
-                    StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
-                    caffeineCache.put(CacheConstants.DEFAULT_STORAGE, vo);
-                    return vo;
-                });
+        Storage storage = storageMapper.selectByDefault();
+        if (Objects.isNull(storage)) return new StorageInfoVo();
+        return StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
     }
 
     @Override
