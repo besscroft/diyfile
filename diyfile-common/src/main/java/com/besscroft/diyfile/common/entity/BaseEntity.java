@@ -26,12 +26,12 @@ public class BaseEntity implements Serializable {
 
     /** 创建者 */
     @Schema(title = "创建者", type = "String")
-    @TableField(fill = FieldFill.INSERT)
+    @TableField(fill = FieldFill.INSERT, value = "creator")
     private String creator;
 
     /** 更新者 */
     @Schema(title = "更新者", type = "String")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @TableField(fill = FieldFill.INSERT_UPDATE, value = "updater")
     private String updater;
 
     /** 创建时间 */
@@ -39,7 +39,7 @@ public class BaseEntity implements Serializable {
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @TableField(fill = FieldFill.INSERT)
+    @TableField(fill = FieldFill.INSERT, value = "create_time")
     private LocalDateTime createTime;
 
     /** 更新时间 */
@@ -47,7 +47,7 @@ public class BaseEntity implements Serializable {
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @TableField(fill = FieldFill.INSERT_UPDATE, value = "update_time")
     private LocalDateTime updateTime;
 
     /**
