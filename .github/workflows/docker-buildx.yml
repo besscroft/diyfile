@@ -33,7 +33,7 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v2
       - name: Build and push diyfile version
-        id: docker_build_xanadu_version
+        id: docker_build_diyfile_version
         uses: docker/build-push-action@v3
         with:
           context: ./
@@ -42,7 +42,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/diyfile:${{ steps.get_version.outputs.VERSION }}
       - name: Build and push diyfile latest
-        id: docker_build_xanadu_latest
+        id: docker_build_diyfile_latest
         uses: docker/build-push-action@v3
         with:
           context: ./

@@ -33,7 +33,7 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v2
       - name: Build and push diyfile sqlite test
-        id: docker_build_xanadu_test
+        id: docker_build_diyfile_sqlite_test
         uses: docker/build-push-action@v3
         with:
           context: ./
@@ -42,7 +42,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/diyfile:test-sqlite
       - name: Build and push diyfile mysql test
-        id: docker_build_xanadu_test
+        id: docker_build_diyfile_mysql_test
         uses: docker/build-push-action@v3
         with:
           context: ./
