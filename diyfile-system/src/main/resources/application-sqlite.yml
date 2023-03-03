@@ -1,7 +1,7 @@
 spring:
   datasource:
     driverClassName: org.sqlite.JDBC
-    url: jdbc:sqlite:doc/data/diyfile.db?date_string_format=yyyy-MM-dd HH:mm:ss
+    url: jdbc:sqlite:/data/diyfile.db
     hikari:
       # 连接池最大连接数
       maximum-pool-size: 20
@@ -13,6 +13,15 @@ spring:
       connection-timeout: 5000
       # 检测连接是否有效
       connection-test-query: select 1
+  # flyway V/R+版本号+双下划线+描述+结束符
+  flyway:
+    # 是否开启
+    enabled: true
+    # 当迁移时发现目标 schema 非空，而且没有元数据的表时，（即迭代中项目）是否自动执行基准迁移，默认 false.
+    baseline-on-migrate: true
+    # 是否允许无序运行迁移, 默认 false，建议开发环境开启，生成环境关闭
+    out-of-order: false
+    table: flyway_schema_history
   # 缓存
   cache:
     type: CAFFEINE
