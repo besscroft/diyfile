@@ -3,8 +3,13 @@ package com.besscroft.diyfile.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.besscroft.diyfile.common.constant.CacheConstants;
+import com.besscroft.diyfile.common.constant.SystemConstants;
+import com.besscroft.diyfile.common.entity.Storage;
 import com.besscroft.diyfile.common.entity.SystemConfig;
+import com.besscroft.diyfile.common.entity.User;
 import com.besscroft.diyfile.mapper.SystemConfigMapper;
+import com.besscroft.diyfile.mapper.UserMapper;
+import com.besscroft.diyfile.service.StorageService;
 import com.besscroft.diyfile.service.SystemConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -25,6 +30,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, SystemConfig> implements SystemConfigService {
+
+    private final UserMapper userMapper;
+    private final StorageService storageService;
 
     @Override
     @Cacheable(value = CacheConstants.SYSTEM_CONFIG, unless = "#result == null")
@@ -70,6 +78,19 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
     @Cacheable(value = CacheConstants.BARK_ID, unless = "#result == null")
     public String getBarkId() {
         return this.baseMapper.queryByConfigKey("barkId").getConfigValue();
+    }
+
+    @Override
+    @Cacheable(value = CacheConstants.STATISTICS, unless = "#result == null")
+    public Map<String, Object> getTotalInfo() {
+        Map<String, Object> map = new HashMap<>();
+        List<User> userList = userMapper.selectList(null);
+        map.put("userCount", Optional.ofNullable(userList.size()).orElse(0));
+        map.put("userDisableCount", Optional.ofNullable(userList.stream().filter(user -> Objects.equals(user.getStatus(), SystemConstants.STATUS_NO)).count()).orElse(0L));
+        List<Storage> storageList = storageService.list();
+        map.put("storageCount", Optional.ofNullable(storageList.size()).orElse(0));
+        map.put("storageActiveCount", Optional.ofNullable(storageList.stream().filter(storage -> Objects.equals(storage.getEnable(), SystemConstants.STATUS_OK)).count()).orElse(0L));
+        return map;
     }
 
 }
