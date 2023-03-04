@@ -1,7 +1,7 @@
 spring:
   datasource:
     driverClassName: org.sqlite.JDBC
-    url: jdbc:sqlite:${SQLITE_PATH:/data}/diyfile.db
+    url: jdbc:sqlite:/data/diyfile.db
     hikari:
       # 连接池最大连接数
       maximum-pool-size: 20
