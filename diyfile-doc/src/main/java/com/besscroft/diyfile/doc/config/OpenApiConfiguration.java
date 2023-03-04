@@ -20,7 +20,7 @@ public class OpenApiConfiguration {
         return new OpenAPI()
                 .info(new Info().title("DiyFile")
                         .description("一款好看的在线文件列表程序")
-                        .version("v0.2.1")
+                        .version("v0.2.2")
                         .license(new License().name("MIT license").url("https://github.com/besscroft/diyfile/blob/main/LICENSE")))
                 .externalDocs(new ExternalDocumentation()
                         .description("DiyFile 文档")
