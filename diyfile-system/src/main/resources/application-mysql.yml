@@ -41,9 +41,6 @@ mybatis:
 
 # mybatis-plus 配置
 mybatis-plus:
-  # 启动 mybatis 本身的 log 日志，但是不建议在生产环境使用，这里仅在开发环境启用，方便排查问题！
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
       logic-delete-field: del # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
@@ -72,10 +69,10 @@ management:
 # SpringDoc 配置
 springdoc:
   api-docs:
-    enabled: ${DOC_ENABLE:true}
+    enabled: ${DOC_ENABLE:false}
     path: "/api-docs"
   swagger-ui:
-    enabled: ${DOC_ENABLE:true}
+    enabled: ${DOC_UI_ENABLE:false}
     path: "/swagger-ui.html"
   # 配置扫描的包
   packagesToScan: com.besscroft.diyfile.controller

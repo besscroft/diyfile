@@ -134,8 +134,8 @@
             remark,
             creator,
             updater,
-            create_time,
-            update_time,
+            date(create_time),
+            date(update_time),
             del
         FROM
             storage

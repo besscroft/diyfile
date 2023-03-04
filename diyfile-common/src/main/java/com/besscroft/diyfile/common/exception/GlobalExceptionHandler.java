@@ -175,7 +175,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotLoginException.class)
     public CommonResult<?> handleException(NotLoginException ex) {
         log.error("参数异常.[异常原因={}]", ex.getMessage(), ex);
-        return CommonResult.failed(HttpStatus.UNAUTHORIZED.value(), ex.getMessage(), null);
+        return CommonResult.failed(HttpStatus.UNAUTHORIZED.value(), "很抱歉，您未登录或登录已过期，请重新登录！", null);
     }
 
     /**

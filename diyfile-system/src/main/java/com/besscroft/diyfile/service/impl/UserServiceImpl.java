@@ -22,9 +22,11 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -46,11 +48,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public SaTokenInfo login(String username, String password) {
+        ServletUriComponentsBuilder request = ServletUriComponentsBuilder.fromCurrentRequest();
+        log.info("用户发起登录请求:{}，请求 uri 为：{}", username, request.toUriString());
         User user = this.baseMapper.selectByUsername(username);
         Assert.notNull(user, "账号或密码错误！");
         if (Objects.equals(user.getStatus(), SystemConstants.STATUS_NO))
             throw new DiyFileException(String.format("账号：%s 已被禁用，请联系管理员！", username));
-        log.info("用户发起登录请求:{}", username);
         if (!Objects.equals(SecureUtil.sha256(password), user.getPassword()))
             throw new DiyFileException("账号或密码错误！");
         // 登录
@@ -86,12 +89,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(value = CacheConstants.USER, allEntries = true)
     public void deleteUser(Long userId) {
         User user = getCacheUserById(userId);
         Assert.notNull(user, "用户不存在！");
         if (Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))
             throw new DiyFileException("超级管理员不允许被删除！");
-        caffeineCache.invalidate(CacheConstants.USER + userId);
         Assert.isTrue(this.baseMapper.deleteById(userId) > 0, "用户删除失败！");
     }
 
@@ -118,6 +121,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(value = CacheConstants.USER, allEntries = true)
     public void updateUser(UserUpdateParam param) {
         User user = UserConverterMapper.INSTANCE.UpdateParamToUser(param);
         User oldUser = this.baseMapper.selectById(user.getId());
@@ -129,23 +133,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (!(Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN) || Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_ADMIN))
                 && !Objects.equals(oldUser.getId(), user.getId()))
             throw new DiyFileException("违反规则！更新用户失败！");
-        caffeineCache.invalidate(CacheConstants.USER + user.getId());
         Assert.isTrue(this.baseMapper.updateById(user) > 0, "更新用户失败！");
     }
 
     @Override
+    @CacheEvict(value = CacheConstants.USER, allEntries = true)
     public void updateStatus(Long id, Integer status) {
         User user = this.baseMapper.selectById(id);
         Assert.notNull(user, "用户不存在！");
         if (Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))
             throw new DiyFileException("超级管理员不允许被禁用！");
         user.setStatus(status);
-        caffeineCache.invalidate(CacheConstants.USER + user.getId());
         Assert.isTrue(this.baseMapper.updateById(user) > 0, "更新用户状态失败！");
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(value = CacheConstants.USER, allEntries = true)
     public void updatePassword(Long userId, Boolean isSelf,String oldPassword, String newPassword) {
         if (isSelf) {
             // 如果是自己要修改密码，那么就从上下文中获取用户 id
@@ -155,7 +159,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (!Objects.equals(SecureUtil.sha256(oldPassword), password))
             throw new DiyFileException("旧密码错误！");
         String sha256Pwd = SecureUtil.sha256(newPassword);
-        caffeineCache.invalidate(CacheConstants.USER + userId);
         this.baseMapper.updatePasswordById(userId, sha256Pwd);
     }
 
