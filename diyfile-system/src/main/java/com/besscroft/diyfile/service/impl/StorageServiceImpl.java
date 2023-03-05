@@ -53,7 +53,8 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
             CacheConstants.DEFAULT_STORAGE,
             CacheConstants.STORAGE_ID,
             CacheConstants.STORAGE_KEY,
-            CacheConstants.ENABLE_STORAGE
+            CacheConstants.ENABLE_STORAGE,
+            CacheConstants.STATISTICS
     }, allEntries = true)
     public void deleteStorage(Long storageId) {
         Assert.isTrue(this.baseMapper.deleteById(storageId) > 0, "存储删除失败！");
@@ -75,7 +76,8 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
             CacheConstants.DEFAULT_STORAGE,
             CacheConstants.STORAGE_ID,
             CacheConstants.STORAGE_KEY,
-            CacheConstants.ENABLE_STORAGE
+            CacheConstants.ENABLE_STORAGE,
+            CacheConstants.STATISTICS
     }, allEntries = true)
     public void updateStorage(StorageUpdateParam param) {
         Storage storage = StorageConverterMapper.INSTANCE.UpdateParamToStorage(param);
@@ -118,7 +120,8 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
             CacheConstants.DEFAULT_STORAGE,
             CacheConstants.STORAGE_ID,
             CacheConstants.STORAGE_KEY,
-            CacheConstants.ENABLE_STORAGE
+            CacheConstants.ENABLE_STORAGE,
+            CacheConstants.STATISTICS
     }, allEntries = true)
     public void updateStatus(Long storageId, Integer status) {
         Storage storage = this.baseMapper.selectById(storageId);
@@ -146,7 +149,8 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
             CacheConstants.DEFAULT_STORAGE,
             CacheConstants.STORAGE_ID,
             CacheConstants.STORAGE_KEY,
-            CacheConstants.ENABLE_STORAGE
+            CacheConstants.ENABLE_STORAGE,
+            CacheConstants.STATISTICS
     }, allEntries = true)
     public void setDefault(Long storageId) {
         Storage storage = this.baseMapper.selectById(storageId);

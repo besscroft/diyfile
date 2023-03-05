@@ -89,7 +89,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(value = CacheConstants.USER, allEntries = true)
+    @CacheEvict(value = {
+            CacheConstants.USER,
+            CacheConstants.STATISTICS
+    }, allEntries = true)
     public void deleteUser(Long userId) {
         User user = getCacheUserById(userId);
         Assert.notNull(user, "用户不存在！");
@@ -121,7 +124,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(value = CacheConstants.USER, allEntries = true)
+    @CacheEvict(value = {
+            CacheConstants.USER,
+            CacheConstants.STATISTICS
+    }, allEntries = true)
     public void updateUser(UserUpdateParam param) {
         User user = UserConverterMapper.INSTANCE.UpdateParamToUser(param);
         User oldUser = this.baseMapper.selectById(user.getId());
@@ -137,7 +143,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    @CacheEvict(value = CacheConstants.USER, allEntries = true)
+    @CacheEvict(value = {
+            CacheConstants.USER,
+            CacheConstants.STATISTICS
+    }, allEntries = true)
     public void updateStatus(Long id, Integer status) {
         User user = this.baseMapper.selectById(id);
         Assert.notNull(user, "用户不存在！");
@@ -149,7 +158,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(value = CacheConstants.USER, allEntries = true)
+    @CacheEvict(value = {
+            CacheConstants.USER,
+            CacheConstants.STATISTICS
+    }, allEntries = true)
     public void updatePassword(Long userId, Boolean isSelf,String oldPassword, String newPassword) {
         if (isSelf) {
             // 如果是自己要修改密码，那么就从上下文中获取用户 id
