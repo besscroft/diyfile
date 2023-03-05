@@ -1,6 +1,7 @@
 package com.besscroft.diyfile.storage.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -19,6 +20,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -145,8 +149,11 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
         fileInfoVo.setType(FileConstants.FILE);
         fileInfoVo.setPath(filePath);
         fileInfoVo.setFile(jsonObject.getJSONObject(FileConstants.FILE));
+        String url = jsonObject.getStr("@microsoft.graph.downloadUrl");
         // 设置文件下载地址
-        fileInfoVo.setUrl(jsonObject.getStr("@microsoft.graph.downloadUrl"));
+        fileInfoVo.setUrl(url);
+        // 设置代理下载地址
+        fileInfoVo.setProxyUrl(getProxyUrl(url));
         return fileInfoVo;
     }
 
@@ -167,8 +174,11 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
             // 设置文件类型 文件/文件夹
             if (jsonObject.containsKey(FileConstants.FILE)) {
                 fileInfoVo.setType(FileConstants.FILE);
+                String url = jsonObject.getStr("@microsoft.graph.downloadUrl");
                 // 设置文件下载地址
-                fileInfoVo.setUrl(jsonObject.getStr("@microsoft.graph.downloadUrl"));
+                fileInfoVo.setUrl(url);
+                // 设置代理下载地址
+                fileInfoVo.setProxyUrl(getProxyUrl(url));
             } else {
                 fileInfoVo.setType(FileConstants.FOLDER);
             }
@@ -227,6 +237,22 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
             handleFileListNext(list, folderPath, result.getStr("@odata.nextLink"));
         }
         return list;
+    }
+
+    /**
+     * 获取代理下载地址
+     * @param url 原始下载地址
+     * @return 代理下载地址
+     */
+    private String getProxyUrl(String url) {
+        if (StrUtil.isBlank(initParam.getProxyUrl())) return null;
+        try {
+            URI host = URLUtil.getHost(new URL(url));
+            return StrUtil.replace(url, host.toString(), initParam.getProxyUrl());
+        } catch (MalformedURLException e) {
+            log.error("获取代理下载地址失败！", e);
+            return null;
+        }
     }
 
 }

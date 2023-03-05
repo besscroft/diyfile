@@ -40,6 +40,9 @@ public class FileInfoVo {
     @Schema(title = "下载地址", type = "String")
     private String url;
 
+    @Schema(title = "代理下载地址", type = "String")
+    private String proxyUrl;
+
     @Schema(title = "文件参数", type = "Object")
     private Object file;
 

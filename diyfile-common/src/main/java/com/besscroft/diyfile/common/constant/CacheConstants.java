@@ -46,4 +46,7 @@ public interface CacheConstants {
     /** barkId */
     String BARK_ID = "system:barkId";
 
+    /** 统计信息 */
+    String STATISTICS = "system:statistics";
+
 }

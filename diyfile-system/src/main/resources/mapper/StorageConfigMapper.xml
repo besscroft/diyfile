@@ -29,4 +29,15 @@
             storage_id = #{storageId}
     </select>
 
+    <select id="selectValueByStorageIdAndKey" resultType="java.lang.String">
+        SELECT
+            config_value
+        FROM
+            storage_config
+        WHERE
+            storage_id = #{storageId}
+        AND
+            config_key = #{configKey}
+    </select>
+
 </mapper>

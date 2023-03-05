@@ -1,0 +1,11 @@
+app = "diyfile"
+
+[build]
+  image = "besscroft/diyfile:latest"
+
+[[services]]
+  internal_port = 8080
+
+[env]
+  JAVA_OPTS = "-Xms256m -Xmx256m -Duser.timezone=GMT+08 -Dfile.encoding=UTF8"
+

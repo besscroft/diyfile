@@ -50,4 +50,10 @@ public interface SystemConfigService extends IService<SystemConfig> {
      */
     String getBarkId();
 
+    /**
+     * 获取统计信息
+     * @return 统计信息
+     */
+    Map<String, Object> getTotalInfo();
+
 }

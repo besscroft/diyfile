@@ -7,6 +7,7 @@ import com.besscroft.diyfile.common.constant.SystemConstants;
 import com.besscroft.diyfile.common.converter.StorageConverterMapper;
 import com.besscroft.diyfile.common.entity.Storage;
 import com.besscroft.diyfile.common.entity.StorageConfig;
+import com.besscroft.diyfile.common.enums.StorageTypeEnum;
 import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.FileInitParam;
 import com.besscroft.diyfile.common.param.storage.StorageAddParam;
@@ -53,7 +54,8 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
             CacheConstants.DEFAULT_STORAGE,
             CacheConstants.STORAGE_ID,
             CacheConstants.STORAGE_KEY,
-            CacheConstants.ENABLE_STORAGE
+            CacheConstants.ENABLE_STORAGE,
+            CacheConstants.STATISTICS
     }, allEntries = true)
     public void deleteStorage(Long storageId) {
         Assert.isTrue(this.baseMapper.deleteById(storageId) > 0, "存储删除失败！");
@@ -75,7 +77,8 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
             CacheConstants.DEFAULT_STORAGE,
             CacheConstants.STORAGE_ID,
             CacheConstants.STORAGE_KEY,
-            CacheConstants.ENABLE_STORAGE
+            CacheConstants.ENABLE_STORAGE,
+            CacheConstants.STATISTICS
     }, allEntries = true)
     public void updateStorage(StorageUpdateParam param) {
         Storage storage = StorageConverterMapper.INSTANCE.UpdateParamToStorage(param);
@@ -84,6 +87,10 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
             throw new DiyFileException("存储类型不允许修改！");
         storage.setStorageKey(oldStorage.getStorageKey());
         this.baseMapper.updateById(storage);
+        // 如果是 OneDrive 存储，需要判断是否包含 ***，如果包含则不更新
+        if (Objects.equals(StorageTypeEnum.ONE_DRIVE.getValue(), storage.getType())) {
+            param.getConfigList().removeIf(config -> StrUtil.contains(config.getConfigValue(), "***"));
+        }
         storageConfigService.updateBatchById(param.getConfigList());
     }
 
@@ -118,7 +125,8 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
             CacheConstants.DEFAULT_STORAGE,
             CacheConstants.STORAGE_ID,
             CacheConstants.STORAGE_KEY,
-            CacheConstants.ENABLE_STORAGE
+            CacheConstants.ENABLE_STORAGE,
+            CacheConstants.STATISTICS
     }, allEntries = true)
     public void updateStatus(Long storageId, Integer status) {
         Storage storage = this.baseMapper.selectById(storageId);
@@ -146,7 +154,8 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
             CacheConstants.DEFAULT_STORAGE,
             CacheConstants.STORAGE_ID,
             CacheConstants.STORAGE_KEY,
-            CacheConstants.ENABLE_STORAGE
+            CacheConstants.ENABLE_STORAGE,
+            CacheConstants.STATISTICS
     }, allEntries = true)
     public void setDefault(Long storageId) {
         Storage storage = this.baseMapper.selectById(storageId);
