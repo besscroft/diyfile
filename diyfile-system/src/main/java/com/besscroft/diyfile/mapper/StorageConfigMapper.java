@@ -25,4 +25,12 @@ public interface StorageConfigMapper extends BaseMapper<StorageConfig> {
      */
     List<StorageConfig> selectByStorageId(Long storageId);
 
+    /**
+     * 根据存储 id 和 key 获取存储配置
+     * @param storageId 存储 id
+     * @param key 存储配置 key
+     * @return 存储配置 value
+     */
+    String selectValueByStorageIdAndKey(Long storageId, String key);
+
 }
