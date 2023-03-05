@@ -33,4 +33,7 @@ public class OneDriveParam extends FileInitParam {
     /** 挂载路径 */
     private String mountPath;
 
+    /** 代理地址 */
+    private String proxyUrl;
+
 }

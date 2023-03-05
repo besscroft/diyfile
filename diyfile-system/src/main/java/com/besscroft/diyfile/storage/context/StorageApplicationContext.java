@@ -67,6 +67,7 @@ public class StorageApplicationContext implements ApplicationContextAware {
      * @return 存储服务实现类
      */
     public AbstractFileBaseService<FileInitParam> getServiceByStorageId(Long storageId) {
+        log.info("存储serviceMap: {}", storageServiceMap);
         return storageServiceMap.get(storageId);
     }
 
