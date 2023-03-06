@@ -13,7 +13,6 @@ import org.flywaydb.core.internal.exception.FlywaySqlException;
 import org.flywaydb.core.internal.plugin.PluginRegister;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 
 import javax.sql.DataSource;
 import java.sql.DatabaseMetaData;
