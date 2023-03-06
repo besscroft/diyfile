@@ -5,4 +5,4 @@ spring:
   application:
     name: diyfile
   profiles:
-    active: '@spring.active@'
+    active: 'sqlite'
