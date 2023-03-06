@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
  * @Date 2023/3/3 16:14
  */
 @Slf4j
-@Order(1)
 @Configuration
 @RequiredArgsConstructor
 public class FlywayConfigure {

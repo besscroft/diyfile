@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -29,8 +30,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date 2023/1/20 16:31
  */
 @Slf4j
-@Order(2)
 @Component
+@DependsOn("flywayConfigure")
 @RequiredArgsConstructor
 public class StorageApplicationContext implements ApplicationContextAware {
 
