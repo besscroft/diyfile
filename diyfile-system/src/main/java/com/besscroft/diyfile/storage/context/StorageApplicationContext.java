@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -29,6 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Slf4j
 @Component
+@DependsOn("flywayConfigure")
 @RequiredArgsConstructor
 public class StorageApplicationContext implements ApplicationContextAware {
 
@@ -46,9 +49,9 @@ public class StorageApplicationContext implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        log.debug("获取原始的存储服务 Bean！");
+        log.info("获取原始的存储服务 Bean！");
         primitiveStorageServiceMap = applicationContext.getBeansOfType(AbstractFileBaseService.class);
-        log.debug("开始初始化文件服务上下文！");
+        log.info("开始初始化文件服务上下文！");
         List<Storage> storageList = storageMapper.selectAllByEnable();
         for (Storage storage: storageList) {
             try {
@@ -58,7 +61,7 @@ public class StorageApplicationContext implements ApplicationContextAware {
                 log.error("存储初始化失败！存储 id 为={}，存储名称为={}", storage.getId(), storage.getName());
             }
         }
-        log.debug("文件服务上下文初始化完成！");
+        log.info("文件服务上下文初始化完成！");
     }
 
     /**
@@ -67,7 +70,6 @@ public class StorageApplicationContext implements ApplicationContextAware {
      * @return 存储服务实现类
      */
     public AbstractFileBaseService<FileInitParam> getServiceByStorageId(Long storageId) {
-        log.info("存储serviceMap: {}", storageServiceMap);
         return storageServiceMap.get(storageId);
     }
 

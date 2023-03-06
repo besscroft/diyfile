@@ -13,7 +13,7 @@ import org.flywaydb.core.internal.exception.FlywaySqlException;
 import org.flywaydb.core.internal.plugin.PluginRegister;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.annotation.Order;
 
 import javax.sql.DataSource;
 import java.sql.DatabaseMetaData;
@@ -43,24 +43,21 @@ public class FlywayConfigure {
     @Value("${spring.datasource.url}")
     private String datasourceUrl;
 
-    /**
-     * sqlite 数据库文件创建
-     */
     @PostConstruct
-    public void sqliteInit() {
+    public void flywayMigrate() {
+        // sqlite 数据库文件创建
+        log.info("加载到驱动类：{}", datasourceDriveClassName);
         if (StrUtil.equals(datasourceDriveClassName, "org.sqlite.JDBC")) {
             String path = datasourceUrl.replace("jdbc:sqlite:", "");
             String folderPath = FileUtil.getParent(path, 1);
-            log.info("sqlite 数据库文件路径：{}", folderPath);
             if (!FileUtil.exist(folderPath)) {
+                log.info("sqlite 数据库文件不存在，即将创建！}");
                 FileUtil.touch(folderPath);
+                log.info("sqlite 数据库文件创建成功，路径：{}", folderPath);
+            } else {
+                log.info("sqlite 数据库文件已存在，路径：{}", folderPath);
             }
         }
-    }
-
-    @PostConstruct
-    @DependsOn("sqliteInit")
-    public void flywayMigrate() {
         try {
             String databaseProductName = dataSource.getConnection().getMetaData().getDatabaseProductName();
             String dbType = databaseProductName.toLowerCase(Locale.ROOT);
