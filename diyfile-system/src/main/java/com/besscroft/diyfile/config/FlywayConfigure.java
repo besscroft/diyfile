@@ -11,7 +11,7 @@ import org.flywaydb.core.api.FlywayException;
 import org.flywaydb.core.internal.database.DatabaseType;
 import org.flywaydb.core.internal.exception.FlywaySqlException;
 import org.flywaydb.core.internal.plugin.PluginRegister;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
@@ -35,15 +35,12 @@ public class FlywayConfigure {
 
     private final DataSource dataSource;
     private static final List<DatabaseType> SORTED_DATABASE_TYPES = new PluginRegister().getPlugins(DatabaseType.class).stream().sorted().collect(Collectors.toList());
-
-    @Value("${spring.datasource.driver-class-name}")
-    private String datasourceDriveClassName;
-
-    @Value("${spring.datasource.url}")
-    private String datasourceUrl;
+    private final ApplicationContext applicationContext;
 
     @PostConstruct
     public void flywayMigrate() {
+        String datasourceDriveClassName = applicationContext.getEnvironment().getProperty("spring.datasource.driver-class-name");
+        String datasourceUrl = applicationContext.getEnvironment().getProperty("spring.datasource.url");
         // sqlite 数据库文件创建
         log.info("加载到驱动类：{}", datasourceDriveClassName);
         if (StrUtil.equals(datasourceDriveClassName, "org.sqlite.JDBC")) {

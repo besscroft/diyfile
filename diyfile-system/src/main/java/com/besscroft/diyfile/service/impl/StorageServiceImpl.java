@@ -1,5 +1,6 @@
 package com.besscroft.diyfile.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.besscroft.diyfile.common.constant.CacheConstants;
@@ -118,6 +119,25 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
     public StorageInfoVo getInfoByStorageKey(String storageKey) {
         Storage storage = this.baseMapper.selectByStorageKey(storageKey);
         return StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
+    }
+
+    @Override
+    public List<StorageInfoVo> getAllInfo() {
+        // 使用次数不多，暂时忽略 O(n²) 的步长
+        List<Storage> list = this.list();
+        List<StorageConfig> configList = storageConfigService.list();
+        List<StorageInfoVo> voList = CollUtil.newArrayList();
+        for (Storage storage: list) {
+            StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
+            List<StorageConfig> configs = CollUtil.newArrayList();
+            for (StorageConfig config: configList) {
+                if (Objects.equals(config.getStorageId(), storage.getId()))
+                    configs.add(config);
+            }
+            vo.setConfigList(configs);
+            voList.add(vo);
+        }
+        return voList;
     }
 
     @Override
