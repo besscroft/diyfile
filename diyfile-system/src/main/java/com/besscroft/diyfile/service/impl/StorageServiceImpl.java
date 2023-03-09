@@ -214,4 +214,28 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         return vo.getId();
     }
 
+    @Override
+    @CacheEvict(value = {
+            CacheConstants.DEFAULT_STORAGE,
+            CacheConstants.STORAGE_ID,
+            CacheConstants.STORAGE_KEY,
+            CacheConstants.ENABLE_STORAGE,
+            CacheConstants.STATISTICS
+    }, allEntries = true)
+    @Transactional(rollbackFor = Exception.class)
+    public void saveStorageInfoVoList(List<StorageInfoVo> storageInfoVoList) {
+        for (StorageInfoVo storageInfoVo : storageInfoVoList) {
+            Storage storage = StorageConverterMapper.INSTANCE.StorageInfoVoToStorage(storageInfoVo);
+            if (Objects.isNull(storage)) throw new DiyFileException("存储信息导入失败！");
+            storage.setId(null);
+            this.save(storage);
+            List<StorageConfig> configList = storageInfoVo.getConfigList();
+            for (StorageConfig config : configList) {
+                config.setId(null);
+                config.setStorageId(storage.getId());
+            }
+            storageConfigService.saveBatch(configList);
+        }
+    }
+
 }

@@ -12,9 +12,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @Description 系统监控
@@ -55,6 +54,19 @@ public class MonitorController {
         } catch (JsonProcessingException e) {
             throw new DiyFileException("获取备份数据失败！");
         }
+    }
+
+    @SaCheckRole(
+            value = {
+                    RoleConstants.PLATFORM_SUPER_ADMIN,
+            },
+            mode = SaMode.OR
+    )
+    @Operation(summary = "恢复数据")
+    @PostMapping("/restoreData")
+    public AjaxResult restoreData(@ModelAttribute MultipartFile file) {
+        systemConfigService.restoreData(file);
+        return AjaxResult.success("恢复数据成功！");
     }
 
 }

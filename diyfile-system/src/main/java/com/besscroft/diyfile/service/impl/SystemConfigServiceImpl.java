@@ -13,6 +13,7 @@ import com.besscroft.diyfile.mapper.UserMapper;
 import com.besscroft.diyfile.service.StorageService;
 import com.besscroft.diyfile.service.SystemConfigService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -21,7 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -105,6 +109,28 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
         List<StorageInfoVo> info = storageService.getAllInfo();
         map.put("storageInfo", info);
         return objectMapper.writeValueAsString(map);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void restoreData(MultipartFile file) {
+        try {
+            InputStream inputStream = file.getInputStream();
+            Map<String, Object> map = objectMapper.readValue(inputStream, new TypeReference<>() {
+            });
+            if (map.containsKey("systemConfig")) {
+                List<SystemConfig> list = objectMapper.convertValue(map.get("systemConfig"), new TypeReference<>() {
+                });
+                this.saveOrUpdateBatch(list);
+            }
+            if (map.containsKey("storageInfo")) {
+                List<StorageInfoVo> list = objectMapper.convertValue(map.get("storageInfo"), new TypeReference<>() {
+                });
+                storageService.saveStorageInfoVoList(list);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

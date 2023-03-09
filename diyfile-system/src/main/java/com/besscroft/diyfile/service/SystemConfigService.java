@@ -3,6 +3,7 @@ package com.besscroft.diyfile.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.besscroft.diyfile.common.entity.SystemConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -63,5 +64,7 @@ public interface SystemConfigService extends IService<SystemConfig> {
      * @throws JsonProcessingException json 处理异常
      */
     String getBackupJsonString() throws JsonProcessingException;
+
+    void restoreData(MultipartFile file);
 
 }

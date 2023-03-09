@@ -102,4 +102,10 @@ public interface StorageService extends IService<Storage> {
      */
     Long getDefaultStorageId();
 
+    /**
+     * 保存存储列表
+     * @param storageInfoVoList 存储列表
+     */
+    void saveStorageInfoVoList(List<StorageInfoVo> storageInfoVoList);
+
 }
