@@ -7,10 +7,14 @@ import com.besscroft.diyfile.common.constant.SystemConstants;
 import com.besscroft.diyfile.common.entity.Storage;
 import com.besscroft.diyfile.common.entity.SystemConfig;
 import com.besscroft.diyfile.common.entity.User;
+import com.besscroft.diyfile.common.vo.StorageInfoVo;
 import com.besscroft.diyfile.mapper.SystemConfigMapper;
 import com.besscroft.diyfile.mapper.UserMapper;
 import com.besscroft.diyfile.service.StorageService;
 import com.besscroft.diyfile.service.SystemConfigService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -18,7 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,6 +40,7 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
 
     private final UserMapper userMapper;
     private final StorageService storageService;
+    private final ObjectMapper objectMapper;
 
     @Override
     @Cacheable(value = CacheConstants.SYSTEM_CONFIG, unless = "#result == null")
@@ -91,6 +99,38 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
         map.put("storageCount", Optional.ofNullable(storageList.size()).orElse(0));
         map.put("storageActiveCount", Optional.ofNullable(storageList.stream().filter(storage -> Objects.equals(storage.getEnable(), SystemConstants.STATUS_OK)).count()).orElse(0L));
         return map;
+    }
+
+    @Override
+    public String getBackupJsonString() throws JsonProcessingException {
+        Map<String, Object> map = new HashMap<>();
+        List<SystemConfig> list = this.list();
+        map.put("systemConfig", list);
+        List<StorageInfoVo> info = storageService.getAllInfo();
+        map.put("storageInfo", info);
+        return objectMapper.writeValueAsString(map);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void restoreData(MultipartFile file) {
+        try {
+            InputStream inputStream = file.getInputStream();
+            Map<String, Object> map = objectMapper.readValue(inputStream, new TypeReference<>() {
+            });
+            if (map.containsKey("systemConfig")) {
+                List<SystemConfig> list = objectMapper.convertValue(map.get("systemConfig"), new TypeReference<>() {
+                });
+                this.saveOrUpdateBatch(list);
+            }
+            if (map.containsKey("storageInfo")) {
+                List<StorageInfoVo> list = objectMapper.convertValue(map.get("storageInfo"), new TypeReference<>() {
+                });
+                storageService.saveStorageInfoVoList(list);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

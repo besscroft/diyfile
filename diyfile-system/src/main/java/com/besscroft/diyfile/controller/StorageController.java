@@ -3,8 +3,10 @@ package com.besscroft.diyfile.controller;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.annotation.SaMode;
+import cn.hutool.core.util.StrUtil;
 import com.besscroft.diyfile.common.constant.RoleConstants;
 import com.besscroft.diyfile.common.entity.Storage;
+import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.storage.StorageAddParam;
 import com.besscroft.diyfile.common.param.storage.StorageUpdateParam;
 import com.besscroft.diyfile.common.param.storage.StorageUpdateStatusParam;
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Description 存储接口
@@ -78,6 +81,10 @@ public class StorageController {
     )
     @PostMapping("/add")
     public AjaxResult add(@RequestBody @Valid StorageAddParam param) {
+        if (Objects.equals("proxy", param.getStorageKey()))
+            throw new DiyFileException("存储 key 不能为 proxy");
+        if (StrUtil.contains(param.getStorageKey(), "/"))
+            throw new DiyFileException("存储 key 不能包含 /");
         storageService.addStorage(param);
         return AjaxResult.success("新增成功！");
     }

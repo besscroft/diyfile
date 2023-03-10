@@ -1,5 +1,6 @@
 package com.besscroft.diyfile.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.besscroft.diyfile.common.constant.CacheConstants;
@@ -121,6 +122,25 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
     }
 
     @Override
+    public List<StorageInfoVo> getAllInfo() {
+        // 使用次数不多，暂时忽略 O(n²) 的步长
+        List<Storage> list = this.list();
+        List<StorageConfig> configList = storageConfigService.list();
+        List<StorageInfoVo> voList = CollUtil.newArrayList();
+        for (Storage storage: list) {
+            StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
+            List<StorageConfig> configs = CollUtil.newArrayList();
+            for (StorageConfig config: configList) {
+                if (Objects.equals(config.getStorageId(), storage.getId()))
+                    configs.add(config);
+            }
+            vo.setConfigList(configs);
+            voList.add(vo);
+        }
+        return voList;
+    }
+
+    @Override
     @CacheEvict(value = {
             CacheConstants.DEFAULT_STORAGE,
             CacheConstants.STORAGE_ID,
@@ -192,6 +212,30 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         if (Objects.isNull(storage)) return null;
         StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
         return vo.getId();
+    }
+
+    @Override
+    @CacheEvict(value = {
+            CacheConstants.DEFAULT_STORAGE,
+            CacheConstants.STORAGE_ID,
+            CacheConstants.STORAGE_KEY,
+            CacheConstants.ENABLE_STORAGE,
+            CacheConstants.STATISTICS
+    }, allEntries = true)
+    @Transactional(rollbackFor = Exception.class)
+    public void saveStorageInfoVoList(List<StorageInfoVo> storageInfoVoList) {
+        for (StorageInfoVo storageInfoVo : storageInfoVoList) {
+            Storage storage = StorageConverterMapper.INSTANCE.StorageInfoVoToStorage(storageInfoVo);
+            if (Objects.isNull(storage)) throw new DiyFileException("存储信息导入失败！");
+            storage.setId(null);
+            this.save(storage);
+            List<StorageConfig> configList = storageInfoVo.getConfigList();
+            for (StorageConfig config : configList) {
+                config.setId(null);
+                config.setStorageId(storage.getId());
+            }
+            storageConfigService.saveBatch(configList);
+        }
     }
 
 }

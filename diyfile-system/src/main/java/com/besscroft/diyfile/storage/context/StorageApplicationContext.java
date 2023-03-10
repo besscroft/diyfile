@@ -1,5 +1,6 @@
 package com.besscroft.diyfile.storage.context;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.besscroft.diyfile.common.entity.Storage;
 import com.besscroft.diyfile.common.entity.StorageConfig;
@@ -57,7 +58,7 @@ public class StorageApplicationContext implements ApplicationContextAware {
                 init(storage);
                 log.info("存储初始化成功！存储 id 为={}，存储名称为={}", storage.getId(), storage.getName());
             } catch (Exception e) {
-                log.error("存储初始化失败！存储 id 为={}，存储名称为={}", storage.getId(), storage.getName());
+                log.error("存储初始化失败！存储 id 为={}，存储名称为={}，原因：{}", storage.getId(), storage.getName(), e.getMessage());
             }
         }
         log.info("文件服务上下文初始化完成！");
@@ -77,6 +78,11 @@ public class StorageApplicationContext implements ApplicationContextAware {
      * @param storage 存储对象
      */
     public void init(Storage storage) {
+        if (Objects.equals("proxy", storage.getStorageKey()))
+            throw new DiyFileException("存储 key 不能为 proxy");
+        if (StrUtil.contains(storage.getStorageKey(), "/"))
+            throw new DiyFileException("存储 key 不能包含 /");
+
         Long storageId = storage.getId();
         String storageName = storage.getName();
 

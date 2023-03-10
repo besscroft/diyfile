@@ -58,6 +58,12 @@ public interface StorageService extends IService<Storage> {
     StorageInfoVo getInfoByStorageKey(String storageKey);
 
     /**
+     * 获取所有存储配置详情（未脱密）
+     * @return 存储配置详情列表
+     */
+    List<StorageInfoVo> getAllInfo();
+
+    /**
      * 更新存储启用状态
      * @param storageId 存储 id
      * @param status 启用状态
@@ -95,5 +101,11 @@ public interface StorageService extends IService<Storage> {
      * @return 存储 id
      */
     Long getDefaultStorageId();
+
+    /**
+     * 保存存储列表
+     * @param storageInfoVoList 存储列表
+     */
+    void saveStorageInfoVoList(List<StorageInfoVo> storageInfoVoList);
 
 }

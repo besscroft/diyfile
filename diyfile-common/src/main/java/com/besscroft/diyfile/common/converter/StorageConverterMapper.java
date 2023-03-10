@@ -23,4 +23,6 @@ public interface StorageConverterMapper {
 
     StorageInfoVo StorageToInfoVo(Storage storage);
 
+    Storage StorageInfoVoToStorage(StorageInfoVo storageInfoVo);
+
 }
