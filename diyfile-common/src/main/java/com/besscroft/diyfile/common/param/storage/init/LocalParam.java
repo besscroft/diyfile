@@ -14,16 +14,4 @@ import lombok.EqualsAndHashCode;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class LocalParam extends FileInitParam {
-
-    /** 挂载路径 */
-    private String mountPath;
-
-    /**
-     * 获取挂载路径
-     * @return 挂载路径
-     */
-    public String getMountPath() {
-        return mountPath;
-    }
-
 }
