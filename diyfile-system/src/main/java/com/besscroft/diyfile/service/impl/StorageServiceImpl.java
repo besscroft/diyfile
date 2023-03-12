@@ -22,20 +22,24 @@ import com.besscroft.diyfile.service.StorageService;
 import com.besscroft.diyfile.storage.context.StorageApplicationContext;
 import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import software.amazon.awssdk.regions.Region;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @Description 存储服务实现类
  * @Author Bess Croft
  * @Date 2022/12/18 21:13
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> implements StorageService {
@@ -236,6 +240,11 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
             }
             storageConfigService.saveBatch(configList);
         }
+    }
+
+    @Override
+    public List<String> getAwsRegions() {
+        return Region.regions().stream().map(Region::id).collect(Collectors.toList());
     }
 
 }

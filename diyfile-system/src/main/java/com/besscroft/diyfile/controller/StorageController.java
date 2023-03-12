@@ -162,4 +162,11 @@ public class StorageController {
         return CommonResult.success(storageService.getEnableStorage());
     }
 
+    @SaIgnore
+    @Operation(summary = "获取 AWS Region 列表")
+    @GetMapping("/getAwsRegions")
+    public CommonResult<List<String>> getAwsRegions() {
+        return CommonResult.success(storageService.getAwsRegions());
+    }
+
 }
