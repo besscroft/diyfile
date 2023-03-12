@@ -66,7 +66,7 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
         ListObjectsRequest listObjectsRequest = new ListObjectsRequest(initParam.getBucketName());
         // 设置正斜线（/）为文件夹的分隔符。
         listObjectsRequest.setDelimiter("/");
-        // 列出fun目录下的所有文件和文件夹。
+        // 列出 folderPath 目录下的所有文件和文件夹。
         int index = folderPath.indexOf("/");
         if (Objects.equals("/", folderPath)) {
             listObjectsRequest.setPrefix("");

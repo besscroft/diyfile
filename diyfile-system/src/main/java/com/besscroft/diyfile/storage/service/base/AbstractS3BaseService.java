@@ -1,15 +1,19 @@
 package com.besscroft.diyfile.storage.service.base;
 
+import cn.hutool.core.util.URLUtil;
+import com.besscroft.diyfile.common.constant.FileConstants;
 import com.besscroft.diyfile.common.param.storage.init.S3Param;
 import com.besscroft.diyfile.common.vo.FileInfoVo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.ListObjectsRequest;
-import software.amazon.awssdk.services.s3.model.ListObjectsResponse;
-import software.amazon.awssdk.services.s3.model.S3Exception;
-import software.amazon.awssdk.services.s3.model.S3Object;
+import software.amazon.awssdk.services.s3.model.*;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Description S3 基础服务抽象类
@@ -29,24 +33,66 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
 
     @Override
     public List<FileInfoVo> getFileList(String folderPath) {
-        try {
-            ListObjectsRequest listObjects = ListObjectsRequest
-                    .builder()
-                    .bucket(initParam.getBucketName())
-                    .build();
-
-            ListObjectsResponse res = s3Client.listObjects(listObjects);
-            List<S3Object> objects = res.contents();
-            for (S3Object myValue : objects) {
-                log.info("The name of the key is " + myValue.key());
-                log.info("The object is " + calKb(myValue.size()) + " KBs");
-                log.info("The owner is " + myValue.owner());
-            }
-
-        } catch (S3Exception e) {
-            log.error(e.awsErrorDetails().errorMessage());
+        int index = folderPath.indexOf("/");
+        if (Objects.equals("/", folderPath)) {
+            folderPath = "";
+        } else {
+            folderPath = folderPath.substring(index + 1) + "/";
         }
-        return null;
+        // 构造ListObjectsRequest请求。
+        ListObjectsV2Request listObjects = ListObjectsV2Request
+                .builder()
+                // 列出 folderPath 目录下的所有文件和文件夹。
+                .prefix(folderPath)
+                // 设置桶。
+                .bucket(initParam.getBucketName())
+                // 设置正斜线（/）为文件夹的分隔符。
+                .delimiter("/")
+                // StartAfter 是您希望 Amazon S3 开始列出的位置。Amazon S3 在这个指定的键之后开始列出。StartAfter 可以是存储桶中的任何键。
+                .startAfter(folderPath)
+                .build();
+
+        ListObjectsV2Response res = s3Client.listObjectsV2(listObjects);
+        List<S3Object> objects = res.contents();
+        List<CommonPrefix> commonPrefixes = res.commonPrefixes();
+        return handleFileList(objects, commonPrefixes, folderPath);
+    }
+
+    /**
+     * 获取文件列表
+     * @param objects S3 对象列表
+     * @param folderPath 文件夹路径
+     * @return 文件列表
+     */
+    private List<FileInfoVo> handleFileList(@NonNull List<S3Object> objects, @NonNull List<CommonPrefix> commonPrefixes, String folderPath) {
+        List<FileInfoVo> fileInfoVoList = new ArrayList<>();
+        for (S3Object object : objects) {
+            FileInfoVo fileInfoVo = new FileInfoVo();
+            if (object.key().contains("/")) {
+                int lastSlashIndex = object.key().lastIndexOf('/');
+                if (Objects.equals("", object.key().substring(lastSlashIndex + 1)))
+                    continue;
+                fileInfoVo.setName(object.key().substring(lastSlashIndex + 1));
+                fileInfoVo.setPath(object.key().substring(0, lastSlashIndex));
+            } else {
+                fileInfoVo.setName(object.key());
+                fileInfoVo.setPath("/");
+            }
+            fileInfoVo.setType(FileConstants.FILE);
+            fileInfoVo.setSize(calKb(object.size()));
+            fileInfoVo.setLastModifiedDateTime(LocalDateTime.ofInstant(object.lastModified(), ZoneId.systemDefault()));
+            fileInfoVo.setFile(object.storageClass());
+            fileInfoVoList.add(fileInfoVo);
+        }
+        for (CommonPrefix commonPrefix : commonPrefixes) {
+            FileInfoVo fileInfoVo = new FileInfoVo();
+            int index = commonPrefix.prefix().lastIndexOf("/");
+            fileInfoVo.setName(commonPrefix.prefix().substring(0, index));
+            fileInfoVo.setType(FileConstants.FOLDER);
+            fileInfoVo.setPath(folderPath + "/" + commonPrefix.prefix());
+            fileInfoVoList.add(fileInfoVo);
+        }
+        return fileInfoVoList;
     }
 
     public abstract Integer getStorageType();
@@ -67,7 +113,18 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
     }
 
     @Override
-    public void deleteItem(String filePath) {
+    public void deleteItem(@NonNull String filePath) {
+        if (filePath.indexOf("/") == 0) {
+            filePath = filePath.substring(1);
+        }
+        // 将 % 开头的 16 进制表示的内容解码。
+        String decode = URLUtil.decode(filePath);
+        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                .bucket(initParam.getBucketName())
+                .key(decode)
+                .build();
+
+        s3Client.deleteObject(deleteObjectRequest);
 
     }
 
