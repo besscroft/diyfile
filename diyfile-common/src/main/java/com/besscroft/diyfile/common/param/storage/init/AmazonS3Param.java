@@ -13,17 +13,4 @@ import lombok.EqualsAndHashCode;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class AmazonS3Param extends S3Param {
-
-    /** 访问密钥 */
-    private String accessKey;
-
-    /** 机密密钥 */
-    private String secretKey;
-
-    /** 地域 */
-    private String region;
-
-    /** endpoint 端点 */
-    private String endpoint;
-
 }

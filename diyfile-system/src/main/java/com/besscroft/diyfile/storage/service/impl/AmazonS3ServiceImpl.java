@@ -44,11 +44,6 @@ public class AmazonS3ServiceImpl extends AbstractS3BaseService<AmazonS3Param> {
     }
 
     @Override
-    public String getFileDownloadUrl(String fileName, String filePath) {
-        return null;
-    }
-
-    @Override
     public Integer getStorageType() {
         return StorageTypeEnum.AMAZON_S3.getValue();
     }

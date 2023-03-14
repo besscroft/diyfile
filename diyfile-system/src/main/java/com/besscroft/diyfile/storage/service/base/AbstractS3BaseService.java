@@ -1,14 +1,15 @@
 package com.besscroft.diyfile.storage.service.base;
 
-import cn.hutool.core.util.URLUtil;
 import com.besscroft.diyfile.common.constant.FileConstants;
 import com.besscroft.diyfile.common.param.storage.init.S3Param;
+import com.besscroft.diyfile.common.util.PathUtils;
 import com.besscroft.diyfile.common.vo.FileInfoVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -27,9 +28,6 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
     protected S3Client s3Client;
 
     public abstract void init();
-
-    @Override
-    public abstract String getFileDownloadUrl(String fileName, String filePath);
 
     @Override
     public List<FileInfoVo> getFileList(String folderPath) {
@@ -99,7 +97,20 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
 
     @Override
     public FileInfoVo getFileInfo(String filePath, String fileName) {
-        return null;
+        HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
+                .bucket(initParam.getBucketName())
+                .key(PathUtils.removeLeadingSlash(filePath))
+                .build();
+        HeadObjectResponse response = s3Client.headObject(headObjectRequest);
+        FileInfoVo fileInfoVo = new FileInfoVo();
+        fileInfoVo.setName(fileName);
+        fileInfoVo.setPath(filePath);
+        fileInfoVo.setType(FileConstants.FILE);
+        fileInfoVo.setSize(calKb(response.contentLength()));
+        fileInfoVo.setLastModifiedDateTime(LocalDateTime.ofInstant(response.lastModified(), ZoneId.systemDefault()));
+        fileInfoVo.setFile(response.storageClassAsString());
+        fileInfoVo.setUrl(getFileDownloadUrl(fileName, filePath));
+        return fileInfoVo;
     }
 
     @Override
@@ -114,18 +125,14 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
 
     @Override
     public void deleteItem(@NonNull String filePath) {
-        if (filePath.indexOf("/") == 0) {
-            filePath = filePath.substring(1);
-        }
-        // 将 % 开头的 16 进制表示的内容解码。
-        String decode = URLUtil.decode(filePath);
+        // 去除第一个 / 符号，并将 % 开头的 16 进制表示的内容解码。
+        String decode = PathUtils.decode(PathUtils.removeLeadingSlash(filePath));
         DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
                 .bucket(initParam.getBucketName())
                 .key(decode)
                 .build();
 
         s3Client.deleteObject(deleteObjectRequest);
-
     }
 
     @Override
@@ -136,6 +143,28 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
     @Override
     public String getUploadSession(String folderPath) {
         return null;
+    }
+
+    @Override
+    public String getFileDownloadUrl(String fileName, String filePath) {
+        return getObjectUrl(initParam.getBucketName(), PathUtils.removeLeadingSlash(filePath));
+    }
+
+    /**
+     * 获取文件下载地址
+     * @param bucketName 桶名称
+     * @param objectName 对象名称
+     * @return 文件下载地址
+     */
+    private String getObjectUrl(String bucketName, String objectName) {
+        // TODO 获取代理地址
+        GetUrlRequest request = GetUrlRequest.builder()
+                .bucket(bucketName)
+                .key(objectName)
+                .build();
+
+        URL url = s3Client.utilities().getUrl(request);
+        return url.toString();
     }
 
     /**

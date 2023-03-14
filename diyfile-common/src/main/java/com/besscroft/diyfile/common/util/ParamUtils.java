@@ -61,12 +61,11 @@ public class ParamUtils {
             param.setMountPath(configMap.get("mount_path"));
             return param;
         } else if (Objects.equals(storage.getType(), StorageTypeEnum.AMAZON_S3.getValue())) {
-            AmazonS3Param param = AmazonS3Param.builder()
-                    .accessKey(configMap.get("accessKey"))
-                    .secretKey(configMap.get("secretKey"))
-                    .region(configMap.get("region"))
-                    .endpoint(configMap.get("endpoint"))
-                    .build();
+            AmazonS3Param param = AmazonS3Param.builder().build();
+            param.setAccessKey(configMap.get("accessKey"));
+            param.setSecretKey(configMap.get("secretKey"));
+            param.setRegion(configMap.get("region"));
+            param.setEndpoint(configMap.get("endpoint"));
             param.setMountPath(configMap.get("mount_path"));
             param.setBucketName(configMap.get("bucketName"));
             return param;
