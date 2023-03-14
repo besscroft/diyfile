@@ -108,4 +108,10 @@ public interface StorageService extends IService<Storage> {
      */
     void saveStorageInfoVoList(List<StorageInfoVo> storageInfoVoList);
 
+    /**
+     * 获取 aws 存储区域列表
+     * @return 存储区域列表
+     */
+    List<String> getAwsRegions();
+
 }

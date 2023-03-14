@@ -13,12 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public abstract class OssParam extends FileInitParam {
 
-    /**
-     * 获取挂载路径
-     * @return 挂载路径
-     */
-    public String getMountPath() {
-        return null;
-    }
+    /** Bucket 名称 */
+    private String bucketName;
 
 }

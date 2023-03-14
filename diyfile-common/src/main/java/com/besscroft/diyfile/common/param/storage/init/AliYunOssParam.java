@@ -23,18 +23,4 @@ public class AliYunOssParam extends OssParam {
     /** AccessKeySecret 是用户用于加密签名字符串和 OSS 用来验证签名字符串的密钥，必须保密 */
     private String accessKeySecret;
 
-    /** 阿里云 OSS Bucket 名称 */
-    private String bucketName;
-
-    /** 挂载路径 */
-    private String mountPath;
-
-    /**
-     * 获取挂载路径
-     * @return 挂载路径
-     */
-    public String getMountPath() {
-        return mountPath;
-    }
-
 }

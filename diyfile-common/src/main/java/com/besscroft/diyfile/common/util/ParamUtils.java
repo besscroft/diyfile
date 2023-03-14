@@ -6,6 +6,7 @@ import com.besscroft.diyfile.common.entity.StorageConfig;
 import com.besscroft.diyfile.common.enums.StorageTypeEnum;
 import com.besscroft.diyfile.common.param.FileInitParam;
 import com.besscroft.diyfile.common.param.storage.init.AliYunOssParam;
+import com.besscroft.diyfile.common.param.storage.init.AmazonS3Param;
 import com.besscroft.diyfile.common.param.storage.init.LocalParam;
 import com.besscroft.diyfile.common.param.storage.init.OneDriveParam;
 
@@ -36,26 +37,38 @@ public class ParamUtils {
             if (endWith) {
                 configMap.put("proxy_url", StrUtil.subBefore(configMap.get("proxy_url"), "/", true));
             }
-            return OneDriveParam.builder()
+            OneDriveParam param = OneDriveParam.builder()
                     .clientId(configMap.get("client_id"))
                     .clientSecret(configMap.get("client_secret"))
                     .redirectUri(configMap.get("redirect_uri"))
                     .refreshToken(configMap.get("refresh_token"))
-                    .mountPath(configMap.get("mount_path"))
                     .proxyUrl(Optional.ofNullable(configMap.get("proxy_url")).orElse(""))
                     .build();
+            param.setMountPath(configMap.get("mount_path"));
+            return param;
         } else if (Objects.equals(storage.getType(), StorageTypeEnum.ALIYUN_OSS.getValue())) {
-            return AliYunOssParam.builder()
+            AliYunOssParam param = AliYunOssParam.builder()
                     .accessKeyId(configMap.get("accessKeyId"))
                     .accessKeySecret(configMap.get("accessKeySecret"))
                     .endpoint(configMap.get("endpoint"))
-                    .bucketName(configMap.get("bucketName"))
-                    .mountPath(configMap.get("mount_path"))
                     .build();
+            param.setMountPath(configMap.get("mount_path"));
+            param.setBucketName(configMap.get("bucketName"));
+            return param;
         } else if (Objects.equals(storage.getType(), StorageTypeEnum.LOCAL.getValue())) {
-            return LocalParam.builder()
-                    .mountPath(configMap.get("mount_path"))
+            LocalParam param = LocalParam.builder()
                     .build();
+            param.setMountPath(configMap.get("mount_path"));
+            return param;
+        } else if (Objects.equals(storage.getType(), StorageTypeEnum.AMAZON_S3.getValue())) {
+            AmazonS3Param param = AmazonS3Param.builder().build();
+            param.setAccessKey(configMap.get("accessKey"));
+            param.setSecretKey(configMap.get("secretKey"));
+            param.setRegion(configMap.get("region"));
+            param.setEndpoint(configMap.get("endpoint"));
+            param.setMountPath(configMap.get("mount_path"));
+            param.setBucketName(configMap.get("bucketName"));
+            return param;
         }
         return null;
     }

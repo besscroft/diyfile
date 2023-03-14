@@ -10,10 +10,7 @@ import lombok.Data;
 @Data
 public abstract class FileInitParam {
 
-    /**
-     * 获取挂载路径
-     * @return 挂载路径
-     */
-    public abstract String getMountPath();
+    /** 挂载路径 */
+    private String mountPath;
 
 }

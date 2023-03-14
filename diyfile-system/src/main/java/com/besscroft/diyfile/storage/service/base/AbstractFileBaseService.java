@@ -32,7 +32,6 @@ public abstract class AbstractFileBaseService<T extends FileInitParam> implement
     /** 基础服务初始化方法 */
     public abstract void init();
 
-    @Override
     public abstract String getFileDownloadUrl(String fileName, String filePath);
 
     @Override
