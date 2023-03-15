@@ -1,6 +1,7 @@
 package com.besscroft.diyfile.storage.service.base;
 
 import com.besscroft.diyfile.common.constant.FileConstants;
+import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.storage.init.S3Param;
 import com.besscroft.diyfile.common.util.PathUtils;
 import com.besscroft.diyfile.common.vo.FileInfoVo;
@@ -115,12 +116,12 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
 
     @Override
     public void createItem(String folderPath, String fileName) {
-
+        throw new DiyFileException("S3 API 暂不支持创建对象");
     }
 
     @Override
     public void updateItem(String filePath, String fileName) {
-
+        throw new DiyFileException("S3 API 暂不支持更新对象");
     }
 
     @Override
@@ -137,12 +138,12 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
 
     @Override
     public void uploadItem(String folderPath, String fileName) {
-
+        throw new DiyFileException("S3 API 暂不支持上传文件");
     }
 
     @Override
     public String getUploadSession(String folderPath) {
-        return null;
+        throw new DiyFileException("S3 API 不支持上传会话");
     }
 
     @Override
