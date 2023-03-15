@@ -13,9 +13,6 @@ import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.storage.init.AliYunOssParam;
 import com.besscroft.diyfile.common.vo.FileInfoVo;
 import com.besscroft.diyfile.storage.service.base.AbstractOSSBaseService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.benmanes.caffeine.cache.Cache;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -35,12 +32,9 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam> {
 
-    private final Cache<String, Object> caffeineCache;
-    private final ObjectMapper objectMapper;
     private OSS ossClient;
 
     /**
@@ -72,7 +66,7 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
         ListObjectsRequest listObjectsRequest = new ListObjectsRequest(initParam.getBucketName());
         // 设置正斜线（/）为文件夹的分隔符。
         listObjectsRequest.setDelimiter("/");
-        // 列出fun目录下的所有文件和文件夹。
+        // 列出 folderPath 目录下的所有文件和文件夹。
         int index = folderPath.indexOf("/");
         if (Objects.equals("/", folderPath)) {
             listObjectsRequest.setPrefix("");
@@ -102,12 +96,12 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
 
     @Override
     public void createItem(String folderPath, String fileName) {
-        throw new DiyFileException("阿里云 OSS 服务不支持创建文件夹");
+        throw new DiyFileException("阿里云 OSS 服务暂不支持创建文件夹");
     }
 
     @Override
     public void updateItem(String filePath, String fileName) {
-        throw new DiyFileException("阿里云 OSS 服务不支持更新文件");
+        throw new DiyFileException("阿里云 OSS 服务暂不支持更新文件");
     }
 
     @Override
@@ -122,12 +116,12 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
 
     @Override
     public void uploadItem(String folderPath, String fileName) {
-        throw new DiyFileException("阿里云 OSS 服务不支持上传文件");
+        throw new DiyFileException("阿里云 OSS 服务暂不支持上传文件");
     }
 
     @Override
     public String getUploadSession(String folderPath) {
-        return null;
+        throw new DiyFileException("阿里云 OSS 服务不支持上传会话");
     }
 
     /**
@@ -176,7 +170,7 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
      * @param ossClient OSSClient实例
      * @param bucketName 存储空间名称
      * @param folder 指定目录（文件夹）
-     * @return
+     * @return 文件大小
      */
     private static long calculateFolderLength(OSS ossClient, String bucketName, String folder) {
         long size = 0L;
@@ -215,7 +209,7 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
             }
             return stringBuffer.toString();
         } catch (MalformedURLException e) {
-            log.error("地址获取失败！:{}", e);
+            log.error("地址获取失败:{}", e.getMessage());
             throw new DiyFileException("地址获取失败！");
         }
     }
