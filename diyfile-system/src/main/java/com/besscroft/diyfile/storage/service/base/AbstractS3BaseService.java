@@ -100,7 +100,7 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
     public FileInfoVo getFileInfo(String filePath, String fileName) {
         HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
                 .bucket(initParam.getBucketName())
-                .key(PathUtils.removeLeadingSlash(filePath))
+                .key(PathUtils.decode(PathUtils.removeLeadingSlash(filePath)))
                 .build();
         HeadObjectResponse response = s3Client.headObject(headObjectRequest);
         FileInfoVo fileInfoVo = new FileInfoVo();
