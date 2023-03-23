@@ -151,6 +151,11 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
         return getObjectUrl(initParam.getBucketName(), PathUtils.removeLeadingSlash(filePath));
     }
 
+    @Override
+    public void moveItem(String startPath, String endPath) {
+        // TODO 移动文件
+    }
+
     /**
      * 获取文件下载地址
      * @param bucketName 桶名称

@@ -9,6 +9,7 @@ import com.besscroft.diyfile.common.constant.FileConstants;
 import com.besscroft.diyfile.common.constant.storage.OneDriveConstants;
 import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.storage.init.OneDriveParam;
+import com.besscroft.diyfile.common.util.PathUtils;
 import com.besscroft.diyfile.common.vo.FileInfoVo;
 import com.besscroft.diyfile.storage.service.base.AbstractOneDriveBaseService;
 import com.ejlchina.okhttps.HttpResult;
@@ -133,6 +134,18 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
                 .addHeader("Authorization", getAccessToken())
                 .post().getBody().toString());
         return result.getStr("uploadUrl");
+    }
+
+    @Override
+    public void moveItem(String startPath, String endPath) {
+        // TODO 移动文件，需要先获取 item-id，@see https://learn.microsoft.com/zh-cn/graph/api/driveitem-move?view=graph-rest-1.0&tabs=http
+        if (PathUtils.isFolder(startPath)) {
+            // TODO 如果为文件夹，则需要递归移动文件夹下的所有文件
+
+        } else {
+            // TODO 如果为文件，则直接移动文件
+
+        }
     }
 
     /**

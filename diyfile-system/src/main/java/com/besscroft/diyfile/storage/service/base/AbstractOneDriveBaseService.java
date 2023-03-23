@@ -59,6 +59,13 @@ public abstract class AbstractOneDriveBaseService<T extends OneDriveParam> exten
     public abstract String getUploadSession(String folderPath);
 
     /**
+     * 在驱动器内移动项目，可能是文件或文件夹
+     * @param startPath 开始路径
+     * @param endPath 结束路径
+     */
+    public abstract void moveItem(String startPath, String endPath);
+
+    /**
      * 获取 OneDrive 驱动 id
      * @return OneDrive 驱动 id
      */

@@ -79,6 +79,13 @@ public abstract class AbstractFileBaseService<T extends FileInitParam> implement
      */
     public abstract String getUploadSession(String folderPath);
 
+    /**
+     * 在驱动器内移动项目，可能是文件或文件夹
+     * @param startPath 开始路径
+     * @param endPath 结束路径
+     */
+    public abstract void moveItem(String startPath, String endPath);
+
     public void setStorageId(Long storageId) {
         if (Objects.nonNull(this.storageId))
             throw new IllegalStateException("当前存储服务不允许重复初始化！");

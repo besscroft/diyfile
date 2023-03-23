@@ -100,6 +100,11 @@ public class LocalServiceImpl extends AbstractFileBaseService<LocalParam> {
         return null;
     }
 
+    @Override
+    public void moveItem(String startPath, String endPath) {
+        // TODO 本地文件移动
+    }
+
     /**
      * 处理文件列表
      * @param fileList 文件列表
