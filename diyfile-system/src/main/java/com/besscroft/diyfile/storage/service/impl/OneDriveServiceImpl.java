@@ -138,14 +138,23 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
 
     @Override
     public void moveItem(String startPath, String endPath) {
-        // TODO 移动文件，需要先获取 item-id，@see https://learn.microsoft.com/zh-cn/graph/api/driveitem-move?view=graph-rest-1.0&tabs=http
-        if (PathUtils.isFolder(startPath)) {
-            // TODO 如果为文件夹，则需要递归移动文件夹下的所有文件
-
-        } else {
-            // TODO 如果为文件，则直接移动文件
-
+        // 移动文件，需要先获取 item-id，@see https://learn.microsoft.com/zh-cn/graph/api/driveitem-move?view=graph-rest-1.0&tabs=http
+        String startItemId = getItemId(startPath);
+        String endItemId = getItemId(endPath);
+        String moveUrl = OneDriveConstants.MOVE_URL.replace("{item-id}", startItemId);
+        Map<String, Object> map = new HashMap<>();
+        Map<String, String> parentReference = new HashMap<>();
+        parentReference.put("id", endItemId);
+        map.put("parentReference", parentReference);
+        if (!PathUtils.isFolder(startPath)) {
+            map.put("name", PathUtils.getFileName(PathUtils.decode(startPath)));
         }
+        JSONObject result = JSONUtil.parseObj(OkHttps.sync(moveUrl)
+                .addHeader("Authorization", getAccessToken())
+                .bodyType("json")
+                .addBodyPara(map)
+                .patch().getBody().toString());
+        log.info("移动文件结果：{}", result);
     }
 
     /**

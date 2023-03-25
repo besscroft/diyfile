@@ -32,7 +32,7 @@ public class SyncServiceImpl implements SyncService {
         Long beforeStorageId = storageService.getStorageIdByStorageKey(afterStorageKey);
         Long afterStorageId = storageService.getStorageIdByStorageKey(afterStorageKey);
         log.info("同步任务参数：{} {} {} {}", beforeStorageKey, beforePath, afterStorageKey, afterPath);
-        // TODO 同步操作
+        // 同步操作
         if (StrUtil.equals(beforeStorageKey, afterStorageKey)) {
             // 相同存储内移动文件
             // 移动文件，调用对应存储 API 移动文件接口

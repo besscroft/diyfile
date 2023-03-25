@@ -58,4 +58,14 @@ public class PathUtils {
         return !realPath.contains(".");
     }
 
+    /**
+     * 获取路径中的文件名
+     * @param path 路径
+     * @return 文件名
+     */
+    public static String getFileName(String path) {
+        int lastSlashIndex = path.lastIndexOf('/');
+        return path.substring(lastSlashIndex + 1);
+    }
+
 }
