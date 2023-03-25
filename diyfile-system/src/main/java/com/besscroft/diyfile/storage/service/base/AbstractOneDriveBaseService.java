@@ -59,6 +59,28 @@ public abstract class AbstractOneDriveBaseService<T extends OneDriveParam> exten
     public abstract String getUploadSession(String folderPath);
 
     /**
+     * 在驱动器内移动项目，可能是文件或文件夹
+     * @param startPath 开始路径
+     * @param endPath 结束路径
+     */
+    public abstract void moveItem(String startPath, String endPath);
+
+    /**
+     * 获取项目 ItemId
+     * @param path 路径
+     * @return 项目 ItemId
+     */
+    protected String getItemId(String path) {
+        String itemUrl = OneDriveConstants.ITEM_URL.replace("{path}", path);
+        JSONObject result = JSONUtil.parseObj(OkHttps.sync(itemUrl)
+                .addHeader("Authorization", getAccessToken())
+                .get().getBody().toString());
+        String itemId = result.getStr("id");
+        log.info("获取 OneDrive 项目 id：{}", itemId);
+        return itemId;
+    }
+
+    /**
      * 获取 OneDrive 驱动 id
      * @return OneDrive 驱动 id
      */
@@ -117,6 +139,7 @@ public abstract class AbstractOneDriveBaseService<T extends OneDriveParam> exten
             Map tokenResult = objectMapper.readValue(result.getBody().toString(), Map.class);
             String accessToken = tokenResult.get("access_token").toString();
             caffeineCache.put(CacheConstants.ONEDRIVE_TOKEN + getStorageId(), accessToken);
+            log.info("accessToken 刷新成功:{}", accessToken);
             return accessToken;
         } catch (Exception e) {
             throw new DiyFileException(e.getMessage());

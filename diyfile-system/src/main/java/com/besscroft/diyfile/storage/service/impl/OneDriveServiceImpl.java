@@ -9,6 +9,7 @@ import com.besscroft.diyfile.common.constant.FileConstants;
 import com.besscroft.diyfile.common.constant.storage.OneDriveConstants;
 import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.storage.init.OneDriveParam;
+import com.besscroft.diyfile.common.util.PathUtils;
 import com.besscroft.diyfile.common.vo.FileInfoVo;
 import com.besscroft.diyfile.storage.service.base.AbstractOneDriveBaseService;
 import com.ejlchina.okhttps.HttpResult;
@@ -133,6 +134,27 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
                 .addHeader("Authorization", getAccessToken())
                 .post().getBody().toString());
         return result.getStr("uploadUrl");
+    }
+
+    @Override
+    public void moveItem(String startPath, String endPath) {
+        // 移动文件，需要先获取 item-id，@see https://learn.microsoft.com/zh-cn/graph/api/driveitem-move?view=graph-rest-1.0&tabs=http
+        String startItemId = getItemId(startPath);
+        String endItemId = getItemId(endPath);
+        String moveUrl = OneDriveConstants.MOVE_URL.replace("{item-id}", startItemId);
+        Map<String, Object> map = new HashMap<>();
+        Map<String, String> parentReference = new HashMap<>();
+        parentReference.put("id", endItemId);
+        map.put("parentReference", parentReference);
+        if (!PathUtils.isFolder(startPath)) {
+            map.put("name", PathUtils.getFileName(PathUtils.decode(startPath)));
+        }
+        JSONObject result = JSONUtil.parseObj(OkHttps.sync(moveUrl)
+                .addHeader("Authorization", getAccessToken())
+                .bodyType("json")
+                .addBodyPara(map)
+                .patch().getBody().toString());
+        log.info("移动文件结果：{}", result);
     }
 
     /**

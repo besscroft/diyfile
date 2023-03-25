@@ -28,4 +28,10 @@ public interface OneDriveConstants {
     /** 文件操作 API，PATCH 更新资源，DELETE 删除资源 */
     String DRIVER_ITEM_OPERATOR_URL = "https://graph.microsoft.com/v1.0/me/drive/root:{path}";
 
+    /** 获取项目 API */
+    String ITEM_URL = "https://graph.microsoft.com/v1.0/me/drive/root:{path}";
+
+    /** 移动文件或文件夹 API */
+    String MOVE_URL = "https://graph.microsoft.com/v1.0/me/drive/items/{item-id}";
+
 }

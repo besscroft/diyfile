@@ -214,4 +214,9 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
         }
     }
 
+    @Override
+    public void moveItem(String startPath, String endPath) {
+        // TODO 移动文件
+    }
+
 }

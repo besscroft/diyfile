@@ -10,6 +10,7 @@ import com.besscroft.diyfile.common.param.file.GetItemByKeyParam;
 import com.besscroft.diyfile.common.param.file.GetUploadUrlParam;
 import com.besscroft.diyfile.common.result.AjaxResult;
 import com.besscroft.diyfile.common.result.CommonResult;
+import com.besscroft.diyfile.common.util.PathUtils;
 import com.besscroft.diyfile.common.vo.FileInfoVo;
 import com.besscroft.diyfile.common.vo.StorageInfoVo;
 import com.besscroft.diyfile.service.FileService;
@@ -53,6 +54,8 @@ public class FileController {
     @GetMapping("/getItem")
     public CommonResult<List<FileInfoVo>> base(@RequestParam(value = "storageId") Long storageId,
                                                @RequestParam(value = "folderPath") String folderPath) {
+        // 校验路径
+        PathUtils.checkPath(folderPath);
         return CommonResult.success(fileService.getItem(storageId, folderPath));
     }
 
@@ -60,6 +63,8 @@ public class FileController {
     @Operation(summary = "首页文件列表")
     @PostMapping("/getItemByKey")
     public CommonResult<List<FileInfoVo>> baseByKey(@RequestBody @Valid GetItemByKeyParam param) {
+        // 校验路径
+        PathUtils.checkPath(param.getFolderPath());
         return CommonResult.success(fileService.getItemByKey(param.getStorageKey(), param.getFolderPath()));
     }
 
@@ -67,6 +72,8 @@ public class FileController {
     @Operation(summary = "文件信息")
     @PostMapping("/getFileInfo")
     public CommonResult<FileInfoVo> getFileInfo(@RequestBody GetFileInfoParam param) {
+        // 校验路径
+        PathUtils.checkPath(param.getFilePath());
         return CommonResult.success(fileService.getFileInfo(param.getStorageKey(), param.getFilePath(), param.getFileName()));
     }
 
@@ -95,6 +102,8 @@ public class FileController {
     @Operation(summary = "删除文件接口")
     @PostMapping("/deleteFile")
     public AjaxResult deleteFile(@RequestBody @Valid DeleteFileParam param) {
+        // 校验路径
+        PathUtils.checkPath(param.getPath());
         fileService.deleteFile(param.getStorageKey(), param.getPath());
         return AjaxResult.success("删除成功！");
     }
