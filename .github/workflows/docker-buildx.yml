@@ -1,4 +1,4 @@
-name: "Java CI with Sqlite Multi-arch Docker Image"
+name: "Java CI with Multi-arch Docker Image"
 
 on:
   push:
@@ -37,7 +37,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./
-          file: ./.github/docker/sqlite/Dockerfile
+          file: ./.github/docker/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/ppc64le,linux/s390x
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/diyfile:${{ steps.get_version.outputs.VERSION }}
@@ -46,7 +46,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./
-          file: ./.github/docker/sqlite/Dockerfile
+          file: ./.github/docker/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/ppc64le,linux/s390x
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/diyfile:latest

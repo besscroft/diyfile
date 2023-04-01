@@ -37,16 +37,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./
-          file: ./.github/docker/sqlite/Dockerfile
+          file: ./.github/docker/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/ppc64le,linux/s390x
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/diyfile:test-sqlite
-      - name: Build and push diyfile mysql test
-        id: docker_build_diyfile_mysql_test
-        uses: docker/build-push-action@v3
-        with:
-          context: ./
-          file: ./.github/docker/mysql/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/ppc64le,linux/s390x
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/diyfile:test-mysql
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/diyfile:test
