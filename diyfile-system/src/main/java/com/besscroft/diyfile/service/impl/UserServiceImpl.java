@@ -163,7 +163,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             CacheConstants.STATISTICS
     }, allEntries = true)
     public void updatePassword(Long userId, Boolean isSelf,String oldPassword, String newPassword) {
-        if (isSelf) {
+        if (Boolean.TRUE.equals(isSelf)) {
             // 如果是自己要修改密码，那么就从上下文中获取用户 id
             userId = StpUtil.getLoginIdAsLong();
         }
