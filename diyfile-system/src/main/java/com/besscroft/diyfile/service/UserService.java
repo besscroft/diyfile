@@ -55,7 +55,7 @@ public interface UserService extends IService<User> {
     /**
      * 获取用户
      * @param id 用户 id
-     * @return
+     * @return 用户实体
      */
     User getUserById(Long id);
 

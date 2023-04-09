@@ -29,6 +29,7 @@
 ```shell
 docker run -d --name diyfile \
   -p 8080:8080 \
+  -e SPRING_PROFILE="sqlite" \
   -e JAVA_OPTS="-Xms512m -Xmx512m -Duser.timezone=GMT+08 -Dfile.encoding=UTF8" \
   -v /root/data:/data \
   besscroft/diyfile:latest
@@ -38,11 +39,12 @@ docker run -d --name diyfile \
 
 > 注意，这个镜像是支持 sqlite 数据库版本的镜像，如果你需要使用 mysql，可以 [点击此处](https://doc.diyfile.besscroft.com/diyfile/deploy/backend.html) 查看。
 
-| 名称          | 说明                                                         | 默认值   |
-| ------------- | ------------------------------------------------------------ |-------|
-| FLYWAY_ENABLE | 是否进行数据库自动初始化，只支持 sqlite、mysql 8.x 版本，或者 mariadb 跟 mysql 8.x 对应的版本。 | true  |
-| DOC_ENABLE    | api 文档启用                                                 | false |
-| DOC_UI_ENABLE | swagger ui 启用                                              | false |
+| 名称          | 说明                                                                 | 默认值    |
+| ------------- |--------------------------------------------------------------------|--------|
+| SPRING_PROFILE | 配置文件版本，可选项为 mysql 和 sqlite                                         | sqlite |
+| FLYWAY_ENABLE | 是否进行数据库自动初始化，只支持 sqlite、mysql 8.x 版本，或者 mariadb 跟 mysql 8.x 对应的版本。 | true   |
+| DOC_ENABLE    | api 文档启用                                                           | false  |
+| DOC_UI_ENABLE | swagger ui 启用                                                      | false  |
 
 > 端口可以自定义，docker 容器内的程序端口为 8080，你可以自定义对应的宿主机的端口，以及网络类型。请注意，容器内连接主机端口，可以使用 ip 172.17.0.1。
 
