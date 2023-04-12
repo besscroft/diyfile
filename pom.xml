@@ -190,14 +190,14 @@
         </profile>
         <profile>
             <!-- mysql -->
-            <id>test</id>
+            <id>mysql</id>
             <properties>
                 <spring.active>mysql</spring.active>
             </properties>
         </profile>
         <profile>
             <!-- sqlite -->
-            <id>prod</id>
+            <id>sqlite</id>
             <properties>
                 <spring.active>sqlite</spring.active>
             </properties>
