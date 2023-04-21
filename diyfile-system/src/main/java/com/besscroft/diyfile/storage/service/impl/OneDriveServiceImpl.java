@@ -60,6 +60,7 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
             int retryCount = ctx.getRetryCount();
             if (retryCount > 0) {
                 log.info("获取 OneDrive 文件列表失败，正在进行第 {} 次重试", retryCount);
+                DiyCache.removeDiyKey(CacheConstants.ONEDRIVE_TOKEN + storageId);
                 refreshAccessToken();
             }
             try {
