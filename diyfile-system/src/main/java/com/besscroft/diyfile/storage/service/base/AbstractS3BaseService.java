@@ -28,6 +28,7 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
     /** S3 客户端 */
     protected S3Client s3Client;
 
+    @Override
     public abstract void init();
 
     @Override
@@ -69,8 +70,9 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
             FileInfoVo fileInfoVo = new FileInfoVo();
             if (object.key().contains("/")) {
                 int lastSlashIndex = object.key().lastIndexOf('/');
-                if (Objects.equals("", object.key().substring(lastSlashIndex + 1)))
+                if (Objects.equals("", object.key().substring(lastSlashIndex + 1))) {
                     continue;
+                }
                 fileInfoVo.setName(object.key().substring(lastSlashIndex + 1));
                 fileInfoVo.setPath(object.key().substring(0, lastSlashIndex));
             } else {
@@ -94,6 +96,7 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
         return fileInfoVoList;
     }
 
+    @Override
     public abstract Integer getStorageType();
 
     @Override

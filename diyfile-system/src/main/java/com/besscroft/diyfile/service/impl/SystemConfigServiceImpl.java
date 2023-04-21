@@ -7,6 +7,7 @@ import com.besscroft.diyfile.common.constant.SystemConstants;
 import com.besscroft.diyfile.common.entity.Storage;
 import com.besscroft.diyfile.common.entity.SystemConfig;
 import com.besscroft.diyfile.common.entity.User;
+import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.vo.StorageInfoVo;
 import com.besscroft.diyfile.mapper.SystemConfigMapper;
 import com.besscroft.diyfile.mapper.UserMapper;
@@ -58,7 +59,9 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
     @Cacheable(value = CacheConstants.SITE_CONFIG, unless = "#result == null")
     public Map<String, String> getSiteConfig() {
         List<SystemConfig> configList = this.baseMapper.queryAllByType(1);
-        if (CollectionUtils.isEmpty(configList)) return new HashMap<>();
+        if (CollectionUtils.isEmpty(configList)) {
+            return new HashMap<>();
+        }
         return configList.stream().collect(Collectors.toMap(SystemConfig::getConfigKey, SystemConfig::getConfigValue));
     }
 
@@ -129,7 +132,8 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
                 storageService.saveStorageInfoVoList(list);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("还原数据异常:{}", e);
+            throw new DiyFileException("还原数据失败！");
         }
     }
 

@@ -28,7 +28,9 @@ public class SyncServiceImpl implements SyncService {
     @Override
     public void taskAdd(String beforeStorageKey, String beforePath, String afterStorageKey, String afterPath) {
         // 判断被同步路径是否为文件夹路径
-        if (!PathUtils.isFolder(afterPath)) throw new DiyFileException("被同步路径必须为文件夹路径！");
+        if (!PathUtils.isFolder(afterPath)) {
+            throw new DiyFileException("被同步路径必须为文件夹路径！");
+        }
         Long beforeStorageId = storageService.getStorageIdByStorageKey(afterStorageKey);
         Long afterStorageId = storageService.getStorageIdByStorageKey(afterStorageKey);
         log.info("同步任务参数：{} {} {} {}", beforeStorageKey, beforePath, afterStorageKey, afterPath);

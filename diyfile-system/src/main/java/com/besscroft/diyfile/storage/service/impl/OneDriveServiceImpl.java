@@ -5,6 +5,8 @@ import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.besscroft.diyfile.cache.DiyCache;
+import com.besscroft.diyfile.common.constant.CacheConstants;
 import com.besscroft.diyfile.common.constant.FileConstants;
 import com.besscroft.diyfile.common.constant.storage.OneDriveConstants;
 import com.besscroft.diyfile.common.exception.DiyFileException;
@@ -80,6 +82,7 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
             int retryCount = ctx.getRetryCount();
             if (retryCount > 0) {
                 log.info("获取 OneDrive 文件信息失败，正在进行第 {} 次重试", retryCount);
+                DiyCache.removeDiyKey(CacheConstants.ONEDRIVE_TOKEN + storageId);
                 refreshAccessToken();
             }
             try {
@@ -108,8 +111,9 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
                 .addHeader("Authorization", getAccessToken())
                 .setBodyPara(map)
                 .patch();
-        if (result.getStatus() != 200)
+        if (result.getStatus() != 200) {
             throw new DiyFileException("文件重命名失败！");
+        }
     }
 
     @Override
@@ -118,8 +122,9 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
         HttpResult result = OkHttps.sync(url)
                 .addHeader("Authorization", getAccessToken())
                 .delete();
-        if (result.getStatus() != 204)
+        if (result.getStatus() != 204) {
             throw new DiyFileException("删除文件失败！");
+        }
     }
 
     @Override
@@ -267,7 +272,9 @@ public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDrivePar
      * @return 代理下载地址
      */
     private String getProxyUrl(String url) {
-        if (StrUtil.isBlank(initParam.getProxyUrl())) return null;
+        if (StrUtil.isBlank(initParam.getProxyUrl())) {
+            return null;
+        }
         try {
             URI host = URLUtil.getHost(new URL(url));
             return StrUtil.replace(url, host.toString(), initParam.getProxyUrl());

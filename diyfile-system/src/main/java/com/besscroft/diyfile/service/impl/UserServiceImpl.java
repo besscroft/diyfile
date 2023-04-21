@@ -18,11 +18,11 @@ import com.besscroft.diyfile.mapper.UserMapper;
 import com.besscroft.diyfile.message.PushService;
 import com.besscroft.diyfile.service.SystemConfigService;
 import com.besscroft.diyfile.service.UserService;
-import com.github.benmanes.caffeine.cache.Cache;
 import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -44,7 +44,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     private final PushService pushService;
     private final SystemConfigService systemConfigService;
-    private final Cache<String, Object> caffeineCache;
 
     @Override
     public SaTokenInfo login(String username, String password) {
@@ -52,10 +51,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         log.info("用户发起登录请求:{}，请求 uri 为：{}", username, request.toUriString());
         User user = this.baseMapper.selectByUsername(username);
         Assert.notNull(user, "账号或密码错误！");
-        if (Objects.equals(user.getStatus(), SystemConstants.STATUS_NO))
+        if (Objects.equals(user.getStatus(), SystemConstants.STATUS_NO)) {
             throw new DiyFileException(String.format("账号：%s 已被禁用，请联系管理员！", username));
-        if (!Objects.equals(SecureUtil.sha256(password), user.getPassword()))
+        }
+        if (!Objects.equals(SecureUtil.sha256(password), user.getPassword())) {
             throw new DiyFileException("账号或密码错误！");
+        }
         // 登录
         StpUtil.login(user.getId());
         // 设置最后登录时间
@@ -72,7 +73,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public Map<String, Object> info() {
         long userId = StpUtil.getLoginIdAsLong();
-        User user = getCacheUserById(userId);
+        User user = getUserById(userId);
         Assert.notNull(user, "暂未登录！");
         Map<String, Object> map = new HashMap<>();
         map.put("userName", user.getName());
@@ -94,10 +95,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             CacheConstants.STATISTICS
     }, allEntries = true)
     public void deleteUser(Long userId) {
-        User user = getCacheUserById(userId);
+        User user = getUserById(userId);
         Assert.notNull(user, "用户不存在！");
-        if (Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))
+        if (Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN)) {
             throw new DiyFileException("超级管理员不允许被删除！");
+        }
         Assert.isTrue(this.baseMapper.deleteById(userId) > 0, "用户删除失败！");
     }
 
@@ -107,16 +109,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public User getUserById(Long id) {
-        return getCacheUserById(id);
+    @Cacheable(value = CacheConstants.USER, key = "#userId", unless = "#result == null")
+    public User getUserById(Long userId) {
+        log.info("查询用户信息：{}", userId);
+        return this.baseMapper.selectById(userId);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void addUser(UserAddParam param) {
         User user = UserConverterMapper.INSTANCE.AddParamToUser(param);
-        if (Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))
+        if (Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN)) {
             throw new DiyFileException("违反规则！超级管理员角色不允许被添加！");
+        }
         user.setStatus(SystemConstants.STATUS_NO);
         user.setPassword(SecureUtil.sha256(param.getPassword().trim()));
         Assert.isTrue(this.baseMapper.insert(user) > 0, "新增用户失败！");
@@ -133,12 +138,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User oldUser = this.baseMapper.selectById(user.getId());
         // 如果原来不是超级管理员，现在是超级管理员，或者原来是超级管理员，现在不是超级管理员，抛出异常
         if ((!Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN) && Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))
-                || (Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN) && !Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN)))
+                || (Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN) && !Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))) {
             throw new DiyFileException("违反规则！更新用户失败！");
+        }
         // 非管理员只能修改自己的信息
         if (!(Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN) || Objects.equals(oldUser.getRole(), RoleConstants.PLATFORM_ADMIN))
-                && !Objects.equals(oldUser.getId(), user.getId()))
+                && !Objects.equals(oldUser.getId(), user.getId())) {
             throw new DiyFileException("违反规则！更新用户失败！");
+        }
         Assert.isTrue(this.baseMapper.updateById(user) > 0, "更新用户失败！");
     }
 
@@ -150,8 +157,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void updateStatus(Long id, Integer status) {
         User user = this.baseMapper.selectById(id);
         Assert.notNull(user, "用户不存在！");
-        if (Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN))
+        if (Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN)) {
             throw new DiyFileException("超级管理员不允许被禁用！");
+        }
         user.setStatus(status);
         Assert.isTrue(this.baseMapper.updateById(user) > 0, "更新用户状态失败！");
     }
@@ -168,24 +176,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             userId = StpUtil.getLoginIdAsLong();
         }
         String password = this.baseMapper.selectPasswordById(userId);
-        if (!Objects.equals(SecureUtil.sha256(oldPassword), password))
+        if (!Objects.equals(SecureUtil.sha256(oldPassword), password)) {
             throw new DiyFileException("旧密码错误！");
+        }
         String sha256Pwd = SecureUtil.sha256(newPassword);
         this.baseMapper.updatePasswordById(userId, sha256Pwd);
-    }
-
-    /**
-     * 从缓存中获取用户信息
-     * @param userId 用户 id
-     * @return 用户信息
-     */
-    private User getCacheUserById(Long userId) {
-        return (User) Optional.ofNullable(caffeineCache.getIfPresent(CacheConstants.USER + userId))
-                .orElseGet(() -> {
-                    User user = this.baseMapper.selectById(userId);
-                    caffeineCache.put(CacheConstants.USER + userId, user);
-                    return user;
-                });
     }
 
 }

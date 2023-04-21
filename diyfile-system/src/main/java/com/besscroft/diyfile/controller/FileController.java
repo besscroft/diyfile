@@ -3,6 +3,7 @@ package com.besscroft.diyfile.controller;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.annotation.SaMode;
+import com.besscroft.diyfile.common.constant.MessageConstants;
 import com.besscroft.diyfile.common.constant.RoleConstants;
 import com.besscroft.diyfile.common.param.file.DeleteFileParam;
 import com.besscroft.diyfile.common.param.file.GetFileInfoParam;
@@ -105,7 +106,7 @@ public class FileController {
         // 校验路径
         PathUtils.checkPath(param.getPath());
         fileService.deleteFile(param.getStorageKey(), param.getPath());
-        return AjaxResult.success("删除成功！");
+        return AjaxResult.success(MessageConstants.DELETE_SUCCESS);
     }
 
 }

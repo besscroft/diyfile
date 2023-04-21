@@ -88,8 +88,9 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
     public void updateStorage(StorageUpdateParam param) {
         Storage storage = StorageConverterMapper.INSTANCE.UpdateParamToStorage(param);
         Storage oldStorage = this.baseMapper.selectById(storage.getId());
-        if (!Objects.equals(storage.getType(), oldStorage.getType()))
+        if (!Objects.equals(storage.getType(), oldStorage.getType())) {
             throw new DiyFileException("存储类型不允许修改！");
+        }
         storage.setStorageKey(oldStorage.getStorageKey());
         this.baseMapper.updateById(storage);
         // 如果是 OneDrive 存储，需要判断是否包含 ***，如果包含则不更新
@@ -135,8 +136,9 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
             StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
             List<StorageConfig> configs = CollUtil.newArrayList();
             for (StorageConfig config: configList) {
-                if (Objects.equals(config.getStorageId(), storage.getId()))
+                if (Objects.equals(config.getStorageId(), storage.getId())) {
                     configs.add(config);
+                }
             }
             vo.setConfigList(configs);
             voList.add(vo);
@@ -213,7 +215,9 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
     @Cacheable(value = CacheConstants.DEFAULT_STORAGE, unless = "#result == null")
     public Long getDefaultStorageId() {
         Storage storage = this.baseMapper.selectByDefault();
-        if (Objects.isNull(storage)) return null;
+        if (Objects.isNull(storage)) {
+            return null;
+        }
         StorageInfoVo vo = StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
         return vo.getId();
     }
@@ -230,7 +234,9 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
     public void saveStorageInfoVoList(List<StorageInfoVo> storageInfoVoList) {
         for (StorageInfoVo storageInfoVo : storageInfoVoList) {
             Storage storage = StorageConverterMapper.INSTANCE.StorageInfoVoToStorage(storageInfoVo);
-            if (Objects.isNull(storage)) throw new DiyFileException("存储信息导入失败！");
+            if (Objects.isNull(storage)) {
+                throw new DiyFileException("存储信息导入失败！");
+            }
             storage.setId(null);
             this.save(storage);
             List<StorageConfig> configList = storageInfoVo.getConfigList();

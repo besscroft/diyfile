@@ -32,6 +32,7 @@ public abstract class AbstractFileBaseService<T extends FileInitParam> implement
     /** 基础服务初始化方法 */
     public abstract void init();
 
+    @Override
     public abstract String getFileDownloadUrl(String fileName, String filePath);
 
     @Override
@@ -41,7 +42,7 @@ public abstract class AbstractFileBaseService<T extends FileInitParam> implement
      * 获取文件信息
      * @param filePath 文件路径
      * @param fileName 文件名
-     * @return
+     * @return 文件信息
      */
     public abstract FileInfoVo getFileInfo(String filePath, String fileName);
 
@@ -87,26 +88,30 @@ public abstract class AbstractFileBaseService<T extends FileInitParam> implement
     public abstract void moveItem(String startPath, String endPath);
 
     public void setStorageId(Long storageId) {
-        if (Objects.nonNull(this.storageId))
+        if (Objects.nonNull(this.storageId)) {
             throw new IllegalStateException("当前存储服务不允许重复初始化！");
+        }
         this.storageId = storageId;
     }
 
     public void setStorageKey(String storageKey) {
-        if (Objects.nonNull(this.storageKey))
+        if (Objects.nonNull(this.storageKey)) {
             throw new IllegalStateException("当前存储服务不允许重复初始化！");
+        }
         this.storageKey = storageKey;
     }
 
     public void setName(String name) {
-        if (StrUtil.isNotBlank(this.name))
+        if (StrUtil.isNotBlank(this.name)) {
             throw new IllegalStateException("当前存储服务不允许重复初始化！");
+        }
         this.name = name;
     }
 
     public void setInitParam(T initParam) {
-        if (Objects.nonNull(this.initParam))
+        if (Objects.nonNull(this.initParam)) {
             throw new IllegalStateException("当前存储服务不允许重复初始化！");
+        }
         this.initParam = initParam;
     }
 

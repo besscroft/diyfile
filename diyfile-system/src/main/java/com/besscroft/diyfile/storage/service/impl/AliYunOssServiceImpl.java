@@ -107,7 +107,7 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
     @Override
     public void deleteItem(String filePath) {
         // 删除文件或目录。如果要删除目录，目录必须为空。
-        if (StrUtil.sub(filePath, 0, 2).equals("//")) {
+        if ("//".equals(StrUtil.sub(filePath, 0, 2))) {
             ossClient.deleteObject(initParam.getBucketName(), StrUtil.sub(filePath, 2, filePath.length()));
         } else {
             ossClient.deleteObject(initParam.getBucketName(), StrUtil.sub(filePath, 1, filePath.length()));
@@ -136,8 +136,9 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
         for(OSSObjectSummary summary : summaryList) {
             FileInfoVo fileInfoVo = new FileInfoVo();
             int lastSlashIndex = summary.getKey().lastIndexOf('/');
-            if (Objects.equals("", summary.getKey().substring(lastSlashIndex + 1)))
+            if (Objects.equals("", summary.getKey().substring(lastSlashIndex + 1))) {
                 continue;
+            }
             if (summary.getKey().contains("/")) {
                 fileInfoVo.setName(summary.getKey().substring(lastSlashIndex + 1));
             } else {
@@ -195,19 +196,19 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
         // TODO 获取代理地址
         try {
             URL url = new URL(initParam.getEndpoint());
-            StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append(url.getProtocol())
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(url.getProtocol())
                     .append("://")
                     .append(bucketName)
                     .append(".")
                     .append(url.getHost());
-            if (StrUtil.sub(objectName, 0, 1).equals("/")) {
-                stringBuffer.append(objectName);
+            if ("/".equals(StrUtil.sub(objectName, 0, 1))) {
+                stringBuilder.append(objectName);
             } else {
-                stringBuffer.append("/")
+                stringBuilder.append("/")
                             .append(objectName);
             }
-            return stringBuffer.toString();
+            return stringBuilder.toString();
         } catch (MalformedURLException e) {
             log.error("地址获取失败:{}", e.getMessage());
             throw new DiyFileException("地址获取失败！");

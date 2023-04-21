@@ -52,7 +52,9 @@ public class PathUtils {
      */
     public static boolean isFolder(String path) {
         // 不包含扩展名的 . 肯定为文件夹
-        if (!StrUtil.contains(path, ".") || StrUtil.equals(path, "/")) return true;
+        if (!StrUtil.contains(path, ".") || StrUtil.equals(path, "/")) {
+            return true;
+        }
         int lastSlashIndex = path.lastIndexOf('/');
         String realPath = path.substring(lastSlashIndex + 1);
         return !realPath.contains(".");

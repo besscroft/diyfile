@@ -40,14 +40,18 @@ public class FileServiceImpl implements FileService {
     @Cacheable(value = CacheConstants.DEFAULT_STORAGE, unless = "#result == null")
     public StorageInfoVo defaultStorage() {
         Storage storage = storageMapper.selectByDefault();
-        if (Objects.isNull(storage)) return new StorageInfoVo();
+        if (Objects.isNull(storage)) {
+            return new StorageInfoVo();
+        }
         return StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
     }
 
     @Override
     public List<FileInfoVo> defaultItem() {
         Long storageId = storageService.getDefaultStorageId();
-        if (Objects.isNull(storageId)) return CollUtil.newArrayList();
+        if (Objects.isNull(storageId)) {
+            return CollUtil.newArrayList();
+        }
         AbstractFileBaseService<FileInitParam> service = storageApplicationContext.getServiceByStorageId(storageId);
         return service.getFileList(null);
     }
