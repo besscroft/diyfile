@@ -1,6 +1,8 @@
 package com.besscroft.diyfile.storage.service.base;
 
 import com.besscroft.diyfile.common.vo.FileInfoVo;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -15,9 +17,18 @@ public interface FileBaseService {
      * 获取文件下载地址
      * @param fileName 文件名
      * @param filePath 文件路径
+     * @param fullPath 文件全路径
      * @return 文件下载地址
      */
-    String getFileDownloadUrl(String fileName, String filePath);
+    String getFileDownloadUrl(String fileName, String filePath, String fullPath);
+
+    /**
+     * 获取文件资源
+     * @param fileName 文件名
+     * @param filePath 文件路径
+     * @return 文件资源
+     */
+    ResponseEntity<Resource> getFileResource(String fileName, String filePath);
 
     /**
      * 获取文件列表

@@ -7,6 +7,7 @@ import com.besscroft.diyfile.common.converter.StorageConverterMapper;
 import com.besscroft.diyfile.common.entity.Storage;
 import com.besscroft.diyfile.common.param.FileInitParam;
 import com.besscroft.diyfile.common.param.storage.init.OneDriveParam;
+import com.besscroft.diyfile.common.util.PathUtils;
 import com.besscroft.diyfile.common.vo.FileInfoVo;
 import com.besscroft.diyfile.common.vo.StorageInfoVo;
 import com.besscroft.diyfile.mapper.StorageMapper;
@@ -17,6 +18,8 @@ import com.besscroft.diyfile.storage.service.base.AbstractFileBaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,14 +43,18 @@ public class FileServiceImpl implements FileService {
     @Cacheable(value = CacheConstants.DEFAULT_STORAGE, unless = "#result == null")
     public StorageInfoVo defaultStorage() {
         Storage storage = storageMapper.selectByDefault();
-        if (Objects.isNull(storage)) return new StorageInfoVo();
+        if (Objects.isNull(storage)) {
+            return new StorageInfoVo();
+        }
         return StorageConverterMapper.INSTANCE.StorageToInfoVo(storage);
     }
 
     @Override
     public List<FileInfoVo> defaultItem() {
         Long storageId = storageService.getDefaultStorageId();
-        if (Objects.isNull(storageId)) return CollUtil.newArrayList();
+        if (Objects.isNull(storageId)) {
+            return CollUtil.newArrayList();
+        }
         AbstractFileBaseService<FileInitParam> service = storageApplicationContext.getServiceByStorageId(storageId);
         return service.getFileList(null);
     }
@@ -56,7 +63,7 @@ public class FileServiceImpl implements FileService {
     public List<FileInfoVo> getItem(Long storageId, String folderPath) {
         AbstractFileBaseService<FileInitParam> service = storageApplicationContext.getServiceByStorageId(storageId);
         FileInitParam initParam = service.getInitParam();
-        String path = handlePath(initParam.getMountPath(), folderPath);
+        String path = PathUtils.handlePath(initParam.getMountPath(), folderPath);
         return service.getFileList(path);
     }
 
@@ -70,7 +77,7 @@ public class FileServiceImpl implements FileService {
     public FileInfoVo getFileInfo(Long storageId, String filePath, String fileName) {
         AbstractFileBaseService<FileInitParam> service = storageApplicationContext.getServiceByStorageId(storageId);
         FileInitParam initParam = service.getInitParam();
-        String path = handlePath(initParam.getMountPath(), filePath);
+        String path = PathUtils.handlePath(initParam.getMountPath(), filePath);
         return service.getFileInfo(path, fileName);
     }
 
@@ -85,7 +92,7 @@ public class FileServiceImpl implements FileService {
         Long storageId = storageService.getStorageIdByStorageKey(storageKey);
         AbstractFileBaseService<FileInitParam> service = storageApplicationContext.getServiceByStorageId(storageId);
         OneDriveParam param = (OneDriveParam) service.getInitParam();
-        path = handlePath(param.getMountPath(), path);
+        path = PathUtils.handlePath(param.getMountPath(), path);
         return service.getUploadSession(path);
     }
 
@@ -96,42 +103,18 @@ public class FileServiceImpl implements FileService {
         service.deleteItem(filePath);
     }
 
-    /**
-     * 文件/夹路径处理
-     * @param path 文件/夹路径
-     * @return 处理后的文件/夹路径
-     */
-    private String handlePath(String mountPath, String path) {
-        // 如果设定的挂载路径为 "/"
-        if (Objects.equals("/", mountPath)) {
-            // 如果传入的挂载路径为空，则使用默认挂载路径
-            if (StrUtil.isBlank(path)) {
-                return mountPath;
-            } else if (!Objects.equals("/", path)) {
-                // 如果传入的挂载路径不为空，且不是 "/"
-                if (Objects.equals("/", mountPath)) {
-                    // 如果设定的挂载路径为 "/"，传入的挂载路径不为空，且不是 "/"，则使用传入的挂载路径
-                    return path;
-                } else {
-                    return mountPath + path;
-                }
-            } else {
-                // 如果传入的挂载路径不为空，且是 "/"，则使用默认挂载路径
-                return mountPath;
-            }
-        } else {
-            // 如果设定的挂载路径不是 "/"
-            // 如果传入的挂载路径为空，则使用默认挂载路径
-            if (StrUtil.isBlank(path)) {
-                return mountPath;
-            } else if (!Objects.equals("/", path)) {
-                // 如果传入的挂载路径不为空，且不是 "/"
-                return mountPath + path;
-            } else {
-                // 如果传入的挂载路径不为空，且是 "/"，则使用默认挂载路径
-                return mountPath;
-            }
-        }
+    @Override
+    public String getDownloadUrl(String storageKey, String filePath, String fullPath) {
+        Long storageId = storageService.getStorageIdByStorageKey(storageKey);
+        AbstractFileBaseService<FileInitParam> service = storageApplicationContext.getServiceByStorageId(storageId);
+        return service.getFileDownloadUrl(PathUtils.getFileName(filePath), filePath, fullPath);
+    }
+
+    @Override
+    public ResponseEntity<Resource> getDownloadFile(String storageKey, String filePath) {
+        Long storageId = storageService.getStorageIdByStorageKey(storageKey);
+        AbstractFileBaseService<FileInitParam> service = storageApplicationContext.getServiceByStorageId(storageId);
+        return service.getFileResource(PathUtils.getFileName(filePath), filePath);
     }
 
 }

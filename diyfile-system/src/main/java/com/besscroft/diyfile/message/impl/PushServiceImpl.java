@@ -4,8 +4,6 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.besscroft.diyfile.message.PushService;
 import com.ejlchina.okhttps.OkHttps;
-import com.github.benmanes.caffeine.cache.Cache;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

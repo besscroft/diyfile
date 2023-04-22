@@ -1,10 +1,9 @@
 package com.besscroft.diyfile.config;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.CaffeineSpec;
-import org.springframework.boot.autoconfigure.cache.CacheProperties;
-import org.springframework.cache.annotation.CachingConfigurerSupport;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachingConfigurer;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.cache.transaction.TransactionAwareCacheManagerProxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,14 +13,16 @@ import org.springframework.context.annotation.Configuration;
  * @Date 2023/1/22 20:49
  */
 @Configuration
-public class CacheConfig extends CachingConfigurerSupport {
+public class CacheConfig implements CachingConfigurer {
 
+    /**
+     * afterCommit：在事务提交后执行
+     * @return CacheManager
+     */
     @Bean
-    public Cache<String, Object> caffeineCache(CacheProperties cacheProperties) {
-        String spec = cacheProperties.getCaffeine().getSpec();
-        CaffeineSpec caffeineSpec = CaffeineSpec.parse(spec);
-        Caffeine<Object, Object> caffeine = Caffeine.from(caffeineSpec);
-        return caffeine.build();
+    @Override
+    public CacheManager cacheManager() {
+        return new TransactionAwareCacheManagerProxy(new ConcurrentMapCacheManager());
     }
 
 }

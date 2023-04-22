@@ -3,6 +3,7 @@ package com.besscroft.diyfile.controller;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.annotation.SaMode;
+import com.besscroft.diyfile.common.constant.MessageConstants;
 import com.besscroft.diyfile.common.constant.RoleConstants;
 import com.besscroft.diyfile.common.param.system.SystemUpdateConfigParam;
 import com.besscroft.diyfile.common.result.AjaxResult;
@@ -46,7 +47,7 @@ public class SystemConfigController {
     @Operation(summary = "获取网站标题")
     public AjaxResult getSiteTitle() {
         String siteTitle = systemConfigService.getSiteTitle();
-        return AjaxResult.success("操作成功！", siteTitle);
+        return AjaxResult.success(MessageConstants.SUCCESS, siteTitle);
     }
 
     @GetMapping("/getSiteConfig")
@@ -69,7 +70,7 @@ public class SystemConfigController {
     @Operation(summary = "获取备案信息")
     public AjaxResult getBeian() {
         String beian = systemConfigService.getBeian();
-        return AjaxResult.success("操作成功！", beian);
+        return AjaxResult.success(MessageConstants.SUCCESS, beian);
     }
 
     @PutMapping("/updateConfig")
@@ -77,7 +78,7 @@ public class SystemConfigController {
     @Operation(summary = "更新配置接口")
     public AjaxResult updateConfig(@RequestBody @Valid SystemUpdateConfigParam param) {
         systemConfigService.updateConfig(param.getConfigKey(), param.getConfigValue());
-        return AjaxResult.success("操作成功！");
+        return AjaxResult.success(MessageConstants.SUCCESS);
     }
 
     @GetMapping("/getBarkId")
@@ -85,7 +86,7 @@ public class SystemConfigController {
     @Operation(summary = "获取 Bark 推送 id")
     public AjaxResult getBarkId() {
         String barkId = systemConfigService.getBarkId();
-        return AjaxResult.success("操作成功！", barkId);
+        return AjaxResult.success(MessageConstants.SUCCESS, barkId);
     }
 
 }

@@ -78,10 +78,12 @@ public class StorageApplicationContext implements ApplicationContextAware {
      * @param storage 存储对象
      */
     public void init(Storage storage) {
-        if (Objects.equals("proxy", storage.getStorageKey()))
+        if (Objects.equals("proxy", storage.getStorageKey())) {
             throw new DiyFileException("存储 key 不能为 proxy");
-        if (StrUtil.contains(storage.getStorageKey(), "/"))
+        }
+        if (StrUtil.contains(storage.getStorageKey(), "/")) {
             throw new DiyFileException("存储 key 不能包含 /");
+        }
 
         Long storageId = storage.getId();
         String storageName = storage.getName();

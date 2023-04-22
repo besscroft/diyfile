@@ -2,6 +2,8 @@ package com.besscroft.diyfile.service;
 
 import com.besscroft.diyfile.common.vo.FileInfoVo;
 import com.besscroft.diyfile.common.vo.StorageInfoVo;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -72,5 +74,15 @@ public interface FileService {
      * @param filePath 文件路径
      */
     void deleteFile(String storageKey, String filePath);
+
+    /**
+     * 获取文件下载地址
+     */
+    String getDownloadUrl(String storageKey, String filePath, String fullPath);
+
+    /**
+     * 获取下载文件流
+     */
+    ResponseEntity<Resource> getDownloadFile(String storageKey, String filePath);
 
 }

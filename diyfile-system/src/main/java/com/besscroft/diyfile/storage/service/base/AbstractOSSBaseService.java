@@ -22,6 +22,7 @@ public abstract class AbstractOSSBaseService<T extends OssParam> extends Abstrac
      * @param startPath 开始路径
      * @param endPath 结束路径
      */
+    @Override
     public abstract void moveItem(String startPath, String endPath);
 
 }

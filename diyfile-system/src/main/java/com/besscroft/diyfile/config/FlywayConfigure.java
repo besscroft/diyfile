@@ -69,7 +69,7 @@ public class FlywayConfigure {
             }
             String databaseProductVersion = databaseMetaData.getDatabaseProductVersion();
             log.info("当前数据库版本为：{}", databaseProductVersion);
-            if (StrUtil.sub(databaseProductVersion, 0, 1).equals("5")) {
+            if ("5".equals(StrUtil.sub(databaseProductVersion, 0, 1))) {
                 log.info("数据库版本不支持自动初始化，跳过初始化...");
                 return;
             }

@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.util.StrUtil;
+import com.besscroft.diyfile.common.constant.MessageConstants;
 import com.besscroft.diyfile.common.constant.RoleConstants;
 import com.besscroft.diyfile.common.entity.Storage;
 import com.besscroft.diyfile.common.exception.DiyFileException;
@@ -67,7 +68,7 @@ public class StorageController {
     @DeleteMapping("/delete/{storageId:[\\d]+}")
     public AjaxResult delete(@PathVariable(name = "storageId") Long storageId) {
         storageService.deleteStorage(storageId);
-        return AjaxResult.success("删除成功！");
+        return AjaxResult.success(MessageConstants.DELETE_SUCCESS);
     }
 
     @Operation(summary = "存储新增接口")
@@ -81,12 +82,14 @@ public class StorageController {
     )
     @PostMapping("/add")
     public AjaxResult add(@RequestBody @Valid StorageAddParam param) {
-        if (Objects.equals("proxy", param.getStorageKey()))
+        if (Objects.equals("proxy", param.getStorageKey())) {
             throw new DiyFileException("存储 key 不能为 proxy");
-        if (StrUtil.contains(param.getStorageKey(), "/"))
+        }
+        if (StrUtil.contains(param.getStorageKey(), "/")) {
             throw new DiyFileException("存储 key 不能包含 /");
+        }
         storageService.addStorage(param);
-        return AjaxResult.success("新增成功！");
+        return AjaxResult.success(MessageConstants.ADD_SUCCESS);
     }
 
     @Operation(summary = "存储更新接口")
@@ -101,7 +104,7 @@ public class StorageController {
     @PutMapping("/update")
     public AjaxResult update(@RequestBody @Valid StorageUpdateParam param) {
         storageService.updateStorage(param);
-        return AjaxResult.success("更新成功！");
+        return AjaxResult.success(MessageConstants.UPDATE_SUCCESS);
     }
 
     @Operation(summary = "存储详情接口")
@@ -137,7 +140,7 @@ public class StorageController {
     @PutMapping("/updateStatus")
     public AjaxResult updateStatus(@RequestBody @Valid StorageUpdateStatusParam param) {
         storageService.updateStatus(param.getStorageId(), param.getStatus());
-        return AjaxResult.success("更新成功！");
+        return AjaxResult.success(MessageConstants.UPDATE_SUCCESS);
     }
 
     @Operation(summary = "默认存储设置")
@@ -152,7 +155,7 @@ public class StorageController {
     @PutMapping("/setDefault/{storageId:[\\d]+}")
     public AjaxResult setDefault(@PathVariable(name = "storageId") Long storageId) {
         storageService.setDefault(storageId);
-        return AjaxResult.success("设置成功！");
+        return AjaxResult.success(MessageConstants.UPDATE_SUCCESS);
     }
 
     @SaIgnore

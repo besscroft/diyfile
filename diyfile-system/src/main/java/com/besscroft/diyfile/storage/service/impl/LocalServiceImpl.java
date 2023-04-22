@@ -2,6 +2,9 @@ package com.besscroft.diyfile.storage.service.impl;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.net.URLEncodeUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.besscroft.diyfile.common.constant.FileConstants;
 import com.besscroft.diyfile.common.enums.StorageTypeEnum;
@@ -13,6 +16,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -42,8 +50,24 @@ public class LocalServiceImpl extends AbstractFileBaseService<LocalParam> {
     }
 
     @Override
-    public String getFileDownloadUrl(String fileName, String filePath) {
-        return null;
+    public String getFileDownloadUrl(String fileName, String filePath, String fullPath) {
+        return StrUtil.replace(fullPath, "raw", "proxy");
+    }
+
+    @Override
+    public ResponseEntity<Resource> getFileResource(String fileName, String filePath) {
+        File file = new File(filePath);
+        if (file.exists() && file.isFile() && Objects.equals(file.getName(), fileName)) {
+            MediaType mimeType = MediaType.APPLICATION_OCTET_STREAM;
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + URLEncodeUtil.encodeAll(file.getName()));
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentLength(file.length())
+                    .contentType(mimeType)
+                    .body(new FileSystemResource(file));
+        }
+        throw new DiyFileException("文件不存在！");
     }
 
     @Override

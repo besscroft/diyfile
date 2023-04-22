@@ -25,7 +25,7 @@ public class StpInterfaceImpl implements StpInterface {
      * 返回一个账号所拥有的权限码集合
      * @param loginId 登录用户 id
      * @param loginType 登录用户类型
-     * @return
+     * @return 账号所拥有的权限码集合
      */
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
@@ -37,7 +37,7 @@ public class StpInterfaceImpl implements StpInterface {
      * 返回一个账号所拥有的角色标识集合
      * @param loginId 登录用户 id
      * @param loginType 登录用户类型
-     * @return
+     * @return 账号所拥有的角色标识集合
      */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {

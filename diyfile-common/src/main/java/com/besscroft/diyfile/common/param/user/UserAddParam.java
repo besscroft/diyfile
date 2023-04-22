@@ -13,11 +13,11 @@ import lombok.Data;
 @Schema(title = "新增用户请求参数")
 public class UserAddParam {
 
-    @Schema(title = "用户名", type = "String", required = true)
+    @Schema(title = "用户名", type = "String", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "用户名不能为空！")
     private String username;
 
-    @Schema(title = "密码", type = "String", required = true)
+    @Schema(title = "密码", type = "String", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "密码不能为空！")
     private String password;
 

@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.annotation.SaMode;
 import cn.dev33.satoken.stp.SaTokenInfo;
+import com.besscroft.diyfile.common.constant.MessageConstants;
 import com.besscroft.diyfile.common.constant.RoleConstants;
 import com.besscroft.diyfile.common.entity.User;
 import com.besscroft.diyfile.common.param.LoginParam;
@@ -75,7 +76,7 @@ public class UserController {
     @DeleteMapping("/delete/{userId:[\\d]+}")
     public AjaxResult delete(@PathVariable(name = "userId") Long userId) {
         userService.deleteUser(userId);
-        return AjaxResult.success("删除成功！");
+        return AjaxResult.success(MessageConstants.DELETE_SUCCESS);
     }
 
     @Operation(summary = "用户信息获取接口")
@@ -122,14 +123,14 @@ public class UserController {
     @PutMapping("/updateStatus")
     public AjaxResult updateStatus(@RequestBody @Valid UserUpdateStatusParam param) {
         userService.updateStatus(param.getUserId(), param.getStatus());
-        return AjaxResult.success("更新成功！");
+        return AjaxResult.success(MessageConstants.UPDATE_SUCCESS);
     }
 
     @Operation(summary = "用户密码更新接口")
     @PutMapping("/updatePassword")
     public AjaxResult updatePassword(@RequestBody @Valid UserUpdatePwdParam param) {
         userService.updatePassword(param.getUserId(), param.getIsSelf(), param.getOldPassword(), param.getNewPassword());
-        return AjaxResult.success("更新成功！");
+        return AjaxResult.success(MessageConstants.UPDATE_SUCCESS);
     }
 
 }

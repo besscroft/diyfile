@@ -13,7 +13,7 @@ import lombok.Data;
 @Schema(title = "更新用户请求参数")
 public class UserUpdateParam {
 
-    @Schema(title = "用户 id", type = "Long", required = true)
+    @Schema(title = "用户 id", type = "Long", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "用户 id 不能为空！")
     private Long id;
 
