@@ -3,6 +3,8 @@ package com.besscroft.diyfile.storage.service.base;
 import cn.hutool.core.util.StrUtil;
 import com.besscroft.diyfile.common.param.FileInitParam;
 import com.besscroft.diyfile.common.vo.FileInfoVo;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +35,10 @@ public abstract class AbstractFileBaseService<T extends FileInitParam> implement
     public abstract void init();
 
     @Override
-    public abstract String getFileDownloadUrl(String fileName, String filePath);
+    public abstract String getFileDownloadUrl(String fileName, String filePath, String fullPath);
+
+    @Override
+    public abstract ResponseEntity<Resource> getFileResource(String fileName, String filePath);
 
     @Override
     public abstract List<FileInfoVo> getFileList(String folderPath);

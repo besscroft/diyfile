@@ -6,6 +6,8 @@ import com.besscroft.diyfile.common.param.storage.init.S3Param;
 import com.besscroft.diyfile.common.util.PathUtils;
 import com.besscroft.diyfile.common.vo.FileInfoVo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
@@ -113,7 +115,7 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
         fileInfoVo.setSize(calKb(response.contentLength()));
         fileInfoVo.setLastModifiedDateTime(LocalDateTime.ofInstant(response.lastModified(), ZoneId.systemDefault()));
         fileInfoVo.setFile(response.storageClassAsString());
-        fileInfoVo.setUrl(getFileDownloadUrl(fileName, filePath));
+        fileInfoVo.setUrl(getFileDownloadUrl(fileName, filePath, ""));
         return fileInfoVo;
     }
 
@@ -150,8 +152,13 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
     }
 
     @Override
-    public String getFileDownloadUrl(String fileName, String filePath) {
+    public String getFileDownloadUrl(String fileName, String filePath, String fullPath) {
         return getObjectUrl(initParam.getBucketName(), PathUtils.removeLeadingSlash(filePath));
+    }
+
+    @Override
+    public ResponseEntity<Resource> getFileResource(String fileName, String filePath) {
+        return null;
     }
 
     @Override

@@ -16,6 +16,8 @@ import com.besscroft.diyfile.storage.service.base.AbstractOSSBaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -56,8 +58,13 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
     }
 
     @Override
-    public String getFileDownloadUrl(String fileName, String filePath) {
+    public String getFileDownloadUrl(String fileName, String filePath, String fullPath) {
         return getObjectUrl(initParam.getBucketName(), filePath);
+    }
+
+    @Override
+    public ResponseEntity<Resource> getFileResource(String fileName, String filePath) {
+        return null;
     }
 
     @Override

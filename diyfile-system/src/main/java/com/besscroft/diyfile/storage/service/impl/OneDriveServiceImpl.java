@@ -19,6 +19,8 @@ import com.ejlchina.okhttps.OkHttps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
@@ -40,7 +42,18 @@ import java.util.*;
 public class OneDriveServiceImpl extends AbstractOneDriveBaseService<OneDriveParam> {
 
     @Override
-    public String getFileDownloadUrl(String fileName, String filePath) {
+    public String getFileDownloadUrl(String fileName, String filePath, String fullPath) {
+        // 判断第一个字符是否为 /
+        if (!StrUtil.equals(StrUtil.sub(filePath, 0, 1), "/")) {
+            filePath = "/" + filePath;
+        }
+        filePath = PathUtils.handlePath(initParam.getMountPath(), filePath);
+        FileInfoVo fileInfo = getFileInfo(filePath, fileName);
+        return fileInfo.getUrl();
+    }
+
+    @Override
+    public ResponseEntity<Resource> getFileResource(String fileName, String filePath) {
         return null;
     }
 

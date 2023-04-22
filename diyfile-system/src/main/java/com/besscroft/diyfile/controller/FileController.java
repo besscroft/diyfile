@@ -5,10 +5,7 @@ import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.annotation.SaMode;
 import com.besscroft.diyfile.common.constant.MessageConstants;
 import com.besscroft.diyfile.common.constant.RoleConstants;
-import com.besscroft.diyfile.common.param.file.DeleteFileParam;
-import com.besscroft.diyfile.common.param.file.GetFileInfoParam;
-import com.besscroft.diyfile.common.param.file.GetItemByKeyParam;
-import com.besscroft.diyfile.common.param.file.GetUploadUrlParam;
+import com.besscroft.diyfile.common.param.file.*;
 import com.besscroft.diyfile.common.result.AjaxResult;
 import com.besscroft.diyfile.common.result.CommonResult;
 import com.besscroft.diyfile.common.util.PathUtils;
@@ -19,6 +16,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -107,6 +106,24 @@ public class FileController {
         PathUtils.checkPath(param.getPath());
         fileService.deleteFile(param.getStorageKey(), param.getPath());
         return AjaxResult.success(MessageConstants.DELETE_SUCCESS);
+    }
+
+    @SaIgnore
+    @Operation(summary = "获取文件下载地址")
+    @PostMapping("/getDownloadUrl")
+    public AjaxResult getDownloadUrl(@RequestBody @Valid GetDownloadUrlParam param) {
+        // 校验路径
+        PathUtils.checkPath(param.getPath());
+        return AjaxResult.success("获取成功！", fileService.getDownloadUrl(param.getStorageKey(), param.getPath(), param.getFullPath()));
+    }
+
+    @SaIgnore
+    @Operation(summary = "获取下载文件流")
+    @PostMapping("/getDownloadFile")
+    public ResponseEntity<Resource> getDownloadFile(@RequestBody @Valid GetDownloadFileParam param) {
+        // 校验路径
+        PathUtils.checkPath(param.getPath());
+        return fileService.getDownloadFile(param.getStorageKey(), param.getPath());
     }
 
 }
