@@ -7,10 +7,10 @@ package com.besscroft.diyfile.common.constant;
  */
 public interface SystemConstants {
 
-    /** 帐号启用状态：1->启用 */
+    /** 启用状态：1->启用 */
     Integer STATUS_OK = 1;
 
-    /** 帐号启用状态：0->禁用 */
+    /** 启用状态：0->禁用 */
     Integer STATUS_NO = 0;
 
     /** 逻辑删除：1->可用状态 */

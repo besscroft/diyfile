@@ -65,6 +65,10 @@ public interface SystemConfigService extends IService<SystemConfig> {
      */
     String getBackupJsonString() throws JsonProcessingException;
 
+    /**
+     * 恢复数据
+     * @param file 备份文件
+     */
     void restoreData(MultipartFile file);
 
 }
