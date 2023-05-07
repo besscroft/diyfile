@@ -129,6 +129,7 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
             if (map.containsKey("storageInfo")) {
                 List<StorageInfoVo> list = objectMapper.convertValue(map.get("storageInfo"), new TypeReference<>() {
                 });
+                list.forEach(storage -> storage.setEnable(SystemConstants.STATUS_NO));
                 storageService.saveStorageInfoVoList(list);
             }
         } catch (IOException e) {
