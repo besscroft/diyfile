@@ -126,11 +126,11 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 自定义异常 PiscesException
+     * 自定义异常 DiyFileException
      */
     @ResponseBody
     @ExceptionHandler(value = DiyFileException.class)
-    public CommonResult<?> piscesExceptionHandler(DiyFileException ex) {
+    public CommonResult<?> diyFileExceptionHandler(DiyFileException ex) {
         log.info("自定义异常.[异常原因={}]", ex.getMessage(), ex);
         return CommonResult.failed(ex.getCode(), ex.getMessage(), null);
     }
