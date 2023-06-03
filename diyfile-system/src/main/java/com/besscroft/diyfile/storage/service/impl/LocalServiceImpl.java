@@ -175,7 +175,7 @@ public class LocalServiceImpl extends AbstractFileBaseService<LocalParam> {
         if (StrUtil.isBlank(initParam.getDomain())) {
             return "/@api" + "/" + PathUtils.removeLeadingSlash(pathAndName);
         }
-        return PathUtils.removeTrailingSlash(initParam.getDomain()) + "/" + PathUtils.removeLeadingSlash(pathAndName);
+        return PathUtils.removeTrailingSlash(initParam.getDomain()) + "/" + PathUtils.removeLeadingSlash(pathAndName.replace(initParam.getMountPath(), ""));
     }
 
 }
