@@ -58,6 +58,7 @@ public class ParamUtils {
         } else if (Objects.equals(storage.getType(), StorageTypeEnum.LOCAL.getValue())) {
             LocalParam param = LocalParam.builder()
                     .build();
+            param.setDomain(Optional.ofNullable(configMap.get("domain")).orElse(""));
             param.setMountPath(configMap.get("mount_path"));
             return param;
         } else if (Objects.equals(storage.getType(), StorageTypeEnum.AMAZON_S3.getValue())) {

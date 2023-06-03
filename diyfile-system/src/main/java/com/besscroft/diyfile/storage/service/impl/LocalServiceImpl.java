@@ -10,6 +10,7 @@ import com.besscroft.diyfile.common.constant.FileConstants;
 import com.besscroft.diyfile.common.enums.StorageTypeEnum;
 import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.storage.init.LocalParam;
+import com.besscroft.diyfile.common.util.PathUtils;
 import com.besscroft.diyfile.common.vo.FileInfoVo;
 import com.besscroft.diyfile.storage.service.base.AbstractFileBaseService;
 import lombok.RequiredArgsConstructor;
@@ -91,8 +92,8 @@ public class LocalServiceImpl extends AbstractFileBaseService<LocalParam> {
             fileInfoVo.setSize(file.length());
             fileInfoVo.setPath(file.getPath());
             fileInfoVo.setLastModifiedDateTime(LocalDateTimeUtil.of(file.lastModified()));
-            // TODO 代理链接生成
-            fileInfoVo.setUrl(file.getAbsolutePath());
+            // 代理链接生成
+            fileInfoVo.setUrl(getFileDomainUrl(file.getPath()));
             fileInfoVo.setType(FileConstants.FILE);
             fileInfoVo.setFile(null);
         }
@@ -139,30 +140,42 @@ public class LocalServiceImpl extends AbstractFileBaseService<LocalParam> {
         List<FileInfoVo> fileInfoVoList = new ArrayList<>();
         for (File file : fileList) {
             if (file.isDirectory()) {
-                // TODO 处理文件夹
+                // 处理文件夹
                 FileInfoVo fileInfoVo = new FileInfoVo();
                 fileInfoVo.setName(file.getName());
                 fileInfoVo.setSize(file.length());
                 fileInfoVo.setPath(file.getPath());
                 fileInfoVo.setLastModifiedDateTime(LocalDateTimeUtil.of(file.lastModified()));
-                fileInfoVo.setUrl(file.getAbsolutePath());
+                fileInfoVo.setUrl(getFileDomainUrl(file.getPath()));
                 fileInfoVo.setType(FileConstants.FOLDER);
                 fileInfoVo.setFile(null);
                 fileInfoVoList.add(fileInfoVo);
             } else {
-                // TODO 处理文件
+                // 处理文件
                 FileInfoVo fileInfoVo = new FileInfoVo();
                 fileInfoVo.setName(file.getName());
                 fileInfoVo.setSize(file.length());
                 fileInfoVo.setPath(file.getPath());
                 fileInfoVo.setLastModifiedDateTime(LocalDateTimeUtil.of(file.lastModified()));
-                fileInfoVo.setUrl(file.getAbsolutePath());
+                fileInfoVo.setUrl(getFileDomainUrl(file.getPath()));
                 fileInfoVo.setType(FileConstants.FILE);
                 fileInfoVo.setFile(null);
                 fileInfoVoList.add(fileInfoVo);
             }
         }
         return fileInfoVoList;
+    }
+
+    /**
+     * 获取文件预览路径
+     * @param pathAndName 文件路径和名称
+     * @return 文件预览路径
+     */
+    private String getFileDomainUrl(String pathAndName) {
+        if (StrUtil.isBlank(initParam.getDomain())) {
+            return "/@api" + "/" + PathUtils.removeLeadingSlash(pathAndName);
+        }
+        return PathUtils.removeTrailingSlash(initParam.getDomain()) + "/" + PathUtils.removeLeadingSlash(pathAndName);
     }
 
 }
