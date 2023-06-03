@@ -14,4 +14,8 @@ import lombok.EqualsAndHashCode;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class LocalParam extends FileInitParam {
+
+    /** 代理访问域名 */
+    private String domain;
+
 }
