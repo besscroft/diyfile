@@ -12,6 +12,8 @@
 
 ### 预览
 
+![DiyFile](https://besscroft.com/uploads/diyfile-demo.png)
+
 [Demo](https://demo.besscroft.com/)
 
 ### 文档
