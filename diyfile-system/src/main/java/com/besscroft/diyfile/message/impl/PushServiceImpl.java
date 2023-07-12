@@ -1,9 +1,12 @@
 package com.besscroft.diyfile.message.impl;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.besscroft.diyfile.message.PushService;
+import com.besscroft.diyfile.service.SystemConfigService;
 import com.ejlchina.okhttps.OkHttps;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +19,17 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PushServiceImpl implements PushService {
+
+    private final SystemConfigService systemConfigService;
 
     @Override
     public String pushBark(String sendKey, String message) {
+        Integer barkStatus = systemConfigService.getBarkStatus();
+        if (0 == barkStatus) {
+            return "";
+        }
         String url = "https://api.day.app" +
                 "/" +
                 sendKey +

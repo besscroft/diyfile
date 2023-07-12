@@ -89,4 +89,12 @@ public class SystemConfigController {
         return AjaxResult.success(MessageConstants.SUCCESS, barkId);
     }
 
+    @GetMapping("/getBarkStatus")
+    @SaCheckRole(value = { RoleConstants.PLATFORM_SUPER_ADMIN, RoleConstants.PLATFORM_ADMIN }, mode = SaMode.OR)
+    @Operation(summary = "获取 Bark 推送状态")
+    public AjaxResult getBarkStatus() {
+        Integer barkStatus = systemConfigService.getBarkStatus();
+        return AjaxResult.success(MessageConstants.SUCCESS, barkStatus);
+    }
+
 }

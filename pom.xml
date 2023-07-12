@@ -17,7 +17,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <revision>0.5.3</revision>
+        <revision>0.6.0</revision>
         <java.version>17</java.version>
         <maven.compiler.release>17</maven.compiler.release>
         <maven.compiler.source>${java.version}</maven.compiler.source>

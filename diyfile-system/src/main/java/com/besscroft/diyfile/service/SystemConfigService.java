@@ -53,6 +53,12 @@ public interface SystemConfigService extends IService<SystemConfig> {
     String getBarkId();
 
     /**
+     * 获取 Bark 推送状态
+     * @return Bark 推送状态
+     */
+    Integer getBarkStatus();
+
+    /**
      * 获取统计信息
      * @return 统计信息
      */
