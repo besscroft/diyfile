@@ -11,6 +11,7 @@ INSERT INTO `system_config` VALUES (1, '网站标题', 1, 'title', 'DiyFile', '�
 INSERT INTO `system_config` VALUES (2, '测试key', 1, 'test', 'value', '测试用的', 1, 1, '2023-01-07 20:45:50', '2023-01-07 20:26:54', 1);
 INSERT INTO `system_config` VALUES (3, '备案号', 1, 'beian', '', '备案号', 1, 1, '2023-01-15 15:11:23', '2023-01-15 15:10:40', 1);
 INSERT INTO `system_config` VALUES (4, 'BarkId', 0, 'barkId', '', 'Bark 推送 Key', 1, 1, '2023-02-02 17:38:28', '2023-02-02 17:38:24', 1);
+INSERT INTO `system_config` VALUES (5, 'BarkStatus', 0, 'barkStatus', '0', 'Bark 推送启用状态', 1, 1, '2023-07-12 08:07:38', '2023-07-12 08:07:38', 1);
 
 -- ----------------------------
 -- Records of user
