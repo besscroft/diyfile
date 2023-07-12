@@ -1,6 +1,7 @@
 package com.besscroft.diyfile.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.besscroft.diyfile.common.constant.CacheConstants;
 import com.besscroft.diyfile.common.constant.SystemConstants;
@@ -78,7 +79,8 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
             CacheConstants.SITE_TITLE,
             CacheConstants.SITE_CONFIG,
             CacheConstants.SITE_BEIAN,
-            CacheConstants.BARK_ID
+            CacheConstants.BARK_ID,
+            CacheConstants.BACK_STATUS
     }, allEntries = true)
     public void updateConfig(String configKey, String configValue) {
         long userId = StpUtil.getLoginIdAsLong();
@@ -89,6 +91,12 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
     @Cacheable(value = CacheConstants.BARK_ID, unless = "#result == null")
     public String getBarkId() {
         return this.baseMapper.queryByConfigKey("barkId").getConfigValue();
+    }
+
+    @Override
+    @Cacheable(value = CacheConstants.BACK_STATUS, unless = "#result == null")
+    public Integer getBarkStatus() {
+        return StrUtil.equals(this.baseMapper.queryByConfigKey("barkStatus").getConfigValue(), "1") ? 1 : 0;
     }
 
     @Override
