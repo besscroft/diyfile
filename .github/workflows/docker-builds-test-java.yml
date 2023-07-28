@@ -1,4 +1,4 @@
-name: "Java CI with Multi-arch Docker All Test Image"
+name: "Java CI with Multi-arch Docker Test Image"
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   docker:
-    name: Running Compile Java Multi-arch Docker All Test Image
+    name: Running Compile Java Multi-arch Docker Test Image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout diyfile
@@ -15,23 +15,6 @@ jobs:
       - name: Get Version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
-      - run: mkdir -p diyfile-web
-      - name: Checkout diyfile-web
-        uses: actions/checkout@v3
-        with:
-          repository: 'besscroft/diyfile-web'
-          ref: dev
-          path: 'diyfile-web'
-      - run: corepack enable
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache-dependency-path: 'diyfile-web'
-          cache: pnpm
-      - run: pnpm i --prefix diyfile-web
-      - run: pnpm run --prefix diyfile-web build:vite
-      - run: mkdir -p diyfile-system/src/main/resources/static && cp -r diyfile-web/dist/* diyfile-system/src/main/resources/static
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -50,12 +33,12 @@ jobs:
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2
-      - name: Build and push diyfile test
-        id: docker_build_diyfile_test
+      - name: Build and push diyfile test java
+        id: docker_build_diyfile_test_java
         uses: docker/build-push-action@v3
         with:
           context: ./
           file: ./.github/docker/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/ppc64le,linux/s390x
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/diyfile:test
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/diyfile:test-java
