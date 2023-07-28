@@ -1,4 +1,4 @@
-name: "Java CI with Multi-arch Docker All Test Image"
+name: "Java CI with Multi-arch Docker Test Image"
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   docker:
-    name: Running Compile Java Multi-arch Docker All Test Image
+    name: Running Compile Java Multi-arch Docker Test Image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout diyfile
