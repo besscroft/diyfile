@@ -15,23 +15,6 @@ jobs:
       - name: Get Version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
-      - run: mkdir -p diyfile-web
-      - name: Checkout diyfile-web
-        uses: actions/checkout@v3
-        with:
-          repository: 'besscroft/diyfile-web'
-          ref: dev
-          path: 'diyfile-web'
-      - run: corepack enable
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache-dependency-path: 'diyfile-web'
-          cache: pnpm
-      - run: pnpm i --prefix diyfile-web
-      - run: pnpm run --prefix diyfile-web build:vite
-      - run: mkdir -p diyfile-system/src/main/resources/static && cp -r diyfile-web/dist/* diyfile-system/src/main/resources/static
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
