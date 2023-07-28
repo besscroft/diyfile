@@ -7,10 +7,11 @@ on:
 
 jobs:
   docker:
-    name: Running Compile Java Multi-arch Docker Image Test
+    name: Running Compile Java Multi-arch Docker Test Image
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout diyfile
+        uses: actions/checkout@v3
       - name: Get Version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
