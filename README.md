@@ -41,6 +41,31 @@ docker run -d --name diyfile \
 
 > 注意，这个镜像是支持 sqlite 数据库版本的镜像，如果你需要使用 mysql，可以 [点击此处](https://doc.diyfile.besscroft.com/diyfile/deploy/backend.html) 查看。
 
+- Docker Compose 示例：
+
+```yaml
+version: '3'
+services:
+  diyfile:
+    container_name: diyfile
+    image: besscroft/diyfile:latest
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILE: "sqlite"
+      JAVA_OPTS: "-Xms512m -Xmx512m -Duser.timezone=GMT+08 -Dfile.encoding=UTF8"
+    volumes:
+      - /root/data:/data
+  diyfile-web:
+    container_name: diyfile-web
+    image: besscroft/diyfile-web:latest
+    ports:
+      - "80:80"
+```
+
+> 注意，请根据实际情况修改配置。比如端口，数据库版本以及其它配置等。
+> Docker Compose 示例默认为前后端一起部署了，更多请查看文档！！！
+
 | 名称          | 说明                                                                 | 默认值    |
 | ------------- |--------------------------------------------------------------------|--------|
 | SPRING_PROFILE | 配置文件版本，可选项为 mysql 和 sqlite                                         | sqlite |
