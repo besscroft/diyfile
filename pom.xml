@@ -17,7 +17,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <revision>0.6.1</revision>
+        <revision>0.7.0</revision>
         <java.version>17</java.version>
         <maven.compiler.release>17</maven.compiler.release>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -35,7 +35,7 @@
         <oshi.version>6.4.4</oshi.version>
         <okhttps.version>3.5.3</okhttps.version>
         <caffeine.version>3.1.7</caffeine.version>
-        <aliyun-sdk-oss.version>3.16.0</aliyun-sdk-oss.version>
+        <aliyun-sdk-oss.version>3.17.1</aliyun-sdk-oss.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <activation.version>1.1.1</activation.version>
         <jaxb-runtime.version>2.3.3</jaxb-runtime.version>
