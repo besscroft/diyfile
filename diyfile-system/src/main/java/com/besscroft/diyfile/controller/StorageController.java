@@ -11,7 +11,6 @@ import com.besscroft.diyfile.common.exception.DiyFileException;
 import com.besscroft.diyfile.common.param.storage.StorageAddParam;
 import com.besscroft.diyfile.common.param.storage.StorageUpdateParam;
 import com.besscroft.diyfile.common.param.storage.StorageUpdateStatusParam;
-import com.besscroft.diyfile.common.result.AjaxResult;
 import com.besscroft.diyfile.common.result.CommonResult;
 import com.besscroft.diyfile.common.util.CommonPage;
 import com.besscroft.diyfile.common.vo.StorageInfoVo;
@@ -66,9 +65,9 @@ public class StorageController {
             mode = SaMode.OR
     )
     @DeleteMapping("/delete/{storageId:[\\d]+}")
-    public AjaxResult delete(@PathVariable(name = "storageId") Long storageId) {
+    public CommonResult<Void> delete(@PathVariable(name = "storageId") Long storageId) {
         storageService.deleteStorage(storageId);
-        return AjaxResult.success(MessageConstants.DELETE_SUCCESS);
+        return CommonResult.success(MessageConstants.DELETE_SUCCESS);
     }
 
     @Operation(summary = "存储新增接口")
@@ -81,7 +80,7 @@ public class StorageController {
             mode = SaMode.OR
     )
     @PostMapping("/add")
-    public AjaxResult add(@RequestBody @Valid StorageAddParam param) {
+    public CommonResult<Void> add(@RequestBody @Valid StorageAddParam param) {
         if (Objects.equals("proxy", param.getStorageKey())) {
             throw new DiyFileException("存储 key 不能为 proxy");
         }
@@ -89,7 +88,7 @@ public class StorageController {
             throw new DiyFileException("存储 key 不能包含 /");
         }
         storageService.addStorage(param);
-        return AjaxResult.success(MessageConstants.ADD_SUCCESS);
+        return CommonResult.success(MessageConstants.ADD_SUCCESS);
     }
 
     @Operation(summary = "存储更新接口")
@@ -102,9 +101,9 @@ public class StorageController {
             mode = SaMode.OR
     )
     @PutMapping("/update")
-    public AjaxResult update(@RequestBody @Valid StorageUpdateParam param) {
+    public CommonResult<Void> update(@RequestBody @Valid StorageUpdateParam param) {
         storageService.updateStorage(param);
-        return AjaxResult.success(MessageConstants.UPDATE_SUCCESS);
+        return CommonResult.success(MessageConstants.UPDATE_SUCCESS);
     }
 
     @Operation(summary = "存储详情接口")
@@ -138,9 +137,9 @@ public class StorageController {
             mode = SaMode.OR
     )
     @PutMapping("/updateStatus")
-    public AjaxResult updateStatus(@RequestBody @Valid StorageUpdateStatusParam param) {
+    public CommonResult<Void> updateStatus(@RequestBody @Valid StorageUpdateStatusParam param) {
         storageService.updateStatus(param.getStorageId(), param.getStatus());
-        return AjaxResult.success(MessageConstants.UPDATE_SUCCESS);
+        return CommonResult.success(MessageConstants.UPDATE_SUCCESS);
     }
 
     @Operation(summary = "默认存储设置")
@@ -153,9 +152,9 @@ public class StorageController {
             mode = SaMode.OR
     )
     @PutMapping("/setDefault/{storageId:[\\d]+}")
-    public AjaxResult setDefault(@PathVariable(name = "storageId") Long storageId) {
+    public CommonResult<Void> setDefault(@PathVariable(name = "storageId") Long storageId) {
         storageService.setDefault(storageId);
-        return AjaxResult.success(MessageConstants.UPDATE_SUCCESS);
+        return CommonResult.success(MessageConstants.UPDATE_SUCCESS);
     }
 
     @SaIgnore

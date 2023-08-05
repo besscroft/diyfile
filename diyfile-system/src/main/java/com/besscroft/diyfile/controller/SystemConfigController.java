@@ -5,14 +5,18 @@ import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.annotation.SaMode;
 import com.besscroft.diyfile.common.constant.MessageConstants;
 import com.besscroft.diyfile.common.constant.RoleConstants;
+import com.besscroft.diyfile.common.entity.SystemConfig;
 import com.besscroft.diyfile.common.param.system.SystemUpdateConfigParam;
-import com.besscroft.diyfile.common.result.AjaxResult;
+import com.besscroft.diyfile.common.result.CommonResult;
 import com.besscroft.diyfile.service.SystemConfigService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description 系统配置接口
@@ -38,16 +42,16 @@ public class SystemConfigController {
             mode = SaMode.OR
     )
     @Operation(summary = "获取系统配置")
-    public AjaxResult getConfig(){
-        return AjaxResult.success(systemConfigService.getConfig());
+    public CommonResult<List<SystemConfig>> getConfig(){
+        return CommonResult.success(systemConfigService.getConfig());
     }
 
     @GetMapping("/getSiteTitle")
     @SaIgnore
     @Operation(summary = "获取网站标题")
-    public AjaxResult getSiteTitle() {
+    public CommonResult<String> getSiteTitle() {
         String siteTitle = systemConfigService.getSiteTitle();
-        return AjaxResult.success(MessageConstants.SUCCESS, siteTitle);
+        return CommonResult.success(MessageConstants.SUCCESS, siteTitle);
     }
 
     @GetMapping("/getSiteConfig")
@@ -61,40 +65,40 @@ public class SystemConfigController {
             mode = SaMode.OR
     )
     @Operation(summary = "获取网站配置")
-    public AjaxResult getSiteConfig() {
-        return AjaxResult.success(systemConfigService.getSiteConfig());
+    public CommonResult<Map<String, String>> getSiteConfig() {
+        return CommonResult.success(systemConfigService.getSiteConfig());
     }
 
     @GetMapping("/getBeian")
     @SaIgnore
     @Operation(summary = "获取备案信息")
-    public AjaxResult getBeian() {
+    public CommonResult<String> getBeian() {
         String beian = systemConfigService.getBeian();
-        return AjaxResult.success(MessageConstants.SUCCESS, beian);
+        return CommonResult.success(MessageConstants.SUCCESS, beian);
     }
 
     @PutMapping("/updateConfig")
     @SaCheckRole(value = { RoleConstants.PLATFORM_SUPER_ADMIN, RoleConstants.PLATFORM_ADMIN }, mode = SaMode.OR)
     @Operation(summary = "更新配置接口")
-    public AjaxResult updateConfig(@RequestBody @Valid SystemUpdateConfigParam param) {
+    public CommonResult<Void> updateConfig(@RequestBody @Valid SystemUpdateConfigParam param) {
         systemConfigService.updateConfig(param.getConfigKey(), param.getConfigValue());
-        return AjaxResult.success(MessageConstants.SUCCESS);
+        return CommonResult.success(MessageConstants.SUCCESS);
     }
 
     @GetMapping("/getBarkId")
     @SaCheckRole(value = { RoleConstants.PLATFORM_SUPER_ADMIN, RoleConstants.PLATFORM_ADMIN }, mode = SaMode.OR)
     @Operation(summary = "获取 Bark 推送 id")
-    public AjaxResult getBarkId() {
+    public CommonResult<String> getBarkId() {
         String barkId = systemConfigService.getBarkId();
-        return AjaxResult.success(MessageConstants.SUCCESS, barkId);
+        return CommonResult.success(MessageConstants.SUCCESS, barkId);
     }
 
     @GetMapping("/getBarkStatus")
     @SaCheckRole(value = { RoleConstants.PLATFORM_SUPER_ADMIN, RoleConstants.PLATFORM_ADMIN }, mode = SaMode.OR)
     @Operation(summary = "获取 Bark 推送状态")
-    public AjaxResult getBarkStatus() {
+    public CommonResult<Integer> getBarkStatus() {
         Integer barkStatus = systemConfigService.getBarkStatus();
-        return AjaxResult.success(MessageConstants.SUCCESS, barkStatus);
+        return CommonResult.success(MessageConstants.SUCCESS, barkStatus);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.besscroft.diyfile.controller;
 
 import com.besscroft.diyfile.common.param.sync.SyncTaskParam;
-import com.besscroft.diyfile.common.result.AjaxResult;
+import com.besscroft.diyfile.common.result.CommonResult;
 import com.besscroft.diyfile.common.util.PathUtils;
 import com.besscroft.diyfile.service.SyncService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,14 +27,14 @@ public class SyncController {
 
     @PostMapping("/taskAdd")
     @Operation(summary = "添加同步任务")
-    public AjaxResult taskAdd(@RequestBody SyncTaskParam param) {
+    public CommonResult<Void> taskAdd(@RequestBody SyncTaskParam param) {
         PathUtils.checkPath(param.getBeforePath());
         PathUtils.checkPath(param.getAfterPath());
         syncService.taskAdd(param.getBeforeStorageKey(),
                 PathUtils.decode(param.getBeforePath()),
                 param.getAfterStorageKey(),
                 PathUtils.decode(param.getAfterPath()));
-        return AjaxResult.success();
+        return CommonResult.success();
     }
 
 }

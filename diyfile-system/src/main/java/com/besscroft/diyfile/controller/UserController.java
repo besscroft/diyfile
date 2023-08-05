@@ -12,7 +12,6 @@ import com.besscroft.diyfile.common.param.user.UserAddParam;
 import com.besscroft.diyfile.common.param.user.UserUpdateParam;
 import com.besscroft.diyfile.common.param.user.UserUpdatePwdParam;
 import com.besscroft.diyfile.common.param.user.UserUpdateStatusParam;
-import com.besscroft.diyfile.common.result.AjaxResult;
 import com.besscroft.diyfile.common.result.CommonResult;
 import com.besscroft.diyfile.common.util.CommonPage;
 import com.besscroft.diyfile.service.UserService;
@@ -41,16 +40,16 @@ public class UserController {
     @SaIgnore
     @PostMapping("/login")
     @Operation(summary = "登录")
-    public AjaxResult login(@RequestBody @Valid LoginParam param) {
+    public CommonResult<SaTokenInfo> login(@RequestBody @Valid LoginParam param) {
         SaTokenInfo tokenInfo = userService.login(param.getUsername(), param.getPassword());
-        return AjaxResult.success(tokenInfo);
+        return CommonResult.success(tokenInfo);
     }
 
     @GetMapping("/info")
     @Operation(summary = "获取已登录用户信息")
-    public AjaxResult info() {
+    public CommonResult<Map<String, Object>> info() {
         Map<String, Object> info = userService.info();
-        return AjaxResult.success(info);
+        return CommonResult.success(info);
     }
 
     @GetMapping("/userPage")
@@ -74,9 +73,9 @@ public class UserController {
     @Operation(summary = "用户删除接口")
     @SaCheckRole({ RoleConstants.PLATFORM_SUPER_ADMIN })
     @DeleteMapping("/delete/{userId:[\\d]+}")
-    public AjaxResult delete(@PathVariable(name = "userId") Long userId) {
+    public CommonResult<Void> delete(@PathVariable(name = "userId") Long userId) {
         userService.deleteUser(userId);
-        return AjaxResult.success(MessageConstants.DELETE_SUCCESS);
+        return CommonResult.success(MessageConstants.DELETE_SUCCESS);
     }
 
     @Operation(summary = "用户信息获取接口")
@@ -97,17 +96,17 @@ public class UserController {
     @Operation(summary = "用户新增接口")
     @SaCheckRole(value = { RoleConstants.PLATFORM_SUPER_ADMIN, RoleConstants.PLATFORM_ADMIN }, mode = SaMode.OR)
     @PostMapping("/add")
-    public AjaxResult add(@RequestBody @Valid UserAddParam param) {
+    public CommonResult<Void> add(@RequestBody @Valid UserAddParam param) {
         userService.addUser(param);
-        return AjaxResult.success();
+        return CommonResult.success();
     }
 
     @Operation(summary = "用户更新接口")
     @SaCheckRole(value = { RoleConstants.PLATFORM_SUPER_ADMIN, RoleConstants.PLATFORM_ADMIN }, mode = SaMode.OR)
     @PutMapping("/update")
-    public AjaxResult update(@RequestBody @Valid UserUpdateParam param) {
+    public CommonResult<Void> update(@RequestBody @Valid UserUpdateParam param) {
         userService.updateUser(param);
-        return AjaxResult.success();
+        return CommonResult.success();
     }
 
     @Operation(summary = "用户查询接口")
@@ -121,16 +120,16 @@ public class UserController {
     @Operation(summary = "用户启用状态更新接口")
     @SaCheckRole(value = { RoleConstants.PLATFORM_SUPER_ADMIN, RoleConstants.PLATFORM_ADMIN }, mode = SaMode.OR)
     @PutMapping("/updateStatus")
-    public AjaxResult updateStatus(@RequestBody @Valid UserUpdateStatusParam param) {
+    public CommonResult<Void> updateStatus(@RequestBody @Valid UserUpdateStatusParam param) {
         userService.updateStatus(param.getUserId(), param.getStatus());
-        return AjaxResult.success(MessageConstants.UPDATE_SUCCESS);
+        return CommonResult.success(MessageConstants.UPDATE_SUCCESS);
     }
 
     @Operation(summary = "用户密码更新接口")
     @PutMapping("/updatePassword")
-    public AjaxResult updatePassword(@RequestBody @Valid UserUpdatePwdParam param) {
+    public CommonResult<Void> updatePassword(@RequestBody @Valid UserUpdatePwdParam param) {
         userService.updatePassword(param.getUserId(), param.getIsSelf(), param.getOldPassword(), param.getNewPassword());
-        return AjaxResult.success(MessageConstants.UPDATE_SUCCESS);
+        return CommonResult.success(MessageConstants.UPDATE_SUCCESS);
     }
 
 }

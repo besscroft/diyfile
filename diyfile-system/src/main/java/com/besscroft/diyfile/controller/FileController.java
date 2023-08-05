@@ -6,7 +6,6 @@ import cn.dev33.satoken.annotation.SaMode;
 import com.besscroft.diyfile.common.constant.MessageConstants;
 import com.besscroft.diyfile.common.constant.RoleConstants;
 import com.besscroft.diyfile.common.param.file.*;
-import com.besscroft.diyfile.common.result.AjaxResult;
 import com.besscroft.diyfile.common.result.CommonResult;
 import com.besscroft.diyfile.common.util.PathUtils;
 import com.besscroft.diyfile.common.vo.FileInfoVo;
@@ -87,8 +86,8 @@ public class FileController {
     )
     @Operation(summary = "获取文件上传地址")
     @PostMapping("/getUploadUrl")
-    public AjaxResult getUploadUrl(@RequestBody @Valid GetUploadUrlParam param) {
-        return AjaxResult.success("获取成功！", fileService.getUploadUrl(param.getStorageKey(), param.getPath()));
+    public CommonResult<String> getUploadUrl(@RequestBody @Valid GetUploadUrlParam param) {
+        return CommonResult.success("获取成功！", fileService.getUploadUrl(param.getStorageKey(), param.getPath()));
     }
 
     @SaCheckRole(
@@ -101,20 +100,20 @@ public class FileController {
     )
     @Operation(summary = "删除文件接口")
     @PostMapping("/deleteFile")
-    public AjaxResult deleteFile(@RequestBody @Valid DeleteFileParam param) {
+    public CommonResult<Void> deleteFile(@RequestBody @Valid DeleteFileParam param) {
         // 校验路径
         PathUtils.checkPath(param.getPath());
         fileService.deleteFile(param.getStorageKey(), param.getPath());
-        return AjaxResult.success(MessageConstants.DELETE_SUCCESS);
+        return CommonResult.success(MessageConstants.DELETE_SUCCESS);
     }
 
     @SaIgnore
     @Operation(summary = "获取文件下载地址")
     @PostMapping("/getDownloadUrl")
-    public AjaxResult getDownloadUrl(@RequestBody @Valid GetDownloadUrlParam param) {
+    public CommonResult<String> getDownloadUrl(@RequestBody @Valid GetDownloadUrlParam param) {
         // 校验路径
         PathUtils.checkPath(param.getPath());
-        return AjaxResult.success("获取成功！", fileService.getDownloadUrl(param.getStorageKey(), param.getPath(), param.getFullPath()));
+        return CommonResult.success("获取成功！", fileService.getDownloadUrl(param.getStorageKey(), param.getPath(), param.getFullPath()));
     }
 
     @SaIgnore
