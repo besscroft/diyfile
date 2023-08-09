@@ -69,8 +69,10 @@ public class FlywayConfigure {
             }
             String databaseProductVersion = databaseMetaData.getDatabaseProductVersion();
             log.info("当前数据库版本为：{}", databaseProductVersion);
+            // 设置数据库是否初始化标志
+            boolean isInit = false;
             if ("5".equals(StrUtil.sub(databaseProductVersion, 0, 1))) {
-                log.info("数据库版本不支持自动初始化，跳过初始化...");
+                log.warn("数据库版本不支持自动初始化，跳过初始化...");
                 return;
             }
             for (DatabaseType type : SORTED_DATABASE_TYPES) {
@@ -78,7 +80,12 @@ public class FlywayConfigure {
                     log.info("数据库版本支持自动初始化，即将开始初始化...");
                     Flyway flyway = Flyway.configure().dataSource(dataSource).outOfOrder(true).locations("db/" + dbType + "/migration").load();
                     flyway.migrate();
+                    isInit = true;
                 }
+            }
+            if (!isInit) {
+                log.warn("Unable to find a Flyway plugin for database: {}, with version: {}, and type: {}.", databaseProductName, databaseProductVersion, dbType);
+                return;
             }
             log.info("数据库初始化完毕！");
         } catch (SQLException e) {
