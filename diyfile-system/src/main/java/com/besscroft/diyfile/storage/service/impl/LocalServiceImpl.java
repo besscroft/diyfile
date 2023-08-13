@@ -3,7 +3,6 @@ package com.besscroft.diyfile.storage.service.impl;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.net.URLEncodeUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.besscroft.diyfile.common.constant.FileConstants;
@@ -117,6 +116,7 @@ public class LocalServiceImpl extends AbstractFileBaseService<LocalParam> {
 
     @Override
     public void uploadItem(String folderPath, String fileName) {
+        // TODO 本地文件上传
         throw new DiyFileException("本地文件存储不支持上传文件！");
     }
 
