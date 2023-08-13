@@ -44,7 +44,7 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
      */
     @Override
     public void init() {
-        // TODO OSSClient 初始化
+        // OSSClient 初始化
         this.ossClient = new OSSClientBuilder()
                 .build(initParam.getEndpoint(),
                         initParam.getAccessKeyId(),
@@ -103,12 +103,12 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
 
     @Override
     public void createItem(String folderPath, String fileName) {
-        throw new DiyFileException("阿里云 OSS 服务暂不支持创建文件夹");
+        throw new DiyFileException("阿里云 OSS 服务暂不支持创建对象！");
     }
 
     @Override
     public void updateItem(String filePath, String fileName) {
-        throw new DiyFileException("阿里云 OSS 服务暂不支持更新文件");
+        throw new DiyFileException("阿里云 OSS 服务暂不支持更新对象！");
     }
 
     @Override
@@ -123,6 +123,7 @@ public class AliYunOssServiceImpl extends AbstractOSSBaseService<AliYunOssParam>
 
     @Override
     public void uploadItem(String folderPath, String fileName) {
+        // TODO 上传文件
         throw new DiyFileException("阿里云 OSS 服务暂不支持上传文件");
     }
 

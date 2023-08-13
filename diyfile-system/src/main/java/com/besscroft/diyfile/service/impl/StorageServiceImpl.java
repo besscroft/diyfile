@@ -162,12 +162,14 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
             try {
                 storageApplicationContext.init(storage);
             } catch (Exception e) {
+                log.error("启用存储失败:{}", e.getMessage());
                 throw new DiyFileException("启用存储失败！");
             }
         } else {
             try {
                 storageApplicationContext.destroy(storage.getId());
             } catch (Exception e) {
+                log.error("停用存储失败:{}", e.getMessage());
                 throw new DiyFileException("停用存储失败！");
             }
         }

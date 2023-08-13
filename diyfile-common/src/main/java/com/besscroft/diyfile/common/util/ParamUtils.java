@@ -5,10 +5,7 @@ import com.besscroft.diyfile.common.entity.Storage;
 import com.besscroft.diyfile.common.entity.StorageConfig;
 import com.besscroft.diyfile.common.enums.StorageTypeEnum;
 import com.besscroft.diyfile.common.param.FileInitParam;
-import com.besscroft.diyfile.common.param.storage.init.AliYunOssParam;
-import com.besscroft.diyfile.common.param.storage.init.AmazonS3Param;
-import com.besscroft.diyfile.common.param.storage.init.LocalParam;
-import com.besscroft.diyfile.common.param.storage.init.OneDriveParam;
+import com.besscroft.diyfile.common.param.storage.init.*;
 
 import java.util.List;
 import java.util.Map;
@@ -64,6 +61,16 @@ public class ParamUtils {
         } else if (Objects.equals(storage.getType(), StorageTypeEnum.AMAZON_S3.getValue())) {
             AmazonS3Param param = AmazonS3Param.builder().build();
             param.setAccessKey(configMap.get("accessKey"));
+            param.setSecretKey(configMap.get("secretKey"));
+            param.setRegion(configMap.get("region"));
+            param.setEndpoint(configMap.get("endpoint"));
+            param.setMountPath(configMap.get("mount_path"));
+            param.setBucketName(configMap.get("bucketName"));
+            return param;
+        } else if (Objects.equals(storage.getType(), StorageTypeEnum.QCLOUD_COS.getValue())) {
+            // 腾讯云COS初始化参数
+            QCloudCosParam param = QCloudCosParam.builder().build();
+            param.setSecretId(configMap.get("secretId"));
             param.setSecretKey(configMap.get("secretKey"));
             param.setRegion(configMap.get("region"));
             param.setEndpoint(configMap.get("endpoint"));

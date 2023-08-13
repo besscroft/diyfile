@@ -143,6 +143,7 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
 
     @Override
     public void uploadItem(String folderPath, String fileName) {
+        // TODO 上传文件
         throw new DiyFileException("S3 API 暂不支持上传文件");
     }
 
@@ -164,6 +165,7 @@ public abstract class AbstractS3BaseService<T extends S3Param> extends AbstractF
     @Override
     public void moveItem(String startPath, String endPath) {
         // TODO 移动文件
+        throw new DiyFileException("S3 API 暂不支持移动文件");
     }
 
     /**

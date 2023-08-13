@@ -12,7 +12,8 @@ public enum StorageTypeEnum implements BasicEnum<Integer> {
     LOCAL(0, "本地"),
     ONE_DRIVE(1, "OneDrive"),
     ALIYUN_OSS(2, "阿里云OSS"),
-    AMAZON_S3(3, "Amazon S3");
+    AMAZON_S3(3, "Amazon S3"),
+    QCLOUD_COS(4, "腾讯云COS");
 
     private final int value;
     private final String description;

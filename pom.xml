@@ -40,6 +40,7 @@
         <activation.version>1.1.1</activation.version>
         <jaxb-runtime.version>2.3.3</jaxb-runtime.version>
         <software.amazon.awssdk.version>2.20.20</software.amazon.awssdk.version>
+        <cos_api.version>5.6.163</cos_api.version>
     </properties>
 
     <modules>
@@ -171,6 +172,12 @@
                 <version>${software.amazon.awssdk.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!-- 腾讯云 COS -->
+            <dependency>
+                <groupId>com.qcloud</groupId>
+                <artifactId>cos_api</artifactId>
+                <version>${cos_api.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

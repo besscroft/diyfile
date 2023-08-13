@@ -37,6 +37,12 @@ public class DiyFileException extends RuntimeException {
         this.message = message;
     }
 
+    public DiyFileException(String message, Throwable cause) {
+        super(message, cause);
+        this.code = HttpStatus.INTERNAL_SERVER_ERROR.value();
+        this.message = message;
+    }
+
     public DiyFileException(Integer code, String message) {
         this.code = code;
         this.message = message;
