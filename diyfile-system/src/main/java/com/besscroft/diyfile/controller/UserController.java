@@ -98,7 +98,7 @@ public class UserController {
     @PostMapping("/add")
     public CommonResult<Void> add(@RequestBody @Valid UserAddParam param) {
         userService.addUser(param);
-        return CommonResult.success();
+        return CommonResult.success(MessageConstants.ADD_SUCCESS);
     }
 
     @Operation(summary = "用户更新接口")
@@ -106,7 +106,7 @@ public class UserController {
     @PutMapping("/update")
     public CommonResult<Void> update(@RequestBody @Valid UserUpdateParam param) {
         userService.updateUser(param);
-        return CommonResult.success();
+        return CommonResult.success(MessageConstants.UPDATE_SUCCESS);
     }
 
     @Operation(summary = "用户查询接口")

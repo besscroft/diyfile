@@ -116,7 +116,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void addUser(UserAddParam param) {
         User user = UserConverterMapper.INSTANCE.AddParamToUser(param);
         if (Objects.equals(user.getRole(), RoleConstants.PLATFORM_SUPER_ADMIN)) {
@@ -154,6 +153,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             CacheConstants.USER,
             CacheConstants.STATISTICS
     }, allEntries = true)
+    @Transactional(rollbackFor = Exception.class)
     public void updateStatus(Long id, Integer status) {
         User user = this.baseMapper.selectById(id);
         Assert.notNull(user, "用户不存在！");
