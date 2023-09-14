@@ -1,5 +1,6 @@
 package com.besscroft.diyfile.controller;
 
+import com.besscroft.diyfile.common.constant.MessageConstants;
 import com.besscroft.diyfile.common.param.sync.SyncTaskParam;
 import com.besscroft.diyfile.common.result.CommonResult;
 import com.besscroft.diyfile.common.util.PathUtils;
@@ -34,7 +35,7 @@ public class SyncController {
                 PathUtils.decode(param.getBeforePath()),
                 param.getAfterStorageKey(),
                 PathUtils.decode(param.getAfterPath()));
-        return CommonResult.success();
+        return CommonResult.success(MessageConstants.ADD_SUCCESS);
     }
 
 }

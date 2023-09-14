@@ -62,6 +62,7 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
             CacheConstants.ENABLE_STORAGE,
             CacheConstants.STATISTICS
     }, allEntries = true)
+    @Transactional(rollbackFor = Exception.class)
     public void deleteStorage(Long storageId) {
         Assert.isTrue(this.baseMapper.deleteById(storageId) > 0, "存储删除失败！");
         Assert.isTrue(storageConfigMapper.deleteByStorageId(storageId) > 0, "存储删除失败！");
@@ -154,6 +155,7 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
             CacheConstants.ENABLE_STORAGE,
             CacheConstants.STATISTICS
     }, allEntries = true)
+    @Transactional(rollbackFor = Exception.class)
     public void updateStatus(Long storageId, Integer status) {
         Storage storage = this.baseMapper.selectById(storageId);
         Assert.notNull(storage, "存储不存在！");

@@ -73,7 +73,6 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = {
             CacheConstants.SYSTEM_CONFIG,
             CacheConstants.SITE_TITLE,
