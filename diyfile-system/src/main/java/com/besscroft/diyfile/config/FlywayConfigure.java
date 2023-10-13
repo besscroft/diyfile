@@ -11,6 +11,7 @@ import org.flywaydb.core.api.FlywayException;
 import org.flywaydb.core.internal.database.DatabaseType;
 import org.flywaydb.core.internal.exception.FlywaySqlException;
 import org.flywaydb.core.internal.plugin.PluginRegister;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
@@ -37,6 +38,9 @@ public class FlywayConfigure {
     private static final List<DatabaseType> SORTED_DATABASE_TYPES = new PluginRegister().getPlugins(DatabaseType.class).stream().sorted().collect(Collectors.toList());
     private final ApplicationContext applicationContext;
 
+    @Value("${spring.flyway.enabled}")
+    private Boolean enabled;
+
     @PostConstruct
     public void flywayMigrate() {
         String datasourceDriveClassName = applicationContext.getEnvironment().getProperty("spring.datasource.driver-class-name");
@@ -53,6 +57,10 @@ public class FlywayConfigure {
             } else {
                 log.info("sqlite 数据库文件已存在，路径：{}", folderPath);
             }
+        }
+        if (!enabled) {
+            log.info("flyway 已关闭，跳过初始化...");
+            return;
         }
         try {
             String databaseProductName = dataSource.getConnection().getMetaData().getDatabaseProductName();
