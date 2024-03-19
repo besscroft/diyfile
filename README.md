@@ -2,7 +2,7 @@
 
 <p align="center">
 
-![DiyFile](https://besscroft.com/uploads/diyfile.png)
+![DiyFile](doc/images/diyfile.png)
 
 </p>
 
@@ -12,7 +12,7 @@
 
 ### 预览
 
-![DiyFile](https://besscroft.com/uploads/diyfile-demo.png)
+![DiyFile](doc/images/diyfile-demo.png)
 
 [Demo](https://demo.besscroft.com/)
 
